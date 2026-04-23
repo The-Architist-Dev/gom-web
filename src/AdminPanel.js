@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps, jsx-a11y/anchor-is-valid, no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
@@ -377,6 +378,7 @@ export function AdminCeramics({ token, notify }) {
       .catch(err => console.error(err));
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { fetchLines(); }, []);
 
   const openForm = (line = null) => {

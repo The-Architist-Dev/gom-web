@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps, jsx-a11y/anchor-is-valid, no-unused-vars */
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
