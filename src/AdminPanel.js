@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
 
-const API_BASE = "http://127.0.0.1:8000/api/admin";
+const API_BASE = process.env.REACT_APP_API_BASE ? process.env.REACT_APP_API_BASE + "/admin" : "http://127.0.0.1:8000/api/admin";
 
 export function AdminLayout({ view, setView, children }) {
   const tabs = [
