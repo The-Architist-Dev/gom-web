@@ -4,6 +4,9 @@ import { createPortal } from "react-dom";
 import axios from "axios";
 import "./index.css";
 import { AdminLayout, AdminDashboard, AdminUsers, AdminCeramics, AdminPayments, AdminPredictions } from "./screens/admin/AdminPanel";
+import { AuthShell } from "./components/auth/AuthShell";
+import { AnimatedToast } from "./components/ui/AnimatedToast";
+import { NewAuthShell } from "./components/auth/NewAuthShell";
 
 // --- API CONFIG ---
 const API_BASE = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000/api";
@@ -118,22 +121,26 @@ function App() {
 
   return (
     <div className="app-container">
-      {token && <Navbar user={user} quota={quota} setView={setView} logout={logout} view={view} />}
+      {/* Only show Navbar when NOT on auth page */}
+      {token && view !== "auth" && <Navbar user={user} quota={quota} setView={setView} logout={logout} view={view} />}
 
-      <main className="main-content">
-        {view === "auth" && (
-          <AuthScreen
-            setToken={setToken}
-            setUser={setUser}
-            notify={notify}
-            fetchUser={fetchUser}
-            subView={authSubView}
-            setSubView={setAuthSubView}
-            resetEmail={resetEmail}
-            setResetEmail={setResetEmail}
-          />
-        )}
-        <div className="view-transition" key={view}>
+      {/* Auth page - isolated full screen */}
+      {view === "auth" && (
+        <NewAuthShell
+          setToken={setToken}
+          setUser={setUser}
+          notify={notify}
+          subView={authSubView}
+          setSubView={setAuthSubView}
+          resetEmail={resetEmail}
+          setResetEmail={setResetEmail}
+        />
+      )}
+
+      {/* Main content - only when NOT on auth page */}
+      {view !== "auth" && (
+        <main className="main-content">
+          <div className="view-transition" key={view}>
           {view === "debate" && <DebateScreen token={token} notify={notify} quota={quota} setQuota={setQuota} setView={setView} user={user} />}
           {view === "history" && <HistoryScreen token={token} setSelectedHistory={setSelectedHistory} />}
           {view === "profile" && <ProfileScreen user={user} token={token} notify={notify} fetchUser={fetchUser} />}
@@ -156,27 +163,20 @@ function App() {
             </AdminLayout>
           )}
         </div>
-      </main>
-
-      {notification && (
-        <div className={`toast ${notification.type} fade-in`}>
-          <div className="toast-icon">
-            {notification.type === 'error' ? '✕' : notification.type === 'success' ? '✓' : 'ℹ'}
-          </div>
-          <div>
-            <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', opacity: 0.8, fontWeight: 800, letterSpacing: '0.5px' }}>
-              {notification.type === 'error' ? 'Lỗi hệ thống' : notification.type === 'success' ? 'Thành công' : 'Thông báo'}
-            </div>
-            <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{notification.message}</div>
-          </div>
-        </div>
+        </main>
       )}
 
+      {/* Toast - always visible */}
+      <AnimatedToast notification={notification} />
+
+      {/* History modal */}
       {selectedHistory && (
         <HistoryDetailModal item={selectedHistory} onClose={() => setSelectedHistory(null)} token={token} />
       )}
 
-      <footer className="footer">
+      {/* Footer - only when NOT on auth page */}
+      {view !== "auth" && (
+        <footer className="footer">
         <div className="footer-container">
           <div className="footer-brand">
             <img src="/logo.png" alt="Logo" style={{ height: '100px', marginBottom: '15px', filter: 'brightness(0) invert(1)' }} />
@@ -220,9 +220,10 @@ function App() {
           <div>POWERED BY THE ARCHIVIST AI MULTI-AGENT SYSTEM</div>
         </div>
       </footer>
+      )}
 
-      {/* FLOATING CHATBOT */}
-      {token && (
+      {/* FLOATING CHATBOT - only when NOT on auth page */}
+      {token && view !== "auth" && (
         <div className={`chat-wrapper ${showChat ? 'active' : ''}`}>
           <div className="chat-window">
             <div className="chat-header">
@@ -456,275 +457,6 @@ function Navbar({ user, quota, setView, logout, view, notify }) {
         document.body
       )}
     </nav>
-  );
-}
-
-function AuthScreen({ setToken, setUser, notify, subView, setSubView, resetEmail, setResetEmail }) {
-  const [form, setForm] = useState({ name: "", email: "", password: "", password_confirmation: "" });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [showPass, setShowPass] = useState(false);
-
-  const sendSocialAuth = async (provider, token) => {
-    setLoading(true);
-    try {
-      const res = await axios.post(API_BASE + "/login/social", { provider, token });
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      setToken(res.data.token);
-      setUser(res.data.user);
-      notify(`Chào mừng ${res.data.user.name} đã gia nhập!`, "success");
-    } catch (err) {
-      notify(err.response?.data?.message || `Lỗi kết nối ${provider}`, "error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const handleGoogleSuccess = (res) => {
-      sendSocialAuth('google', res.credential);
-    };
-
-    const initGoogle = () => {
-      if (window.google && document.getElementById('google-button-container')) {
-        window.google.accounts.id.initialize({
-          client_id: "208231172368-34f26e0l7771ngcqa89j9ufj01gm6mtt.apps.googleusercontent.com",
-          callback: handleGoogleSuccess
-        });
-        window.google.accounts.id.renderButton(
-          document.getElementById('google-button-container'),
-          { theme: "outline", size: "large", width: 220, text: "signin_with", shape: "rectangular" }
-        );
-      } else {
-        setTimeout(initGoogle, 500);
-      }
-    };
-
-    initGoogle();
-  }, [subView]);
-
-  if (subView === "forgot") return <ForgotPasswordScreen setSubView={setSubView} notify={notify} setResetEmail={setResetEmail} />;
-  if (subView === "reset") return <ResetPasswordScreen setSubView={setSubView} notify={notify} email={resetEmail} />;
-
-  const isLogin = subView === "login";
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    try {
-      const endpoint = isLogin ? "/login" : "/register";
-      const res = await axios.post(API_BASE + endpoint, form);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      setToken(res.data.token);
-      setUser(res.data.user);
-      notify(`Chào mừng ${res.data.user.name} quay trở lại!`, "success");
-    } catch (err) {
-      setError(err.response?.data?.message || "Lỗi xác thực hệ thống");
-    }
-    setLoading(false);
-  };
-
-  const handleSocialLogin = (provider) => {
-    if (provider === "Facebook") {
-      if (window.FB) {
-        window.FB.login((res) => {
-          if (res.authResponse) {
-            sendSocialAuth('facebook', res.authResponse.accessToken);
-          } else notify("Đã hủy đăng nhập Facebook", "info");
-        }, { scope: 'public_profile,email' });
-      } else notify("Đang tải thư viện Facebook...", "info");
-    }
-  };
-
-  return (
-    <div className="auth-container card fade-in">
-      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <img src="/logo.png" alt="Logo" style={{ height: '50px', marginBottom: '32px' }} />
-        <h2 className="display-title" style={{ fontSize: '1.6rem', color: '#222222' }}>{isLogin ? "Chào mừng trở lại" : "Gia nhập hệ thống"}</h2>
-        <p className="subtitle" style={{ marginBottom: 0 }}>{isLogin ? "Đăng nhập để sử dụng hệ thống." : "Đăng ký tài khoản mới ngay."}</p>
-      </div>
-
-      {error && <div style={{ background: 'var(--danger)', color: 'white', padding: '12px 16px', borderRadius: '8px', marginBottom: '24px', fontSize: '0.85rem', fontWeight: 600 }}>{error}</div>}
-
-      <form onSubmit={handleSubmit}>
-        {!isLogin && (
-          <div className="input-group">
-            <label className="input-label">TÊN NGHỆ NHÂN</label>
-            <input className="input-field" placeholder="Họ và tên..." required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
-          </div>
-        )}
-        <div className="input-group">
-          <label className="input-label">EMAIL</label>
-          <input className="input-field" type="email" placeholder="email@example.com" required value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
-        </div>
-        <div className="input-group">
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <label className="input-label">MẬT KHẨU</label>
-            {isLogin && <span onClick={() => setSubView("forgot")} style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--secondary)', cursor: 'pointer' }}>Quên mật khẩu?</span>}
-          </div>
-          <div style={{ position: 'relative' }}>
-            <input className="input-field" type={showPass ? "text" : "password"} placeholder="••••••••" required value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} />
-            <span onClick={() => setShowPass(!showPass)} style={{ position: 'absolute', right: '15px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', opacity: 0.6, fontSize: '1.2rem', display: 'flex', alignItems: 'center' }}>
-              {showPass ? (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
-              ) : (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-              )}
-            </span>
-          </div>
-        </div>
-        {!isLogin && (
-          <div className="input-group">
-            <label className="input-label">XÁC NHẬN LẠI</label>
-            <input className="input-field" type="password" placeholder="••••••••" required value={form.password_confirmation} onChange={e => setForm({ ...form, password_confirmation: e.target.value })} />
-          </div>
-        )}
-        <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%', marginTop: '10px', height: '52px' }}>
-          {loading ? "Đang xử lý..." : (isLogin ? "Tiếp tục" : "Đăng ký ngay")}
-        </button>
-      </form>
-
-      <div className="auth-divider">HOẶC KẾT NỐI QUA</div>
-
-      <div style={{ display: 'flex', gap: '12px', marginBottom: '32px', justifyContent: 'center', alignItems: 'center' }}>
-        <div id="google-button-container" style={{ flex: 1, display: 'flex', justifyContent: 'center', height: '40px' }}></div>
-        <button
-          type="button"
-          style={{
-            flex: 1,
-            height: '40px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '10px',
-            padding: '0 12px',
-            background: 'white',
-            border: '1px solid #dadce0',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontFamily: '"Roboto", arial, sans-serif',
-            fontSize: '14px',
-            fontWeight: '500',
-            color: '#3c4043',
-            boxSizing: 'border-box'
-          }}
-          onClick={() => handleSocialLogin('Facebook')}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
-          Facebook
-        </button>
-      </div>
-
-      <p style={{ textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-        {isLogin ? "Chưa có tài khoản? " : "Đã có tài khoản? "}
-        <span style={{ color: 'var(--primary-dark)', fontWeight: 800, cursor: 'pointer' }} onClick={() => setSubView(isLogin ? "register" : "login")}>
-          {isLogin ? "Đăng ký ngay" : "Đăng nhập ngay"}
-        </span>
-      </p>
-
-      <div style={{ marginTop: '48px', textAlign: 'center', fontSize: '0.65rem', color: '#888888', lineHeight: 1.6 }}>
-        Bằng việc tiếp tục, bạn đồng ý với <b>Điều khoản Dịch vụ</b> và <b>Chính sách Bảo mật</b> của chúng tôi.
-      </div>
-    </div>
-  );
-}
-
-function ForgotPasswordScreen({ setSubView, notify, setResetEmail }) {
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleReset = async (e) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setLoading(true);
-    try {
-      await axios.post(API_BASE + "/forgot-password", { email });
-      notify("Mã phục hồi đã được gửi về email của bạn.", "success");
-      setResetEmail(email);
-      setSubView("reset");
-    } catch (err) {
-      notify(err.response?.data?.message || "Lỗi gửi yêu cầu phục hồi", "error");
-    }
-    setLoading(false);
-  };
-
-  return (
-    <div className="auth-container card fade-in">
-      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <img src="/logo.png" alt="Logo" style={{ height: '50px', marginBottom: '32px' }} />
-        <h2 className="display-title" style={{ fontSize: '1.6rem', color: '#222222', textTransform: 'uppercase' }}>Quên mật khẩu</h2>
-        <p className="subtitle">Nhập email của bạn và chúng tôi sẽ gửi mã khôi phục tài khoản.</p>
-      </div>
-
-      <form onSubmit={handleReset}>
-        <div className="input-group">
-          <label className="input-label">EMAIL</label>
-          <input className="input-field" type="email" placeholder="Nhập email liên lạc..." required value={email} onChange={e => setEmail(e.target.value)} />
-        </div>
-        <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%', marginTop: '10px', height: '52px' }}>
-          {loading ? "Đang xử lý..." : "Gửi Yêu Cầu"}
-        </button>
-      </form>
-
-      <p style={{ textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '32px' }}>
-        Quay lại
-        <span style={{ color: 'var(--primary-dark)', fontWeight: 800, cursor: 'pointer', marginLeft: '5px' }} onClick={() => setSubView("login")}>
-          Đăng nhập
-        </span>
-      </p>
-    </div>
-  );
-}
-
-function ResetPasswordScreen({ setSubView, notify, email }) {
-  const [form, setForm] = useState({ code: "", password: "" });
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      await axios.post(API_BASE + "/reset-password", { ...form, email });
-      notify("Đổi mật khẩu thành công! Vui lòng đăng nhập lại.", "success");
-      setSubView("login");
-    } catch (err) {
-      notify(err.response?.data?.message || "Mã xác nhận không chính xác", "error");
-    }
-    setLoading(false);
-  };
-
-  return (
-    <div className="auth-container card fade-in">
-      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <img src="/logo.png" alt="Logo" style={{ height: '50px', marginBottom: '32px' }} />
-        <h2 className="display-title" style={{ fontSize: '1.6rem', color: '#222222', textTransform: 'uppercase' }}>Đặt lại mật khẩu</h2>
-        <p className="subtitle">Nhập mã xác nhận đã được gửi tới email <b>{email}</b></p>
-      </div>
-
-      <form onSubmit={handleSubmit}>
-        <div className="input-group">
-          <label className="input-label">MÃ XÁC NHẬN</label>
-          <input className="input-field" placeholder="Nhập mã 6 số..." required value={form.code} onChange={e => setForm({ ...form, code: e.target.value })} />
-        </div>
-        <div className="input-group">
-          <label className="input-label">MẬT KHẨU MỚI</label>
-          <input className="input-field" type="password" placeholder="••••••••" required value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} />
-        </div>
-        <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%', marginTop: '10px', height: '52px' }}>
-          {loading ? "Đang xử lý..." : "Xác nhận đổi mật khẩu"}
-        </button>
-      </form>
-
-      <p style={{ textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '32px' }}>
-        Hủy bỏ và quay lại
-        <span style={{ color: 'var(--primary-dark)', fontWeight: 800, cursor: 'pointer', marginLeft: '5px' }} onClick={() => setSubView("login")}>
-          Đăng nhập
-        </span>
-      </p>
-    </div>
   );
 }
 

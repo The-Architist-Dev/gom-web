@@ -1,0 +1,70 @@
+.premium-button {
+  width: 100%;
+  padding: 16px 32px;
+  border-radius: 12px;
+  border: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.premium-button-primary {
+  background: linear-gradient(135deg, #0F265C 0%, #102A56 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(15, 38, 92, 0.3);
+}
+
+.premium-button-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(15, 38, 92, 0.4);
+}
+
+.premium-button-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.premium-button-outline {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 2px solid #DADCE0;
+  color: #3C4043;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.premium-button-outline:hover:not(:disabled) {
+  background: white;
+  border-color: #0F265C;
+  transform: translateY(-1px);
+}
+
+.premium-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.premium-button-loading {
+  pointer-events: none;
+}
+
+.premium-button-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

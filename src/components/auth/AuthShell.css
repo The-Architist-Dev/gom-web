@@ -1,0 +1,68 @@
+.auth-shell {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-shell-content {
+  width: 100%;
+  max-width: 1400px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px;
+  gap: 60px;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-shell-form-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Custom scrollbar for auth shell */
+.auth-shell::-webkit-scrollbar {
+  width: 6px;
+}
+
+.auth-shell::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.auth-shell::-webkit-scrollbar-thumb {
+  background: rgba(15, 38, 92, 0.2);
+  border-radius: 3px;
+}
+
+.auth-shell::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 38, 92, 0.3);
+}
+
+@media (max-width: 1024px) {
+  .auth-shell-content {
+    justify-content: center;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-shell {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .auth-shell-content {
+    min-height: 100vh;
+    padding: 20px;
+  }
+}
