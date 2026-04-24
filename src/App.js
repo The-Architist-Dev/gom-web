@@ -7,9 +7,10 @@ import { AdminLayout, AdminDashboard, AdminUsers, AdminCeramics, AdminPayments, 
 import { AuthShell } from "./components/auth/AuthShell";
 import { AnimatedToast } from "./components/ui/AnimatedToast";
 import { NewAuthShell } from "./components/auth/NewAuthShell";
-
-// --- API CONFIG ---
-const API_BASE = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000/api";
+import { MainHeader } from "./components/layout/MainHeader";
+import { Footer } from "./components/layout/Footer";
+import { HomeWrapper } from "./components/home/HomeWrapper";
+import { api, API_BASE, isMockMode } from "./services/api";
 
 function App() {
   const [view, setView] = useState(() => {
@@ -45,7 +46,7 @@ function App() {
     setChatLoading(true);
 
     try {
-      const res = await axios.post(API_BASE + '/ai/chat', { question: userText }, { headers: { Authorization: 'Bearer ' + token } });
+      const res = await api.chat(userText, token);
       const data = res.data.data || res.data;
       setMessages(prev => [...prev, {
         text: data.answer || "Tôi chưa rõ ý bạn, bạn có thể mô tả cụ thể về hiện vật hơn được không?",
@@ -67,7 +68,7 @@ function App() {
   const fetchUser = async () => {
     if (!token) return;
     try {
-      const res = await axios.get(API_BASE + "/user", { headers: { Authorization: "Bearer " + token } });
+      const res = await api.getUser(token);
       setUser(res.data);
       localStorage.setItem("user", JSON.stringify(res.data));
       setQuota({
@@ -121,8 +122,40 @@ function App() {
 
   return (
     <div className="app-container">
-      {/* Only show Navbar when NOT on auth page */}
-      {token && view !== "auth" && <Navbar user={user} quota={quota} setView={setView} logout={logout} view={view} />}
+      {/* Mock Mode Indicator - only in development */}
+      {isMockMode() && (
+        <div style={{
+          position: 'fixed',
+          top: '90px',
+          right: '20px',
+          zIndex: 999,
+          background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+          color: 'white',
+          padding: '6px 16px',
+          borderRadius: '50px',
+          fontSize: '0.7rem',
+          fontWeight: 800,
+          boxShadow: '0 4px 15px rgba(16, 185, 129, 0.4)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          letterSpacing: '0.5px'
+        }}>
+          <span style={{ fontSize: '0.9rem' }}>🧪</span>
+          MOCK MODE
+        </div>
+      )}
+
+      {/* Only show MainHeader when NOT on auth page */}
+      {token && view !== "auth" && (
+        <MainHeader
+          user={user}
+          quota={quota}
+          view={view}
+          setView={setView}
+          logout={logout}
+        />
+      )}
 
       {/* Auth page - isolated full screen */}
       {view === "auth" && (
@@ -141,28 +174,38 @@ function App() {
       {view !== "auth" && (
         <main className="main-content">
           <div className="view-transition" key={view}>
-          {view === "debate" && <DebateScreen token={token} notify={notify} quota={quota} setQuota={setQuota} setView={setView} user={user} />}
-          {view === "history" && <HistoryScreen token={token} setSelectedHistory={setSelectedHistory} />}
-          {view === "profile" && <ProfileScreen user={user} token={token} notify={notify} fetchUser={fetchUser} />}
-          {view === "transaction_history" && <TransactionHistoryScreen token={token} notify={notify} />}
-          {view === "lines" && <CeramicLinesScreen />}
-          {view === "payment" && <PaymentScreen token={token} quota={quota} fetchUser={fetchUser} notify={notify} setView={setView} />}
-          {view === "about" && <AboutScreen />}
-          {view === "contact" && <ContactScreen notify={notify} />}
-          {view === "terms" && <TermsScreen />}
-          {view === "privacy" && <PrivacyScreen />}
+            {view === "debate" && (
+              <HomeWrapper
+                token={token}
+                notify={notify}
+                quota={quota}
+                setQuota={setQuota}
+                setView={setView}
+                user={user}
+                ResultDashboard={ResultDashboard}
+              />
+            )}
+            {view === "history" && <HistoryScreen token={token} setSelectedHistory={setSelectedHistory} />}
+            {view === "profile" && <ProfileScreen user={user} token={token} notify={notify} fetchUser={fetchUser} />}
+            {view === "transaction_history" && <TransactionHistoryScreen token={token} notify={notify} />}
+            {view === "lines" && <CeramicLinesScreen />}
+            {view === "payment" && <PaymentScreen token={token} quota={quota} fetchUser={fetchUser} notify={notify} setView={setView} />}
+            {view === "about" && <AboutScreen />}
+            {view === "contact" && <ContactScreen notify={notify} />}
+            {view === "terms" && <TermsScreen />}
+            {view === "privacy" && <PrivacyScreen />}
 
-          {/* ADMIN ROUTES */}
-          {user?.role === 'admin' && view.startsWith("admin_") && (
-            <AdminLayout view={view} setView={setView}>
-              {view === "admin_dashboard" && <AdminDashboard token={token} />}
-              {view === "admin_users" && <AdminUsers token={token} notify={notify} fetchUser={fetchUser} />}
-              {view === "admin_ceramics" && <AdminCeramics token={token} notify={notify} />}
-              {view === "admin_payments" && <AdminPayments token={token} />}
-              {view === "admin_predictions" && <AdminPredictions token={token} />}
-            </AdminLayout>
-          )}
-        </div>
+            {/* ADMIN ROUTES */}
+            {user?.role === 'admin' && view.startsWith("admin_") && (
+              <AdminLayout view={view} setView={setView}>
+                {view === "admin_dashboard" && <AdminDashboard token={token} />}
+                {view === "admin_users" && <AdminUsers token={token} notify={notify} fetchUser={fetchUser} />}
+                {view === "admin_ceramics" && <AdminCeramics token={token} notify={notify} />}
+                {view === "admin_payments" && <AdminPayments token={token} />}
+                {view === "admin_predictions" && <AdminPredictions token={token} />}
+              </AdminLayout>
+            )}
+          </div>
         </main>
       )}
 
@@ -175,52 +218,7 @@ function App() {
       )}
 
       {/* Footer - only when NOT on auth page */}
-      {view !== "auth" && (
-        <footer className="footer">
-        <div className="footer-container">
-          <div className="footer-brand">
-            <img src="/logo.png" alt="Logo" style={{ height: '100px', marginBottom: '15px', filter: 'brightness(0) invert(1)' }} />
-            <p>
-              Hệ thống giám định cổ vật ứng dụng trí tuệ nhân tạo đa đại lý,
-              mang lại độ chính xác cao trong việc phân định các dòng gốm sứ truyền thống.
-            </p>
-          </div>
-
-          <div className="footer-col">
-            <h4>Khám phá</h4>
-            <ul className="footer-links">
-              <li><a onClick={() => setView("debate")}>Trang chủ giám định</a></li>
-              <li><a onClick={() => setView("lines")}>Thư viện dòng gốm</a></li>
-              <li><a onClick={() => setView("history")}>Lịch sử giám định</a></li>
-            </ul>
-          </div>
-
-          <div className="footer-col">
-            <h4>Tài khoản</h4>
-            <ul className="footer-links">
-              <li><a onClick={() => setView("profile")}>Thông tin cá nhân</a></li>
-              <li><a onClick={() => setView("payment")}>Nạp lượt phân tích</a></li>
-              <li><a onClick={() => setView("transaction_history")}>Lịch sử nạp tiền</a></li>
-            </ul>
-          </div>
-
-          <div className="footer-col">
-            <h4>Hỗ trợ</h4>
-            <ul className="footer-links">
-              <li><a onClick={() => setView("about")} style={{ cursor: 'pointer' }}>Về chúng tôi</a></li>
-              <li><a onClick={() => setView("terms")} style={{ cursor: 'pointer' }}>Điều khoản sử dụng</a></li>
-              <li><a onClick={() => setView("privacy")} style={{ cursor: 'pointer' }}>Chính sách bảo mật</a></li>
-              <li><a onClick={() => setView("contact")} style={{ cursor: 'pointer' }}>Liên hệ chuyên gia</a></li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="footer-bottom">
-          <div>&copy; 2026 THE ARCHIVIST. All rights reserved.</div>
-          <div>POWERED BY THE ARCHIVIST AI MULTI-AGENT SYSTEM</div>
-        </div>
-      </footer>
-      )}
+      {view !== "auth" && <Footer setView={setView} />}
 
       {/* FLOATING CHATBOT - only when NOT on auth page */}
       {token && view !== "auth" && (
@@ -355,10 +353,10 @@ function Navbar({ user, quota, setView, logout, view, notify }) {
               <span style={{ color: 'var(--accent)' }}>Số dư: {quota.token_balance} lượt</span>
             )}
             {quota.free_used < quota.free_limit && (
-              <span style={{ 
-                color: 'var(--success)', 
-                borderLeft: quota.token_balance > 0 ? '1px solid rgba(0,0,0,0.1)' : 'none', 
-                paddingLeft: quota.token_balance > 0 ? '10px' : '0' 
+              <span style={{
+                color: 'var(--success)',
+                borderLeft: quota.token_balance > 0 ? '1px solid rgba(0,0,0,0.1)' : 'none',
+                paddingLeft: quota.token_balance > 0 ? '10px' : '0'
               }}>
                 Miễn phí: {quota.free_limit - quota.free_used} lượt
               </span>
@@ -561,7 +559,7 @@ function DebateScreen({ token, notify, quota, setQuota, setView, user }) {
       {/* --- IDENTIFICATION SECTION --- */}
       <section id="hero-upload" style={{ padding: '100px 0' }}>
         <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.5rem', fontWeight: 900, color: 'var(--primary-dark)', marginBottom: '16px' }}>Giám định Hiện vật của Bạn</h2>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.5rem', fontWeight: 900, color: 'var(--primary-dark)', marginBottom: '16px' }}>Giám định hiện vật của bạn</h2>
           <p style={{ fontSize: '1rem', color: 'var(--text-muted)', opacity: 0.7 }}>Công cụ nhận dạng dựa trên thị giác máy tính của chúng tôi so khớp hiện vật của bạn với hàng ngàn hồ sơ lịch sử.</p>
         </div>
 
@@ -643,56 +641,290 @@ function CeramicLinesScreen() {
 
   return (
     <>
-      <div className="fade-in" style={{ marginTop: '40px', paddingBottom: '100px', maxWidth: '1200px', margin: '40px auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-          <h2 className="display-title">Dòng Gốm Trứ Danh</h2>
-          <p className="subtitle">Bách khoa toàn thư các dòng gốm cổ truyền</p>
+      <div className="fade-in" style={{ marginTop: '40px', paddingBottom: '100px', maxWidth: '1200px', margin: '40px auto', padding: '0 24px' }}>
+        {/* Hero Section */}
+        <div style={{ textAlign: 'center', marginBottom: '64px', paddingTop: '20px' }}>
+          <div style={{ 
+            fontSize: '0.75rem', 
+            fontWeight: 800, 
+            color: 'var(--accent)', 
+            textTransform: 'uppercase', 
+            letterSpacing: '2.5px', 
+            marginBottom: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px'
+          }}>
+            <i className="fas fa-scroll" style={{ fontSize: '1rem' }}></i>
+            BÁC HỌC GỐM SỨ
+          </div>
+          <h2 
+            className="display-title" 
+            style={{ 
+              fontFamily: 'var(--font-heading)',
+              fontSize: '2.8rem',
+              fontWeight: 800,
+              color: 'var(--primary-dark)',
+              marginBottom: '20px',
+              lineHeight: 1.2
+            }}
+          >
+            Dòng Gốm Trứ Danh
+          </h2>
+          <p 
+            className="subtitle"
+            style={{
+              fontSize: '1.05rem',
+              color: 'var(--text-muted)',
+              maxWidth: '700px',
+              margin: '0 auto 40px',
+              lineHeight: 1.7
+            }}
+          >
+            Khám phá bách khoa toàn thư các dòng gốm cổ truyền từ khắp châu Á
+          </p>
 
-          <div style={{ maxWidth: '600px', margin: '32px auto 0', position: 'relative' }}>
+          {/* Search Bar */}
+          <div style={{ maxWidth: '700px', margin: '0 auto', position: 'relative' }}>
+            <i 
+              className="fas fa-search"
+              style={{ 
+                position: 'absolute', 
+                left: '24px', 
+                top: '50%', 
+                transform: 'translateY(-50%)', 
+                color: 'var(--text-muted)',
+                fontSize: '1.1rem'
+              }}
+            ></i>
             <input
               type="text"
               placeholder="Tìm kiếm tên dòng gốm, niên đại, đặc điểm..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              style={{ width: '100%', padding: '16px 24px 16px 50px', borderRadius: '50px', border: '1px solid var(--stroke)', background: 'white', fontSize: '0.9rem', outline: 'none', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}
+              style={{ 
+                width: '100%', 
+                padding: '18px 24px 18px 60px', 
+                borderRadius: '50px', 
+                border: '2px solid var(--stroke)', 
+                background: 'white', 
+                fontSize: '1rem', 
+                outline: 'none', 
+                boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+                fontFamily: 'var(--font-body)',
+                transition: 'all 0.3s ease'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = 'var(--primary)';
+                e.target.style.boxShadow = '0 8px 30px rgba(20,44,110,0.15)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'var(--stroke)';
+                e.target.style.boxShadow = '0 4px 20px rgba(0,0,0,0.06)';
+              }}
             />
-            <span style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
           </div>
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '100px', opacity: 0.5 }}>Đang tải dữ liệu đa đại lý...</div>
+          <div style={{ textAlign: 'center', padding: '100px', opacity: 0.5 }}>
+            <i className="fas fa-spinner fa-spin" style={{ fontSize: '3rem', color: 'var(--primary)', marginBottom: '20px' }}></i>
+            <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)' }}>Đang tải dữ liệu...</p>
+          </div>
+        ) : filteredLines.length === 0 ? (
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '100px 40px',
+            maxWidth: '600px',
+            margin: '0 auto'
+          }}>
+            <div style={{
+              width: '120px',
+              height: '120px',
+              background: 'var(--input-bg)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 32px',
+              border: '3px solid var(--stroke)'
+            }}>
+              <i 
+                className="fas fa-search" 
+                style={{ 
+                  fontSize: '3rem', 
+                  color: 'var(--text-muted)',
+                  opacity: 0.5
+                }}
+              ></i>
+            </div>
+            
+            <h3 style={{ 
+              fontFamily: 'var(--font-heading)', 
+              fontSize: '1.8rem', 
+              fontWeight: 700, 
+              color: 'var(--primary-dark)', 
+              marginBottom: '16px' 
+            }}>
+              Không tìm thấy kết quả
+            </h3>
+            
+            <p style={{ 
+              fontSize: '1rem', 
+              color: 'var(--text-muted)', 
+              marginBottom: '40px',
+              lineHeight: 1.6
+            }}>
+              Không có dòng gốm nào phù hợp với từ khóa "{search}"
+            </p>
+            
+            <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button
+                onClick={() => setSearch('')}
+                className="btn btn-outline"
+                style={{
+                  padding: '14px 32px',
+                  borderRadius: '50px',
+                  fontSize: '0.95rem',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <i className="fas fa-times"></i>
+                Xóa bộ lọc
+              </button>
+              <button
+                onClick={() => setSearch('')}
+                className="btn btn-primary"
+                style={{
+                  padding: '14px 32px',
+                  borderRadius: '50px',
+                  fontSize: '0.95rem',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <i className="fas fa-th"></i>
+                Xem tất cả dòng gốm
+              </button>
+            </div>
+          </div>
         ) : (
-          <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '32px' }}>
             {filteredLines.map((line, i) => (
-              <div key={i} className="card" style={{ display: 'flex', flexDirection: 'column', padding: '0', overflow: 'hidden', height: '100%' }}>
+              <div 
+                key={i} 
+                className="card" 
+                style={{ 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  padding: '0', 
+                  overflow: 'hidden', 
+                  height: '100%',
+                  border: '2px solid var(--stroke)',
+                  borderRadius: 'var(--radius-lg)',
+                  background: 'var(--surface)',
+                  transition: 'all 0.3s ease',
+                  cursor: 'pointer'
+                }}
+                onClick={() => setSelectedLine(line)}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.boxShadow = 'var(--shadow-lg)';
+                  e.currentTarget.style.borderColor = 'var(--primary)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                  e.currentTarget.style.borderColor = 'var(--stroke)';
+                }}
+              >
                 {line.image_url ? (
-                  <img src={line.image_url} alt={line.name} style={{ width: '100%', height: '240px', objectFit: 'cover' }} />
+                  <div style={{ width: '100%', height: '240px', overflow: 'hidden', position: 'relative' }}>
+                    <img 
+                      src={line.image_url} 
+                      alt={line.name} 
+                      style={{ 
+                        width: '100%', 
+                        height: '100%', 
+                        objectFit: 'cover',
+                        transition: 'transform 0.3s ease'
+                      }} 
+                      onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+                      onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+                    />
+                  </div>
                 ) : (
-                  <div style={{ width: '100%', height: '240px', background: 'var(--input-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem' }}>🏺</div>
+                  <div style={{ 
+                    width: '100%', 
+                    height: '240px', 
+                    background: 'var(--input-bg)', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    border: '2px dashed var(--stroke)'
+                  }}>
+                    <i className="fas fa-image" style={{ fontSize: '3rem', color: 'var(--text-muted)', opacity: 0.3 }}></i>
+                  </div>
                 )}
-                <div style={{ padding: '24px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ fontSize: '0.6rem', fontWeight: 800, color: 'var(--accent)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1px' }}>{line.era || 'Cổ đại'}</div>
-                  <h3 className="section-title" style={{ marginBottom: '12px', fontSize: '1.4rem', fontFamily: 'var(--font-heading)' }}>{line.name}</h3>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', flex: 1 }}>
+                <div style={{ padding: '28px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ 
+                    fontSize: '0.7rem', 
+                    fontWeight: 800, 
+                    color: 'var(--accent)', 
+                    marginBottom: '12px', 
+                    textTransform: 'uppercase', 
+                    letterSpacing: '1.5px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}>
+                    <i className="fas fa-clock"></i>
+                    {line.era || 'Cổ đại'}
+                  </div>
+                  <h3 style={{ 
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: '1.5rem',
+                    fontWeight: 700,
+                    color: 'var(--primary-dark)',
+                    marginBottom: '14px',
+                    lineHeight: 1.3
+                  }}>
+                    {line.name}
+                  </h3>
+                  <p style={{ 
+                    fontSize: '0.95rem', 
+                    color: 'var(--text-muted)', 
+                    lineHeight: 1.7, 
+                    display: '-webkit-box', 
+                    WebkitLineClamp: 3, 
+                    WebkitBoxOrient: 'vertical', 
+                    overflow: 'hidden', 
+                    flex: 1,
+                    marginBottom: '20px'
+                  }}>
                     {line.description || 'Đang cập nhật dữ liệu kiến thức...'}
                   </p>
-                  <button
-                    className="btn btn-outline"
-                    onClick={() => setSelectedLine(line)}
-                    style={{ marginTop: '24px', width: '100%', fontSize: '0.75rem', fontWeight: 800, height: '44px', textTransform: 'uppercase' }}
-                  >
-                    Tìm hiểu thêm
-                  </button>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    color: 'var(--primary)',
+                    fontSize: '0.9rem',
+                    fontWeight: 700,
+                    marginTop: 'auto'
+                  }}>
+                    <span>Tìm hiểu thêm</span>
+                    <i className="fas fa-arrow-right"></i>
+                  </div>
                 </div>
               </div>
             ))}
-            {!loading && filteredLines.length === 0 && (
-              <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '100px', opacity: 0.5 }}>
-                <div style={{ fontSize: '3rem', marginBottom: '16px' }}>Empty</div>
-                <p>Không tìm thấy kết quả phù hợp cho "{search}"</p>
-              </div>
-            )}
           </div>
         )}
       </div>
@@ -844,39 +1076,283 @@ function HistoryScreen({ token, setSelectedHistory }) {
   );
 
   return (
-    <div className="fade-in" style={{ marginTop: '40px', maxWidth: '1200px', margin: '40px auto' }}>
-      <div className="text-center" style={{ marginBottom: '48px' }}>
-        <h2 className="display-title">Nhật ký Giám định</h2>
-        <p className="subtitle">Lưu trữ các biên bản phân tích Multi-Agent</p>
+    <div className="fade-in" style={{ marginTop: '40px', maxWidth: '1200px', margin: '40px auto', padding: '0 24px', paddingBottom: '100px' }}>
+      {/* Hero Section */}
+      <div style={{ textAlign: 'center', marginBottom: '64px', paddingTop: '20px' }}>
+        <div style={{ 
+          fontSize: '0.75rem', 
+          fontWeight: 800, 
+          color: 'var(--accent)', 
+          textTransform: 'uppercase', 
+          letterSpacing: '2.5px', 
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px'
+        }}>
+          <i className="fas fa-history" style={{ fontSize: '1rem' }}></i>
+          LỊCH SỬ PHÂN TÍCH
+        </div>
+        <h2 
+          className="display-title"
+          style={{
+            fontFamily: 'var(--font-heading)',
+            fontSize: '2.8rem',
+            fontWeight: 800,
+            color: 'var(--primary-dark)',
+            marginBottom: '20px',
+            lineHeight: 1.2
+          }}
+        >
+          Nhật Ký Giám Định
+        </h2>
+        <p 
+          className="subtitle"
+          style={{
+            fontSize: '1.05rem',
+            color: 'var(--text-muted)',
+            maxWidth: '700px',
+            margin: '0 auto 40px',
+            lineHeight: 1.7
+          }}
+        >
+          Lưu trữ các biên bản phân tích Multi-Agent của bạn
+        </p>
 
-        <div style={{ maxWidth: '600px', margin: '32px auto 0', position: 'relative' }}>
+        {/* Search Bar */}
+        <div style={{ maxWidth: '700px', margin: '0 auto', position: 'relative' }}>
+          <i 
+            className="fas fa-search"
+            style={{ 
+              position: 'absolute', 
+              left: '24px', 
+              top: '50%', 
+              transform: 'translateY(-50%)', 
+              color: 'var(--text-muted)',
+              fontSize: '1.1rem'
+            }}
+          ></i>
           <input
             type="text"
             placeholder="Tìm kiếm kết quả giám định, quốc gia, niên đại..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ width: '100%', padding: '16px 24px 16px 50px', borderRadius: '50px', border: '1px solid var(--stroke)', background: 'white', fontSize: '0.9rem', outline: 'none', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}
+            style={{ 
+              width: '100%', 
+              padding: '18px 24px 18px 60px', 
+              borderRadius: '50px', 
+              border: '2px solid var(--stroke)', 
+              background: 'white', 
+              fontSize: '1rem', 
+              outline: 'none', 
+              boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+              fontFamily: 'var(--font-body)',
+              transition: 'all 0.3s ease'
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = 'var(--primary)';
+              e.target.style.boxShadow = '0 8px 30px rgba(20,44,110,0.15)';
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = 'var(--stroke)';
+              e.target.style.boxShadow = '0 4px 20px rgba(0,0,0,0.06)';
+            }}
           />
-          <span style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
         </div>
       </div>
 
-      {loading ? <div style={{ textAlign: 'center', opacity: 0.5 }}>Đang tải dữ liệu...</div> : (
-        <div className="history-grid">
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '100px', opacity: 0.5 }}>
+          <i className="fas fa-spinner fa-spin" style={{ fontSize: '3rem', color: 'var(--primary)', marginBottom: '20px' }}></i>
+          <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)' }}>Đang tải dữ liệu...</p>
+        </div>
+      ) : filteredHistory.length === 0 ? (
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '100px 40px',
+          maxWidth: '600px',
+          margin: '0 auto'
+        }}>
+          <div style={{
+            width: '120px',
+            height: '120px',
+            background: 'var(--input-bg)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 32px',
+            border: '3px solid var(--stroke)'
+          }}>
+            <i 
+              className="fas fa-clock-rotate-left" 
+              style={{ 
+                fontSize: '3rem', 
+                color: 'var(--text-muted)',
+                opacity: 0.5
+              }}
+            ></i>
+          </div>
+          
+          <h3 style={{ 
+            fontFamily: 'var(--font-heading)', 
+            fontSize: '1.8rem', 
+            fontWeight: 700, 
+            color: 'var(--primary-dark)', 
+            marginBottom: '16px' 
+          }}>
+            {search ? 'Không tìm thấy kết quả' : 'Chưa có lịch sử giám định'}
+          </h3>
+          
+          <p style={{ 
+            fontSize: '1rem', 
+            color: 'var(--text-muted)', 
+            marginBottom: '40px',
+            lineHeight: 1.6
+          }}>
+            {search 
+              ? `Không có kết quả nào phù hợp với từ khóa "${search}"`
+              : 'Bắt đầu giám định hiện vật đầu tiên của bạn ngay hôm nay'
+            }
+          </p>
+          
+          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            {search ? (
+              <>
+                <button
+                  onClick={() => setSearch('')}
+                  className="btn btn-outline"
+                  style={{
+                    padding: '14px 32px',
+                    borderRadius: '50px',
+                    fontSize: '0.95rem',
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  <i className="fas fa-times"></i>
+                  Xóa tìm kiếm
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => window.location.hash = 'debate'}
+                className="btn btn-primary"
+                style={{
+                  padding: '14px 32px',
+                  borderRadius: '50px',
+                  fontSize: '0.95rem',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <i className="fas fa-microscope"></i>
+                Bắt đầu giám định
+              </button>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="history-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '28px' }}>
           {filteredHistory.map((h, i) => (
-            <div key={i} className="history-card" onClick={() => setSelectedHistory(h)}>
-              <img src={h.image_url} alt="pottery" className="history-img" />
-              <div className="history-info">
-                <h4 className="history-title">{h.prediction}</h4>
-                <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h.country} • {h.era}</p>
+            <div 
+              key={i} 
+              className="history-card" 
+              onClick={() => setSelectedHistory(h)}
+              style={{
+                background: 'var(--surface)',
+                borderRadius: 'var(--radius-lg)',
+                overflow: 'hidden',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: 'var(--shadow-sm)',
+                border: '2px solid var(--stroke)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-8px)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-lg)';
+                e.currentTarget.style.borderColor = 'var(--primary)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                e.currentTarget.style.borderColor = 'var(--stroke)';
+              }}
+            >
+              <div style={{ height: '240px', overflow: 'hidden', position: 'relative' }}>
+                <img 
+                  src={h.image_url} 
+                  alt="pottery" 
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover',
+                    transition: 'transform 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+                  onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+                />
+                <div style={{
+                  position: 'absolute',
+                  top: '16px',
+                  right: '16px',
+                  background: 'rgba(255,255,255,0.95)',
+                  padding: '6px 14px',
+                  borderRadius: '50px',
+                  fontSize: '0.7rem',
+                  fontWeight: 800,
+                  color: 'var(--primary-dark)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255,255,255,0.3)'
+                }}>
+                  <i className="fas fa-calendar-alt" style={{ marginRight: '6px' }}></i>
+                  {new Date(h.created_at).toLocaleDateString('vi-VN')}
+                </div>
+              </div>
+              <div style={{ padding: '24px' }}>
+                <div style={{ 
+                  fontSize: '0.7rem', 
+                  fontWeight: 800, 
+                  color: 'var(--accent)', 
+                  marginBottom: '10px', 
+                  textTransform: 'uppercase', 
+                  letterSpacing: '1.5px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}>
+                  <i className="fas fa-map-marker-alt"></i>
+                  {h.country} • {h.era}
+                </div>
+                <h4 style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontSize: '1.4rem',
+                  fontWeight: 700,
+                  color: 'var(--primary-dark)',
+                  marginBottom: '12px',
+                  lineHeight: 1.3
+                }}>
+                  {h.prediction}
+                </h4>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  color: 'var(--primary)',
+                  fontSize: '0.9rem',
+                  fontWeight: 700
+                }}>
+                  <span>Xem chi tiết</span>
+                  <i className="fas fa-arrow-right"></i>
+                </div>
               </div>
             </div>
           ))}
-          {!loading && filteredHistory.length === 0 && (
-            <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '100px', opacity: 0.5 }}>
-              <p>Không tìm thấy lịch sử phù hợp cho "{search}"</p>
-            </div>
-          )}
         </div>
       )}
     </div>
@@ -1453,62 +1929,344 @@ function AboutScreen() {
     <div className="fade-in" style={{ maxWidth: '1200px', margin: '40px auto', padding: '0 24px 100px' }}>
       {/* Hero section */}
       <div style={{ textAlign: 'center', marginBottom: '80px', paddingTop: '40px' }}>
-        <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '2.5px', marginBottom: '16px' }}>VỀ THE ARCHIVIST</div>
-        <h2 className="display-title" style={{ fontSize: '3rem', maxWidth: '800px', margin: '0 auto 24px', lineHeight: 1.2 }}>
+        <div style={{ 
+          fontSize: '0.75rem', 
+          fontWeight: 800, 
+          color: 'var(--accent)', 
+          textTransform: 'uppercase', 
+          letterSpacing: '2.5px', 
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px'
+        }}>
+          <i className="fas fa-landmark" style={{ fontSize: '1rem' }}></i>
+          VỀ THE ARCHIVIST
+        </div>
+        <h2 
+          className="display-title" 
+          style={{ 
+            fontFamily: 'var(--font-heading)',
+            fontSize: '3rem', 
+            maxWidth: '900px', 
+            margin: '0 auto 24px', 
+            lineHeight: 1.2,
+            fontWeight: 800,
+            color: 'var(--primary-dark)'
+          }}
+        >
           Lưu giữ Tinh hoa di sản qua Lăng kính Trí tuệ Nhân tạo
         </h2>
-        <p className="subtitle" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <p 
+          className="subtitle" 
+          style={{ 
+            maxWidth: '700px', 
+            margin: '0 auto',
+            fontSize: '1.05rem',
+            color: 'var(--text-muted)',
+            lineHeight: 1.7
+          }}
+        >
           Chúng tôi tiên phong ứng dụng công nghệ AI đa đại lý học sâu để nhận diện, giám định và số hóa mọi dấu ấn của gốm sứ Việt Nam cùng tinh túy thế giới.
         </p>
       </div>
 
       {/* Grid Features */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '32px', marginBottom: '80px' }}>
-        <div className="card" style={{ padding: '48px 32px', textAlign: 'center', border: '1px solid var(--stroke)', boxShadow: 'none' }}>
-          <div style={{ width: '80px', height: '80px', background: 'var(--input-bg)', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', margin: '0 auto 24px' }}>🛡️</div>
-          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary-dark)', marginBottom: '16px' }}>Độ chính xác vượt trội</h3>
-          <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px', marginBottom: '80px' }}>
+        <div 
+          className="card" 
+          style={{ 
+            padding: '48px 36px', 
+            textAlign: 'center', 
+            border: '2px solid var(--stroke)', 
+            boxShadow: 'var(--shadow-sm)',
+            borderRadius: 'var(--radius-lg)',
+            background: 'var(--surface)',
+            transition: 'all 0.3s ease',
+            height: '100%'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = 'var(--accent)';
+            e.currentTarget.style.transform = 'translateY(-8px)';
+            e.currentTarget.style.boxShadow = 'var(--shadow-lg)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = 'var(--stroke)';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+          }}
+        >
+          <div style={{ 
+            width: '88px', 
+            height: '88px', 
+            background: 'var(--input-bg)', 
+            borderRadius: '24px', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            margin: '0 auto 28px',
+            border: '2px solid var(--stroke)'
+          }}>
+            <i 
+              className="fas fa-shield-alt" 
+              style={{ 
+                fontSize: '2.5rem', 
+                color: 'var(--primary)'
+              }}
+            ></i>
+          </div>
+          <h3 style={{ 
+            fontFamily: 'var(--font-heading)', 
+            fontSize: '1.4rem', 
+            fontWeight: 700, 
+            color: 'var(--primary-dark)', 
+            marginBottom: '16px',
+            lineHeight: 1.3
+          }}>
+            Độ chính xác vượt trội
+          </h3>
+          <p style={{ 
+            fontSize: '1rem', 
+            color: 'var(--text-muted)', 
+            lineHeight: 1.7,
+            fontWeight: 400
+          }}>
             Hệ thống quy tụ 5 hội đồng AI chuyên biệt đóng vai trò tranh biện trực tiếp trong thời gian thực, đảm bảo mọi phán đoán xuất xứ và niên đại đều dựa trên lập luận đa phương diện.
           </p>
         </div>
 
-        <div className="card" style={{ padding: '48px 32px', textAlign: 'center', border: '1px solid var(--stroke)', boxShadow: 'none' }}>
-          <div style={{ width: '80px', height: '80px', background: 'var(--input-bg)', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', margin: '0 auto 24px' }}>📚</div>
-          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary-dark)', marginBottom: '16px' }}>Kho tàng Dữ liệu</h3>
-          <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+        <div 
+          className="card" 
+          style={{ 
+            padding: '48px 36px', 
+            textAlign: 'center', 
+            border: '2px solid var(--stroke)', 
+            boxShadow: 'var(--shadow-sm)',
+            borderRadius: 'var(--radius-lg)',
+            background: 'var(--surface)',
+            transition: 'all 0.3s ease',
+            height: '100%'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = 'var(--accent)';
+            e.currentTarget.style.transform = 'translateY(-8px)';
+            e.currentTarget.style.boxShadow = 'var(--shadow-lg)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = 'var(--stroke)';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+          }}
+        >
+          <div style={{ 
+            width: '88px', 
+            height: '88px', 
+            background: 'var(--input-bg)', 
+            borderRadius: '24px', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            margin: '0 auto 28px',
+            border: '2px solid var(--stroke)'
+          }}>
+            <i 
+              className="fas fa-database" 
+              style={{ 
+                fontSize: '2.5rem', 
+                color: 'var(--primary)'
+              }}
+            ></i>
+          </div>
+          <h3 style={{ 
+            fontFamily: 'var(--font-heading)', 
+            fontSize: '1.4rem', 
+            fontWeight: 700, 
+            color: 'var(--primary-dark)', 
+            marginBottom: '16px',
+            lineHeight: 1.3
+          }}>
+            Kho tàng Dữ liệu
+          </h3>
+          <p style={{ 
+            fontSize: '1rem', 
+            color: 'var(--text-muted)', 
+            lineHeight: 1.7,
+            fontWeight: 400
+          }}>
             Lưu trữ hơn 50.000 mẫu vân gốm, kiểu dáng và nước men trải dài từ các triều đại lịch sử phương Đông, giúp tối ưu hóa việc so khớp và định danh mọi hiện vật.
           </p>
         </div>
 
-        <div className="card" style={{ padding: '48px 32px', textAlign: 'center', border: '1px solid var(--stroke)', boxShadow: 'none' }}>
-          <div style={{ width: '80px', height: '80px', background: 'var(--input-bg)', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', margin: '0 auto 24px' }}>🤝</div>
-          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary-dark)', marginBottom: '16px' }}>Cộng đồng Sưu tầm</h3>
-          <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+        <div 
+          className="card" 
+          style={{ 
+            padding: '48px 36px', 
+            textAlign: 'center', 
+            border: '2px solid var(--stroke)', 
+            boxShadow: 'var(--shadow-sm)',
+            borderRadius: 'var(--radius-lg)',
+            background: 'var(--surface)',
+            transition: 'all 0.3s ease',
+            height: '100%'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = 'var(--accent)';
+            e.currentTarget.style.transform = 'translateY(-8px)';
+            e.currentTarget.style.boxShadow = 'var(--shadow-lg)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = 'var(--stroke)';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+          }}
+        >
+          <div style={{ 
+            width: '88px', 
+            height: '88px', 
+            background: 'var(--input-bg)', 
+            borderRadius: '24px', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            margin: '0 auto 28px',
+            border: '2px solid var(--stroke)'
+          }}>
+            <i 
+              className="fas fa-users" 
+              style={{ 
+                fontSize: '2.5rem', 
+                color: 'var(--primary)'
+              }}
+            ></i>
+          </div>
+          <h3 style={{ 
+            fontFamily: 'var(--font-heading)', 
+            fontSize: '1.4rem', 
+            fontWeight: 700, 
+            color: 'var(--primary-dark)', 
+            marginBottom: '16px',
+            lineHeight: 1.3
+          }}>
+            Cộng đồng Sưu tầm
+          </h3>
+          <p style={{ 
+            fontSize: '1rem', 
+            color: 'var(--text-muted)', 
+            lineHeight: 1.7,
+            fontWeight: 400
+          }}>
             Xây dựng sân chơi tri thức cho giới mộ điệu, nhà khảo cổ và những chuyên gia gốm sứ. Không chỉ là nền tảng máy học, The Archivist còn là kho tàng sống của văn hóa dân tộc.
           </p>
         </div>
       </div>
 
       {/* Mission */}
-      <div className="card" style={{ padding: '64px', borderRadius: '40px', background: 'var(--primary-dark)', color: 'white', border: 'none', display: 'flex', flexWrap: 'wrap', gap: '40px', alignItems: 'center' }}>
+      <div 
+        className="card" 
+        style={{ 
+          padding: '64px', 
+          borderRadius: '40px', 
+          background: 'linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%)', 
+          color: 'white', 
+          border: 'none', 
+          display: 'flex', 
+          flexWrap: 'wrap', 
+          gap: '60px', 
+          alignItems: 'center',
+          boxShadow: 'var(--shadow-lg)'
+        }}
+      >
         <div style={{ flex: 1, minWidth: '300px' }}>
-          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 900, marginBottom: '24px', lineHeight: 1.3 }}>
+          <h3 style={{ 
+            fontFamily: 'var(--font-heading)', 
+            fontSize: '2.4rem', 
+            fontWeight: 900, 
+            marginBottom: '28px', 
+            lineHeight: 1.3 
+          }}>
             Tầm nhìn và <span style={{ color: 'var(--accent)' }}>Sứ mệnh</span>
           </h3>
-          <p style={{ fontSize: '1rem', lineHeight: '1.8', opacity: 0.8, marginBottom: '20px' }}>
+          <p style={{ 
+            fontSize: '1.05rem', 
+            lineHeight: '1.8', 
+            opacity: 0.9, 
+            marginBottom: '24px',
+            fontWeight: 400
+          }}>
             Chúng tôi tin rằng, mỗi cổ vật gốm sứ không chỉ đơn thuần là món đồ vô tri, mà ẩn chứa trong nó là cả câu chuyện của dòng thời gian, hồn phách vạn vật và tinh hoa đôi bàn tay nghệ nhân.
           </p>
-          <p style={{ fontSize: '1rem', lineHeight: '1.8', opacity: 0.8 }}>
+          <p style={{ 
+            fontSize: '1.05rem', 
+            lineHeight: '1.8', 
+            opacity: 0.9,
+            fontWeight: 400
+          }}>
             Sứ mệnh của The Archivist là kéo dài tuổi thọ của ký ức. Biến những câu chuyện ngỡ như đã chìm vào quên lãng trở nên sống động, bằng sự logic, minh bạch và năng lực phi thường của công nghệ.
           </p>
         </div>
         <div style={{ flex: 1, minWidth: '300px', display: 'flex', justifyContent: 'flex-end' }}>
-          <div style={{ width: '100%', maxWidth: '400px', height: '300px', background: 'white', borderRadius: '24px', padding: '30px', color: 'var(--primary-dark)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <div style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '8px', color: 'var(--accent)' }}>{stats.total_analyzed}</div>
-            <div style={{ fontSize: '1rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '24px', opacity: 0.6 }}>Bức ảnh phân tích</div>
+          <div style={{ 
+            width: '100%', 
+            maxWidth: '420px', 
+            background: 'white', 
+            borderRadius: '32px', 
+            padding: '48px 40px', 
+            color: 'var(--primary-dark)',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+          }}>
+            <div style={{ marginBottom: '40px' }}>
+              <div style={{ 
+                fontSize: '3.5rem', 
+                fontWeight: 900, 
+                marginBottom: '12px', 
+                color: 'var(--accent)',
+                fontFamily: 'var(--font-heading)'
+              }}>
+                {stats.total_analyzed}
+              </div>
+              <div style={{ 
+                fontSize: '0.95rem', 
+                fontWeight: 800, 
+                textTransform: 'uppercase', 
+                letterSpacing: '1.5px', 
+                opacity: 0.6,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <i className="fas fa-images"></i>
+                Bức ảnh phân tích
+              </div>
+            </div>
 
-            <div style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '8px', color: 'var(--accent)' }}>{stats.accuracy}</div>
-            <div style={{ fontSize: '1rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.6 }}>Độ chính xác AI</div>
+            <div style={{ 
+              borderTop: '2px solid var(--stroke)', 
+              paddingTop: '40px' 
+            }}>
+              <div style={{ 
+                fontSize: '3.5rem', 
+                fontWeight: 900, 
+                marginBottom: '12px', 
+                color: 'var(--accent)',
+                fontFamily: 'var(--font-heading)'
+              }}>
+                {stats.accuracy}
+              </div>
+              <div style={{ 
+                fontSize: '0.95rem', 
+                fontWeight: 800, 
+                textTransform: 'uppercase', 
+                letterSpacing: '1.5px', 
+                opacity: 0.6,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <i className="fas fa-check-circle"></i>
+                Độ chính xác AI
+              </div>
+            </div>
           </div>
         </div>
       </div>

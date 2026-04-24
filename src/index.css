@@ -1,26 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Roboto:wght@300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
-  --primary: #1A2344;
+  --primary: #142C6E;
   --primary-dark: #0F265C;
   --secondary: #8B3A3A;
   --accent: #D4AF37;
-  --bg: #F5F0E8;
-  --surface: #FAF9F4;
+  --bg: #F7F2E8;
+  --surface: #FFFFFF;
   --input-bg: #F0EFE9;
   --text-main: #222222;
-  --text-muted: #666666;
-  --stroke: #DADCE0;
+  --text-muted: #6F6A64;
+  --stroke: #E6DED1;
   --danger: #E53935;
   --success: #43A047;
-  --radius-sm: 8px;
-  --radius-md: 16px;
+  --radius-sm: 12px;
+  --radius-md: 20px;
   --radius-lg: 24px;
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
-  --font-heading: 'Lora', serif;
-  --font-body: 'Roboto', sans-serif;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Be Vietnam Pro', sans-serif;
 }
 
 * {
@@ -91,7 +91,7 @@ body:has(.auth-shell) {
   width: 100%;
   max-width: 1280px;
   padding: 0 24px;
-  padding-top: 120px;
+  padding-top: 0px;
   flex: 1;
   margin: 0 auto;
 }

@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, User, Eye, EyeOff, ArrowLeft, Sparkles, Shield, Zap } from 'lucide-react';
-import axios from 'axios';
+import { api, isMockMode } from '../../services/api';
 import { Aurora } from '../ui/Aurora';
 import './NewAuthShell.css';
-
-const API_BASE = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000/api";
 
 // GOOGLE IDENTITY BUTTON COMPONENT - Handles its own lifecycle
 const GoogleIdentityButton = ({ mode, onCredential }) => {
@@ -275,7 +273,7 @@ const LoginRegisterForm = ({ setToken, setUser, notify, subView, setSubView }) =
   const sendSocialAuth = async (provider, token) => {
     setLoading(true);
     try {
-      const res = await axios.post(API_BASE + "/login/social", { provider, token });
+      const res = await api.loginSocial(provider, token);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
       setToken(res.data.token);
@@ -300,8 +298,7 @@ const LoginRegisterForm = ({ setToken, setUser, notify, subView, setSubView }) =
     setLoading(true);
     setError("");
     try {
-      const endpoint = isLogin ? "/login" : "/register";
-      const res = await axios.post(API_BASE + endpoint, form);
+      const res = isLogin ? await api.login(form) : await api.register(form);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
       setToken(res.data.token);
@@ -319,6 +316,12 @@ const LoginRegisterForm = ({ setToken, setUser, notify, subView, setSubView }) =
   // KEEP ORIGINAL Facebook login LOGIC
   const handleSocialLogin = (provider) => {
     if (provider === "Facebook") {
+      // In mock mode, simulate Facebook login
+      if (isMockMode()) {
+        sendSocialAuth('facebook', 'mock_facebook_token');
+        return;
+      }
+      
       if (window.FB) {
         window.FB.login((res) => {
           if (res.authResponse) {
@@ -513,7 +516,7 @@ const ForgotPasswordForm = ({ setSubView, notify, setResetEmail }) => {
     if (!email.trim()) return;
     setLoading(true);
     try {
-      await axios.post(API_BASE + "/forgot-password", { email });
+      await api.forgotPassword(email);
       notify("Mã phục hồi đã được gửi về email của bạn.", "success");
       setResetEmail(email);
       setSubView("reset");
@@ -584,7 +587,7 @@ const ResetPasswordForm = ({ setSubView, notify, email }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post(API_BASE + "/reset-password", { ...form, email });
+      await api.resetPassword({ ...form, email });
       notify("Đổi mật khẩu thành công! Vui lòng đăng nhập lại.", "success");
       setSubView("login");
     } catch (err) {
