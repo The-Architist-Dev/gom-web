@@ -306,7 +306,10 @@ const LoginRegisterForm = ({ setToken, setUser, notify, subView, setSubView }) =
       localStorage.setItem("user", JSON.stringify(res.data.user));
       setToken(res.data.token);
       setUser(res.data.user);
-      notify(`Chào mừng ${res.data.user.name} quay trở lại!`, "success");
+      const message = isLogin 
+        ? `Chào mừng ${res.data.user.name} quay trở lại!`
+        : `Chào mừng ${res.data.user.name} đã gia nhập!`;
+      notify(message, "success");
     } catch (err) {
       setError(err.response?.data?.message || "Lỗi xác thực hệ thống");
     }

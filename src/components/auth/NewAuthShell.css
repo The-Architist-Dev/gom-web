@@ -493,6 +493,7 @@
   align-items: center;
   justify-content: center;
   font-family: "Roboto", Arial, sans-serif;
+  pointer-events: none;
 }
 
 /* Facebook button - styled to match Google */
@@ -516,6 +517,9 @@
   cursor: pointer;
   transition: all 0.2s ease;
   padding: 0 12px;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
 }
 
 .auth-social-native:hover {
