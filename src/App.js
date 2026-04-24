@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
 import "./index.css";
-import { AdminLayout, AdminDashboard, AdminUsers, AdminCeramics, AdminPayments, AdminPredictions } from "./AdminPanel";
+import { AdminLayout, AdminDashboard, AdminUsers, AdminCeramics, AdminPayments, AdminPredictions } from "./screens/admin/AdminPanel";
 
 // --- API CONFIG ---
 const API_BASE = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000/api";
