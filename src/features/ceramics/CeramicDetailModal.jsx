@@ -66,10 +66,10 @@ export const CeramicDetailModal = ({ item, onClose }) => {
                 </div>
               )
             ) : (
-              // 3D view
+              // 3D view - only show if model URL exists
               <div className="flex items-center justify-center p-4">
                 <ModelViewer
-                  url={item.model_url || item.model_3d_url || 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/GlassVaseFlowers/glTF-Binary/GlassVaseFlowers.glb'}
+                  url={item.model_url || item.model_3d_url}
                   width="100%"
                   height={500}
                   modelXOffset={0}

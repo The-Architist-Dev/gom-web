@@ -105,6 +105,22 @@
     "featured": {
       "title": "Featured ceramic lines",
       "loading": "Loading curated heritage..."
+    },
+    "3d": {
+      "eyebrow": "INTERACTIVE 3D SAMPLE",
+      "title": "Explore a ceramic sample in 3D space",
+      "description": "Rotate and zoom this illustrative ceramic model to better appreciate its shape, surface, and decorative details.",
+      "feature1": "360° Rotation",
+      "feature1Desc": "Observe the artifact's form from multiple viewpoints.",
+      "feature2": "Zoom Details",
+      "feature2Desc": "Examine surface, glaze and illustrative patterns clearly.",
+      "feature3": "Visual Showcase",
+      "feature3Desc": "Create a more vivid exploration experience on the website.",
+      "hint": "Drag to rotate • Scroll to zoom",
+      "screenshot": "Screenshot",
+      "badge": "Interactive 3D",
+      "ctaExplore": "Explore ceramics",
+      "ctaAbout": "About The Archivist"
     }
   },
   "analysis": {

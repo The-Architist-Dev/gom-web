@@ -105,6 +105,22 @@
     "featured": {
       "title": "Dòng gốm nổi bật",
       "loading": "Đang tải dữ liệu tinh hoa..."
+    },
+    "3d": {
+      "eyebrow": "MẪU 3D TƯƠNG TÁC",
+      "title": "Khám phá mẫu gốm trong không gian 3D",
+      "description": "Xoay và phóng to mô hình gốm sứ minh họa để cảm nhận rõ hơn hình khối, bề mặt và họa tiết của hiện vật.",
+      "feature1": "Xoay 360°",
+      "feature1Desc": "Quan sát hình khối hiện vật từ nhiều góc nhìn.",
+      "feature2": "Phóng to chi tiết",
+      "feature2Desc": "Xem rõ bề mặt, màu men và hoa văn minh họa.",
+      "feature3": "Trưng bày trực quan",
+      "feature3Desc": "Tạo trải nghiệm khám phá sinh động hơn trên website.",
+      "hint": "Kéo để xoay • Cuộn để phóng to",
+      "screenshot": "Chụp ảnh",
+      "badge": "Interactive 3D",
+      "ctaExplore": "Khám phá dòng gốm",
+      "ctaAbout": "Về The Archivist"
     }
   },
   "analysis": {

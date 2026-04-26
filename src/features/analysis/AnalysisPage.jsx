@@ -8,6 +8,7 @@ import { Button } from '../../components/ui/Button';
 import { HeroSection } from './HeroSection';
 import { UploadSection } from './UploadSection';
 import { ResultDashboard } from './ResultDashboard';
+import { ModelShowcaseSection } from './ModelShowcaseSection';
 import { analysisApi } from './api';
 import { ceramicsApi } from '../ceramics/api';
 import { getErrorMessage } from '../../lib/utils';
@@ -156,6 +157,9 @@ export const AnalysisPage = ({ token, notify, quota, setQuota, setView, user }) 
         onAnalyze={analyze}
         onClear={onClear}
       />
+
+      {/* 3D Model Showcase */}
+      <ModelShowcaseSection setView={setView} />
 
       {/* Featured lines */}
       <section className="py-16">

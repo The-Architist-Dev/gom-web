@@ -12,104 +12,119 @@ import {
 } from '@react-three/drei';
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
-import { Camera, Download } from 'lucide-react';
+import { Camera } from 'lucide-react';
 
 /**
- * ModelViewer - Premium 3D model viewer component
- * Supports GLB, FBX, OBJ formats with mouse parallax, hover rotation, and screenshot
+ * ModelViewer - Stable 3D model viewer component
+ * Optimized to prevent flicker/jump issues
  */
 
-// Model component that handles loading and rendering
+// Model component with stable rendering
 const Model = ({ 
   url, 
   modelXOffset = 0, 
   modelYOffset = 0,
-  enableMouseParallax = false,
-  enableHoverRotation = false,
   autoRotate = false,
   autoRotateSpeed = 0.35,
 }) => {
   const modelRef = useRef();
   const groupRef = useRef();
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
-  const { gl } = useThree();
+  const { camera, scene: threeScene } = useThree();
+  const hasFramedRef = useRef(false); // Prevent multiple camera fits
 
-  // Determine file type
-  const fileExtension = url.split('.').pop().toLowerCase();
+  // Set scene background color
+  useEffect(() => {
+    // Check if dark mode
+    const isDark = document.documentElement.classList.contains('dark');
+    threeScene.background = new THREE.Color(isDark ? '#1e293b' : '#faf9f7');
+    
+    // Listen for theme changes
+    const observer = new MutationObserver(() => {
+      const isDark = document.documentElement.classList.contains('dark');
+      threeScene.background = new THREE.Color(isDark ? '#1e293b' : '#faf9f7');
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    return () => observer.disconnect();
+  }, [threeScene]);
+
+  // Determine file type - handle query params
+  const fileExtension = url.split('.').pop().split('?')[0].toLowerCase();
   
   // Load model based on file type
-  let scene;
+  let scene = null;
+  const [objScene, setObjScene] = useState(null);
+
   try {
     if (fileExtension === 'glb' || fileExtension === 'gltf') {
       const { scene: gltfScene } = useGLTF(url);
       scene = gltfScene;
     } else if (fileExtension === 'fbx') {
       scene = useFBX(url);
-    } else if (fileExtension === 'obj') {
-      // OBJ loading handled differently
-      const [objScene, setObjScene] = useState(null);
-      useEffect(() => {
-        const loader = new OBJLoader();
-        loader.load(url, (obj) => {
-          setObjScene(obj);
-        });
-      }, [url]);
-      scene = objScene;
     }
   } catch (error) {
     console.error('Error loading model:', error);
   }
 
-  // Mouse move handler for parallax
+  // Load OBJ separately (can't use hooks conditionally)
   useEffect(() => {
-    if (!enableMouseParallax && !enableHoverRotation) return;
+    if (fileExtension === 'obj') {
+      const loader = new OBJLoader();
+      loader.load(
+        url,
+        (obj) => setObjScene(obj),
+        undefined,
+        (error) => console.error('Error loading OBJ:', error)
+      );
+    }
+  }, [url, fileExtension]);
 
-    const handleMouseMove = (e) => {
-      const x = (e.clientX / window.innerWidth) * 2 - 1;
-      const y = -(e.clientY / window.innerHeight) * 2 + 1;
-      setMousePos({ x, y });
-    };
+  // Use OBJ scene if loaded
+  if (fileExtension === 'obj' && objScene) {
+    scene = objScene;
+  }
 
-    const canvas = gl.domElement;
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('mouseenter', () => setIsHovered(true));
-    canvas.addEventListener('mouseleave', () => setIsHovered(false));
+  // One-time camera fit after model loads
+  useEffect(() => {
+    if (!scene || hasFramedRef.current) return;
+    
+    const timer = setTimeout(() => {
+      if (!modelRef.current || hasFramedRef.current) return;
+      
+      try {
+        // Calculate bounding box
+        const box = new THREE.Box3().setFromObject(modelRef.current);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        
+        // Calculate optimal camera distance
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const fov = camera.fov * (Math.PI / 180);
+        let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
+        cameraZ *= 1.5; // Add some padding
+        
+        // Set camera position
+        camera.position.set(center.x, center.y, center.z + cameraZ);
+        camera.lookAt(center);
+        camera.updateProjectionMatrix();
+        
+        hasFramedRef.current = true;
+      } catch (e) {
+        console.warn('Could not auto-fit model:', e);
+      }
+    }, 150);
 
-    return () => {
-      canvas.removeEventListener('mousemove', handleMouseMove);
-      canvas.removeEventListener('mouseenter', () => setIsHovered(true));
-      canvas.removeEventListener('mouseleave', () => setIsHovered(false));
-    };
-  }, [enableMouseParallax, enableHoverRotation, gl]);
+    return () => clearTimeout(timer);
+  }, [scene, camera]);
 
-  // Animation frame
+  // Animation frame - only for auto-rotation
   useFrame((state, delta) => {
-    if (!groupRef.current) return;
-
-    // Auto rotation
-    if (autoRotate) {
-      groupRef.current.rotation.y += delta * autoRotateSpeed;
-    }
-
-    // Mouse parallax
-    if (enableMouseParallax && isHovered) {
-      groupRef.current.rotation.y = THREE.MathUtils.lerp(
-        groupRef.current.rotation.y,
-        mousePos.x * 0.3,
-        0.05
-      );
-      groupRef.current.rotation.x = THREE.MathUtils.lerp(
-        groupRef.current.rotation.x,
-        mousePos.y * 0.2,
-        0.05
-      );
-    }
-
-    // Hover rotation
-    if (enableHoverRotation && isHovered && !enableMouseParallax) {
-      groupRef.current.rotation.y += delta * 0.5;
-    }
+    if (!groupRef.current || !autoRotate) return;
+    groupRef.current.rotation.y += delta * autoRotateSpeed;
   });
 
   if (!scene) {
@@ -118,7 +133,7 @@ const Model = ({
 
   return (
     <group ref={groupRef} position={[modelXOffset, modelYOffset, 0]}>
-      <Center>
+      <Center scale={3.5}>
         <primitive ref={modelRef} object={scene.clone()} />
       </Center>
     </group>
@@ -152,25 +167,15 @@ const ModelViewer = ({
   height = 600,
   modelXOffset = 0,
   modelYOffset = 0,
-  enableMouseParallax = false,
-  enableHoverRotation = false,
   environmentPreset = 'sunset',
-  fadeIn = true,
   autoRotate = false,
   autoRotateSpeed = 0.35,
   showScreenshotButton = false,
   className = '',
+  t, // i18n translation function (optional)
 }) => {
   const canvasRef = useRef();
-  const [isVisible, setIsVisible] = useState(!fadeIn);
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    if (fadeIn) {
-      const timer = setTimeout(() => setIsVisible(true), 100);
-      return () => clearTimeout(timer);
-    }
-  }, [fadeIn]);
 
   const handleScreenshot = () => {
     if (!canvasRef.current) return;
@@ -192,7 +197,7 @@ const ModelViewer = ({
     }
   };
 
-  // Memoize canvas to prevent unnecessary re-renders
+  // Stable canvas with smooth auto-rotation
   const canvasElement = useMemo(() => (
     <Canvas
       ref={canvasRef}
@@ -201,14 +206,9 @@ const ModelViewer = ({
       gl={{ 
         preserveDrawingBuffer: true,
         antialias: true,
-        alpha: true,
+        alpha: false,
       }}
-      style={{
-        width: '100%',
-        height: '100%',
-        opacity: isVisible ? 1 : 0,
-        transition: 'opacity 0.6s ease-in-out',
-      }}
+      frameloop="always" // Always render for smooth auto-rotation
     >
       <PerspectiveCamera makeDefault position={[0, 0, 5]} fov={50} />
       
@@ -220,7 +220,7 @@ const ModelViewer = ({
       {/* Environment */}
       <Environment preset={environmentPreset} />
       
-      {/* Model */}
+      {/* Model - no Bounds wrapper to prevent refit */}
       <Suspense fallback={<Loader />}>
         {error ? (
           <ErrorFallback error={error} />
@@ -229,8 +229,6 @@ const ModelViewer = ({
             url={url}
             modelXOffset={modelXOffset}
             modelYOffset={modelYOffset}
-            enableMouseParallax={enableMouseParallax}
-            enableHoverRotation={enableHoverRotation}
             autoRotate={autoRotate}
             autoRotateSpeed={autoRotateSpeed}
           />
@@ -239,24 +237,23 @@ const ModelViewer = ({
       
       {/* Controls */}
       <OrbitControls
-        enablePan={true}
+        enablePan={false}
         enableZoom={true}
         enableRotate={true}
-        minDistance={2}
-        maxDistance={10}
+        minDistance={1.2}
+        maxDistance={12}
         autoRotate={false}
+        enableDamping={true}
+        dampingFactor={0.05}
       />
     </Canvas>
   ), [
     url,
     modelXOffset,
     modelYOffset,
-    enableMouseParallax,
-    enableHoverRotation,
     environmentPreset,
     autoRotate,
     autoRotateSpeed,
-    isVisible,
     error,
   ]);
 
@@ -272,24 +269,19 @@ const ModelViewer = ({
         <button
           onClick={handleScreenshot}
           className="absolute bottom-4 right-4 flex items-center gap-2 rounded-full bg-navy/90 px-4 py-2 text-sm font-semibold text-white shadow-lg backdrop-blur-sm transition-all hover:bg-navy hover:shadow-xl active:scale-95 dark:bg-ivory/90 dark:text-navy dark:hover:bg-ivory"
-          aria-label="Take screenshot"
+          aria-label={t?.('home.3d.screenshot') || 'Take screenshot'}
         >
           <Camera size={16} />
-          <span className="hidden sm:inline">Screenshot</span>
+          <span className="hidden sm:inline">{t?.('home.3d.screenshot') || 'Screenshot'}</span>
         </button>
       )}
-
-      {/* Controls hint */}
-      <div className="pointer-events-none absolute bottom-4 left-4 rounded-full bg-black/50 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm">
-        Drag to rotate • Scroll to zoom
-      </div>
     </div>
   );
 };
 
 // Preload models for better performance
 ModelViewer.preload = (url) => {
-  const fileExtension = url.split('.').pop().toLowerCase();
+  const fileExtension = url.split('.').pop().split('?')[0].toLowerCase();
   if (fileExtension === 'glb' || fileExtension === 'gltf') {
     useGLTF.preload(url);
   } else if (fileExtension === 'fbx') {
