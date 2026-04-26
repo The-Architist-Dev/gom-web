@@ -15,7 +15,7 @@ export const PageHeader = ({ eyebrow, title, subtitle, actions, className, cente
         {eyebrow}
       </span>
     )}
-    <h2 className="font-heading text-3xl font-extrabold leading-heading text-balance text-navy dark:text-ivory md:text-4xl md:leading-display-relaxed">
+    <h2 className="font-heading text-3xl font-extrabold leading-[1.32] text-balance text-navy dark:text-ivory md:text-4xl md:leading-[1.3]">
       {title}
     </h2>
     {subtitle && (

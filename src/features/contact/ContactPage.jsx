@@ -132,7 +132,7 @@ export const ContactPage = ({ notify }) => {
         <span className="text-xs font-extrabold uppercase tracking-wider leading-eyebrow text-gold">
           {t('contact.eyebrow')}
         </span>
-        <h1 className="mt-4 font-heading text-3xl font-extrabold leading-heading text-balance text-navy dark:text-ivory md:text-5xl md:leading-display-relaxed">
+        <h1 className="mt-4 font-heading text-3xl font-extrabold leading-[1.35] text-balance text-navy dark:text-ivory md:text-5xl md:leading-[1.32]">
           {t('contact.title')}
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-paragraph text-muted dark:text-dark-text-muted md:text-base md:leading-paragraph-relaxed">

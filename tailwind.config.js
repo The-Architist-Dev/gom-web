@@ -92,25 +92,25 @@ module.exports = {
         'shimmer-gold': 'linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent)',
       },
       lineHeight: {
-        // Display headings (hero, large titles) - Vietnamese-friendly
-        display: '1.18',
-        'display-relaxed': '1.22',
+        // Display headings (hero, large titles) - Vietnamese-friendly with extra space
+        display: '1.32',              // Hero headings - enough space for diacritics
+        'display-relaxed': '1.38',    // Extra relaxed for very large text
+        'display-tight': '1.28',      // Tighter but still safe
         // Section headings
-        heading: '1.22',
-        'heading-tight': '1.18',
+        heading: '1.28',              // Section titles
+        'heading-tight': '1.22',      // Compact headings
         // Card titles
-        card: '1.35',
-        'card-tight': '1.3',
+        card: '1.35',                 // Card headings
+        'card-tight': '1.3',          // Compact card headings
         // Body text
-        body: '1.7',
-        paragraph: '1.75',
-        'paragraph-relaxed': '1.8',
+        body: '1.7',                  // Body text
+        paragraph: '1.75',            // Paragraphs
+        'paragraph-relaxed': '1.8',   // Long-form content
         // UI elements
-        button: '1.35',
-        form: '1.5',
-        label: '1.4',
-        // Eyebrow/uppercase labels
-        eyebrow: '1.4',
+        button: '1.35',               // Buttons
+        form: '1.5',                  // Form inputs
+        label: '1.4',                 // Labels
+        eyebrow: '1.4',               // Uppercase labels
       },
       maxWidth: {
         '8xl': '88rem',

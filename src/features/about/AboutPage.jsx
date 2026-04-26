@@ -49,7 +49,7 @@ export const AboutPage = () => {
           <Landmark size={14} />
           {t('about.eyebrow')}
         </span>
-        <h1 className="mx-auto mt-4 max-w-3xl font-heading text-3xl font-extrabold leading-heading text-balance text-navy dark:text-ivory md:text-5xl md:leading-display-relaxed">
+        <h1 className="mx-auto mt-4 max-w-3xl font-heading text-3xl font-extrabold leading-[1.35] text-balance text-navy dark:text-ivory md:text-5xl md:leading-[1.32]">
           {t('about.title')}
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-base leading-paragraph text-muted dark:text-dark-text-muted md:text-lg md:leading-paragraph-relaxed">
@@ -86,7 +86,7 @@ export const AboutPage = () => {
       <div className="overflow-hidden rounded-3xl bg-gradient-navy p-10 text-white shadow-lg md:p-16">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <div>
-            <h3 className="font-heading text-3xl font-black leading-heading text-balance md:text-4xl md:leading-display-relaxed">
+            <h3 className="font-heading text-3xl font-black leading-[1.32] text-balance md:text-4xl md:leading-[1.3]">
               {t('about.mission.title')}{' '}
               <span className="text-gold">{t('about.mission.highlight')}</span>
             </h3>

@@ -25,7 +25,7 @@ export const HeroSection = ({ onUpload, onExplore, featuredImage }) => {
             <Sparkles size={12} />
             AI Multi-Agent Debate
           </span>
-          <h1 className="mt-6 font-heading text-4xl font-extrabold leading-display text-balance text-navy dark:text-ivory md:text-5xl lg:text-6xl">
+          <h1 className="mt-6 font-heading text-4xl font-extrabold leading-[1.35] text-balance text-navy dark:text-ivory md:text-5xl md:leading-[1.32] lg:text-6xl lg:leading-[1.3]">
             {t('home.heroTitle')}
           </h1>
           <p className="mt-6 max-w-xl text-base leading-paragraph text-muted dark:text-dark-text-muted md:text-lg md:leading-paragraph-relaxed">
