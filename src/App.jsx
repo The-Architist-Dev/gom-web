@@ -11,6 +11,7 @@ import { useView } from './hooks/useView';
 import { MainHeader } from './components/layout/MainHeader';
 import { Footer } from './components/layout/Footer';
 import { ToastContainer } from './components/ui/Toast';
+import { DarkModeBackground } from './theme/DarkModeBackground';
 
 // Auth
 import { NewAuthShell } from './components/auth/NewAuthShell';
@@ -87,7 +88,8 @@ function App() {
 
   // ── Main app shell ──
   return (
-    <div className="flex min-h-screen flex-col bg-ivory dark:bg-dark-bg">
+    <div className="relative flex min-h-screen flex-col bg-ivory dark:bg-dark-bg">
+      <DarkModeBackground />
       {token && user && (
         <MainHeader
           user={user}

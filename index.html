@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0F265C" />
+    <meta
+      name="description"
+      content="The Archivist – AI Multi-Agent Debate for Vietnamese Ceramics Analysis"
+    />
+    <meta name="google-signin-client_id" content="" />
+    <title>The Archivist</title>
+
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- Facebook SDK -->
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous"
+      src="https://connect.facebook.net/vi_VN/sdk.js"></script>
+    <script>
+      window.fbAsyncInit = function () {
+        FB.init({
+          appId: '34850681257911333',
+          cookie: true,
+          xfbml: true,
+          version: 'v18.0',
+        });
+      };
+    </script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

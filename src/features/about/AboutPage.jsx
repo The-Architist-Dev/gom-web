@@ -4,8 +4,8 @@ import { motion } from 'framer-motion';
 import { Landmark, ShieldCheck, Database, Users, Image as ImageIcon, CheckCircle2 } from 'lucide-react';
 import { PageContainer } from '../../components/layout/PageContainer';
 import { Card } from '../../components/ui/Card';
+import { CountUpNumber } from '../../components/motion';
 import { analysisApi } from '../analysis/api';
-import { formatNumber } from '../../lib/utils';
 
 export const AboutPage = () => {
   const { t } = useTranslation();
@@ -16,11 +16,11 @@ export const AboutPage = () => {
       .getStats()
       .then((res) => {
         setStats({
-          total_analyzed: formatNumber(res.data?.total_analyzed ?? 0),
-          accuracy: (res.data?.accuracy ?? 0) + '%',
+          total_analyzed: res.data?.total_analyzed ?? 0,
+          accuracy: res.data?.accuracy ?? 0,
         });
       })
-      .catch(() => setStats({ total_analyzed: '—', accuracy: '—' }));
+      .catch(() => setStats({ total_analyzed: 0, accuracy: 0 }));
   }, []);
 
   const features = [
@@ -100,7 +100,9 @@ export const AboutPage = () => {
           <div className="rounded-3xl bg-white/95 p-10 text-navy shadow-2xl">
             <div>
               <div className="font-heading text-5xl font-black text-gold">
-                {stats.total_analyzed ?? '...'}
+                {stats.total_analyzed !== null
+                  ? <CountUpNumber end={stats.total_analyzed} separator="," />
+                  : '...'}
               </div>
               <div className="mt-3 flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-muted">
                 <ImageIcon size={14} />
@@ -110,7 +112,9 @@ export const AboutPage = () => {
             <div className="my-8 h-px bg-stroke" />
             <div>
               <div className="font-heading text-5xl font-black text-gold">
-                {stats.accuracy ?? '...'}
+                {stats.accuracy !== null
+                  ? <CountUpNumber end={stats.accuracy} decimals={1} suffix="%" />
+                  : '...'}
               </div>
               <div className="mt-3 flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-muted">
                 <CheckCircle2 size={14} />

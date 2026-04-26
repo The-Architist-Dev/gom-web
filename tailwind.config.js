@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
+  content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
   darkMode: 'class',
   theme: {
     extend: {
@@ -90,6 +90,14 @@ module.exports = {
         'gradient-gold': 'linear-gradient(135deg, #D4AF37 0%, #E5C962 100%)',
         'gradient-navy': 'linear-gradient(135deg, #0F265C 0%, #142C6E 100%)',
         'shimmer-gold': 'linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent)',
+      },
+      lineHeight: {
+        body: '1.7',
+        paragraph: '1.75',
+        heading: '1.15',
+        card: '1.3',
+        button: '1.25',
+        form: '1.5',
       },
       maxWidth: {
         '8xl': '88rem',

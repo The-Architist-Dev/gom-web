@@ -6,7 +6,8 @@ import { PageHeader } from '../../components/layout/PageHeader';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
-import { LoadingState, EmptyState, ErrorState } from '../../components/ui/states';
+import { LoadingState, ErrorState } from '../../components/ui/states';
+import { AnimatedEmptyState } from '../../components/motion';
 import { historyApi } from './api';
 import { HistoryDetailModal } from './HistoryDetailModal';
 import { formatDate, getErrorMessage } from '../../lib/utils';
@@ -54,9 +55,10 @@ export const HistoryPage = ({ setView, notify }) => {
       {loading && <LoadingState message={t('common.loading')} />}
       {!loading && error && <ErrorState message={error} onRetry={fetchData} />}
       {!loading && !error && list.length === 0 && (
-        <EmptyState
+        <AnimatedEmptyState
           icon={HistoryIcon}
           title={t('history.empty')}
+          description={t('history.subtitle')}
           action={
             <Button variant="primary" onClick={() => setView?.(VIEWS.DEBATE)}>
               {t('history.startNow')}
