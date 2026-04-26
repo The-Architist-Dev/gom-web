@@ -92,12 +92,25 @@ module.exports = {
         'shimmer-gold': 'linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent)',
       },
       lineHeight: {
+        // Display headings (hero, large titles) - Vietnamese-friendly
+        display: '1.18',
+        'display-relaxed': '1.22',
+        // Section headings
+        heading: '1.22',
+        'heading-tight': '1.18',
+        // Card titles
+        card: '1.35',
+        'card-tight': '1.3',
+        // Body text
         body: '1.7',
         paragraph: '1.75',
-        heading: '1.15',
-        card: '1.3',
-        button: '1.25',
+        'paragraph-relaxed': '1.8',
+        // UI elements
+        button: '1.35',
         form: '1.5',
+        label: '1.4',
+        // Eyebrow/uppercase labels
+        eyebrow: '1.4',
       },
       maxWidth: {
         '8xl': '88rem',
