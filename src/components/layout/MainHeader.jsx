@@ -1,20 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import PillNav from '../ui/PillNav';
-import { Plus, User, CreditCard, FileText, LogOut, Shield } from 'lucide-react';
-import './MainHeader.css';
+import { useTranslation } from 'react-i18next';
+import { Plus, User, CreditCard, FileText, LogOut, Shield, ChevronDown, Zap, Gift } from 'lucide-react';
+import { Avatar } from '../ui/Avatar';
+import { LanguageToggle } from '../ui/LanguageToggle';
+import { ThemeToggle } from '../../theme/ThemeToggle';
+import { cn } from '../../lib/utils';
+import { VIEWS } from '../../lib/constants';
 
 export const MainHeader = ({ user, quota, view, setView, logout }) => {
+  const { t } = useTranslation();
   const [showDropdown, setShowDropdown] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
   const badgeRef = useRef(null);
 
   const navItems = [
-    { id: 'debate', label: 'Trang chủ' },
-    { id: 'lines', label: 'Dòng gốm' },
-    { id: 'history', label: 'Lịch sử' },
-    { id: 'contact', label: 'Liên hệ' },
-    { id: 'about', label: 'Về chúng tôi' },
+    { id: VIEWS.DEBATE, label: t('nav.home') },
+    { id: VIEWS.LINES, label: t('nav.lines') },
+    { id: VIEWS.HISTORY, label: t('nav.history') },
+    { id: VIEWS.CONTACT, label: t('nav.contact') },
+    { id: VIEWS.ABOUT, label: t('nav.about') },
   ];
 
   const toggleDropdown = (e) => {
@@ -23,7 +28,7 @@ export const MainHeader = ({ user, quota, view, setView, logout }) => {
       const rect = badgeRef.current.getBoundingClientRect();
       setDropdownPos({ top: rect.bottom + 10, right: window.innerWidth - rect.right });
     }
-    setShowDropdown(prev => !prev);
+    setShowDropdown((prev) => !prev);
   };
 
   useEffect(() => {
@@ -33,130 +38,203 @@ export const MainHeader = ({ user, quota, view, setView, logout }) => {
     return () => document.removeEventListener('click', handler);
   }, [showDropdown]);
 
-  const handleNavClick = (itemId) => {
-    setView(itemId);
-    window.location.hash = itemId;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const remainingFree = Math.max(0, (quota?.free_limit ?? 0) - (quota?.free_used ?? 0));
+  const tokenBalance = quota?.token_balance ?? 0;
+  const noQuota = remainingFree <= 0 && tokenBalance <= 0;
 
   return (
-    <header className="main-header-premium">
-      <div className="main-header-container">
-        {/* Logo Area - Separate from PillNav */}
-        <div 
-          className="main-header-logo-area"
-          onClick={() => handleNavClick('debate')}
+    <header className="sticky top-0 z-40 border-b border-stroke/60 bg-ivory/85 backdrop-blur-md dark:border-dark-stroke dark:bg-dark-bg/85">
+      <div className="mx-auto flex h-16 max-w-content items-center gap-4 px-4 sm:px-6 lg:gap-6 lg:px-8">
+        {/* Logo */}
+        <button
+          type="button"
+          onClick={() => setView(VIEWS.DEBATE)}
+          className="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-80"
+          aria-label="Home"
         >
-          <img 
-            src="/logo.png" 
-            alt="The Archivist" 
-            className="main-header-logo-image"
-          />
-        </div>
+          <img src="/logo.png" alt="The Archivist" className="h-9 w-9 object-contain" />
+          <span className="hidden font-heading text-lg font-bold text-navy dark:text-ivory sm:inline">
+            The Archivist
+          </span>
+        </button>
 
-        {/* React Bits Pill Nav */}
-        <div className="main-header-nav-wrapper">
-          <PillNav
-            items={navItems}
-            activeHref={view}
-            onItemClick={handleNavClick}
-            baseColor="#0F265C"
-            pillColor="#F7F1E8"
-            hoveredPillTextColor="#F7F1E8"
-            pillTextColor="#0F265C"
-            initialLoadAnimation={false}
-          />
-        </div>
+        {/* Nav (desktop) */}
+        <nav className="hidden flex-1 justify-center gap-1 lg:flex">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => setView(item.id)}
+              className={cn(
+                'rounded-full px-4 py-2 text-sm font-bold transition-all',
+                view === item.id
+                  ? 'bg-navy text-white dark:bg-gold dark:text-navy-dark'
+                  : 'text-muted hover:bg-surface-alt hover:text-navy dark:text-dark-text-muted dark:hover:bg-dark-surface-alt dark:hover:text-ivory'
+              )}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
 
-        {/* User Actions Cluster */}
-        <div className="main-header-actions-cluster">
-          {/* Quota Display */}
-          <div className="quota-compact">
-            {quota.token_balance > 0 && (
-              <div className="quota-item paid">
-                <span className="quota-icon">⚡</span>
-                <span className="quota-value">{quota.token_balance}</span>
-              </div>
+        {/* Right cluster */}
+        <div className="ml-auto flex items-center gap-2">
+          {/* Quota */}
+          <div className="hidden items-center gap-1 md:flex">
+            {tokenBalance > 0 && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-gold/15 px-2.5 py-1 text-xs font-bold text-gold-dark">
+                <Zap size={12} />
+                {tokenBalance}
+              </span>
             )}
-            {quota.free_used < quota.free_limit && (
-              <div className="quota-item free">
-                <span className="quota-icon">🎁</span>
-                <span className="quota-value">{quota.free_limit - quota.free_used}</span>
-              </div>
+            {remainingFree > 0 && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-success/15 px-2.5 py-1 text-xs font-bold text-success">
+                <Gift size={12} />
+                {remainingFree}
+              </span>
             )}
-            {quota.free_used >= quota.free_limit && quota.token_balance <= 0 && (
-              <div className="quota-item empty">Hết lượt</div>
+            {noQuota && (
+              <span className="rounded-full bg-danger/15 px-2.5 py-1 text-xs font-bold text-danger">
+                {t('header.noQuota')}
+              </span>
             )}
           </div>
 
-          {/* Payment CTA */}
-          <button 
-            className="btn-topup-premium"
-            onClick={() => setView('payment')}
+          {/* Top up CTA */}
+          <button
+            type="button"
+            onClick={() => setView(VIEWS.PAYMENT)}
+            className="hidden items-center gap-1.5 rounded-full bg-gradient-gold px-4 py-2 text-xs font-extrabold text-navy-dark shadow-sm transition-all hover:shadow-glow active:scale-95 sm:inline-flex"
           >
-            <Plus size={16} strokeWidth={3} />
-            <span>Nạp lượt</span>
+            <Plus size={14} strokeWidth={3} />
+            <span>{t('header.topupShort')}</span>
           </button>
 
-          {/* User Badge */}
-          <div
+          {/* Theme */}
+          <ThemeToggle />
+
+          {/* Language */}
+          <LanguageToggle className="hidden md:inline-flex" />
+
+          {/* Avatar */}
+          <button
             ref={badgeRef}
-            className="user-badge-premium"
+            type="button"
             onClick={toggleDropdown}
+            className="flex items-center gap-2 rounded-full border border-stroke bg-surface px-1.5 py-1.5 transition-colors hover:bg-surface-alt dark:border-dark-stroke dark:bg-dark-surface dark:hover:bg-dark-surface-alt"
           >
-            <div className="user-avatar-premium">
-              {user?.avatar ? (
-                <img src={user.avatar} alt={user.name} />
-              ) : (
-                <span>{user?.name?.charAt(0).toUpperCase()}</span>
-              )}
-            </div>
-            <span className="user-chevron-premium">▼</span>
-          </div>
+            <Avatar src={user?.avatar} name={user?.name} size="sm" />
+            <ChevronDown size={14} className="mr-1 text-muted dark:text-dark-text-muted" />
+          </button>
         </div>
       </div>
 
-      {/* Dropdown Portal */}
-      {showDropdown && createPortal(
-        <div
-          className="user-dropdown"
-          onClick={e => e.stopPropagation()}
-          style={{
-            position: 'fixed',
-            top: dropdownPos.top,
-            right: dropdownPos.right,
-            zIndex: 9999,
-          }}
-        >
-          <div className="dropdown-item" onClick={() => { setView('profile'); setShowDropdown(false); }}>
-            <User size={16} />
-            <span>Hồ sơ của tôi</span>
-          </div>
-          <div className="dropdown-item" onClick={() => { setView('transaction_history'); setShowDropdown(false); }}>
-            <FileText size={16} />
-            <span>Lịch sử giao dịch</span>
-          </div>
-          <div className="dropdown-item" onClick={() => { setView('payment'); setShowDropdown(false); }}>
-            <CreditCard size={16} />
-            <span>Nạp lượt phân tích</span>
-          </div>
-          {user?.role === 'admin' && (
-            <>
-              <div className="dropdown-divider" />
-              <div className="dropdown-item admin" onClick={() => { setView('admin_dashboard'); setShowDropdown(false); }}>
-                <Shield size={16} />
-                <span>Khu vực Admin</span>
-              </div>
-            </>
-          )}
-          <div className="dropdown-divider" />
-          <div className="dropdown-item danger" onClick={() => { logout(); setShowDropdown(false); }}>
-            <LogOut size={16} />
-            <span>Đăng xuất</span>
-          </div>
-        </div>,
-        document.body
-      )}
+      {/* Mobile nav */}
+      <nav className="flex justify-center gap-1 overflow-x-auto border-t border-stroke/60 px-4 py-2 lg:hidden dark:border-dark-stroke">
+        {navItems.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => setView(item.id)}
+            className={cn(
+              'whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-bold transition-all',
+              view === item.id
+                ? 'bg-navy text-white dark:bg-gold dark:text-navy-dark'
+                : 'text-muted hover:bg-surface-alt dark:text-dark-text-muted dark:hover:bg-dark-surface-alt'
+            )}
+          >
+            {item.label}
+          </button>
+        ))}
+      </nav>
+
+      {/* Dropdown */}
+      {showDropdown &&
+        createPortal(
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="fixed z-[9999] w-60 origin-top-right animate-fade-in rounded-2xl border border-stroke bg-surface p-2 shadow-lg dark:border-dark-stroke dark:bg-dark-surface"
+            style={{ top: dropdownPos.top, right: dropdownPos.right }}
+          >
+            <div className="mb-2 border-b border-stroke px-3 py-2 dark:border-dark-stroke">
+              <p className="truncate text-sm font-bold text-navy dark:text-ivory">{user?.name}</p>
+              <p className="truncate text-xs text-muted dark:text-dark-text-muted">{user?.email}</p>
+            </div>
+
+            <DropdownItem
+              icon={<User size={16} />}
+              label={t('header.myProfile')}
+              onClick={() => {
+                setView(VIEWS.PROFILE);
+                setShowDropdown(false);
+              }}
+            />
+            <DropdownItem
+              icon={<FileText size={16} />}
+              label={t('header.transactionHistory')}
+              onClick={() => {
+                setView(VIEWS.TRANSACTION_HISTORY);
+                setShowDropdown(false);
+              }}
+            />
+            <DropdownItem
+              icon={<CreditCard size={16} />}
+              label={t('header.topup')}
+              onClick={() => {
+                setView(VIEWS.PAYMENT);
+                setShowDropdown(false);
+              }}
+            />
+
+            {user?.role === 'admin' && (
+              <>
+                <div className="my-2 h-px bg-stroke dark:bg-dark-stroke" />
+                <DropdownItem
+                  icon={<Shield size={16} />}
+                  label={t('nav.admin')}
+                  variant="gold"
+                  onClick={() => {
+                    setView(VIEWS.ADMIN);
+                    setShowDropdown(false);
+                  }}
+                />
+              </>
+            )}
+
+            <div className="my-2 h-px bg-stroke dark:bg-dark-stroke" />
+            <DropdownItem
+              icon={<LogOut size={16} />}
+              label={t('nav.logout')}
+              variant="danger"
+              onClick={() => {
+                logout();
+                setShowDropdown(false);
+              }}
+            />
+          </div>,
+          document.body
+        )}
     </header>
   );
 };
+
+const DropdownItem = ({ icon, label, onClick, variant = 'default' }) => {
+  const cls = {
+    default: 'text-navy hover:bg-surface-alt dark:text-dark-text dark:hover:bg-dark-surface-alt',
+    gold: 'text-gold-dark hover:bg-gold/10',
+    danger: 'text-danger hover:bg-danger/10',
+  }[variant];
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn('flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-colors', cls)}
+    >
+      {icon}
+      <span>{label}</span>
+    </button>
+  );
+};
+
+export default MainHeader;

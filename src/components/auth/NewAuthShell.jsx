@@ -1,9 +1,19 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, User, Eye, EyeOff, ArrowLeft, Sparkles, Shield, Zap } from 'lucide-react';
-import { api, isMockMode } from '../../services/api';
+import { authApi } from '../../features/auth/api';
 import { Aurora } from '../ui/Aurora';
 import './NewAuthShell.css';
+
+// Compat shim so we don't have to rewrite all call sites in this file
+const api = {
+  login: (data) => authApi.login(data),
+  register: (data) => authApi.register(data),
+  loginSocial: (provider, token) => authApi.socialLogin({ provider, token }),
+  forgotPassword: (email) => authApi.forgotPassword({ email }),
+  resetPassword: (data) => authApi.resetPassword(data),
+};
+const isMockMode = () => false;
 
 // GOOGLE IDENTITY BUTTON COMPONENT - Handles its own lifecycle
 const GoogleIdentityButton = ({ mode, onCredential }) => {
@@ -103,14 +113,14 @@ const GoogleIdentityButton = ({ mode, onCredential }) => {
   );
 };
 
-export const NewAuthShell = ({ 
-  setToken, 
-  setUser, 
-  notify, 
-  subView, 
-  setSubView, 
-  resetEmail, 
-  setResetEmail 
+export const NewAuthShell = ({
+  setToken,
+  setUser,
+  notify,
+  subView,
+  setSubView,
+  resetEmail,
+  setResetEmail
 }) => {
   return (
     <div className="auth-shell">
@@ -125,7 +135,7 @@ export const NewAuthShell = ({
       <div className="auth-glow-orb auth-glow-orb-2" />
 
       {/* LAYER 2: Content */}
-      <motion.div 
+      <motion.div
         className="auth-content"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -161,24 +171,24 @@ const BrandPanel = () => {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
     }
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="auth-brand-panel"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       <motion.div className="auth-brand-header" variants={itemVariants}>
-        <img 
-          src="/logo.png" 
-          alt="The Archivist" 
+        <img
+          src="/logo.png"
+          alt="The Archivist"
           className="auth-brand-logo"
         />
         <h1 className="auth-brand-title">The Archivist</h1>
@@ -232,14 +242,14 @@ const BrandPanel = () => {
 };
 
 // FORM PANEL
-const FormPanel = ({ 
-  setToken, 
-  setUser, 
-  notify, 
-  subView, 
-  setSubView, 
-  resetEmail, 
-  setResetEmail 
+const FormPanel = ({
+  setToken,
+  setUser,
+  notify,
+  subView,
+  setSubView,
+  resetEmail,
+  setResetEmail
 }) => {
   if (subView === "forgot") {
     return <ForgotPasswordForm setSubView={setSubView} notify={notify} setResetEmail={setResetEmail} />;
@@ -303,7 +313,7 @@ const LoginRegisterForm = ({ setToken, setUser, notify, subView, setSubView }) =
       localStorage.setItem("user", JSON.stringify(res.data.user));
       setToken(res.data.token);
       setUser(res.data.user);
-      const message = isLogin 
+      const message = isLogin
         ? `Chào mừng ${res.data.user.name} quay trở lại!`
         : `Chào mừng ${res.data.user.name} đã gia nhập!`;
       notify(message, "success");
@@ -321,7 +331,7 @@ const LoginRegisterForm = ({ setToken, setUser, notify, subView, setSubView }) =
         sendSocialAuth('facebook', 'mock_facebook_token');
         return;
       }
-      
+
       if (window.FB) {
         window.FB.login((res) => {
           if (res.authResponse) {
@@ -334,16 +344,16 @@ const LoginRegisterForm = ({ setToken, setUser, notify, subView, setSubView }) =
 
   const panelVariants = {
     hidden: { opacity: 0, x: 50 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       x: 0,
-      transition: { 
+      transition: {
         duration: 0.5,
         ease: [0.22, 1, 0.36, 1]
       }
     },
-    exit: { 
-      opacity: 0, 
+    exit: {
+      opacity: 0,
       x: -50,
       transition: { duration: 0.3 }
     }
@@ -352,7 +362,7 @@ const LoginRegisterForm = ({ setToken, setUser, notify, subView, setSubView }) =
   return (
     <div className="auth-form-container">
       <AnimatePresence mode="wait">
-        <motion.div 
+        <motion.div
           key={subView}
           className={`auth-card ${!isLogin ? 'is-register' : ''}`}
           variants={panelVariants}
@@ -370,7 +380,7 @@ const LoginRegisterForm = ({ setToken, setUser, notify, subView, setSubView }) =
           </div>
 
           {error && (
-            <motion.div 
+            <motion.div
               className="auth-error"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -395,7 +405,7 @@ const LoginRegisterForm = ({ setToken, setUser, notify, subView, setSubView }) =
                 </div>
               </div>
             )}
-            
+
             <div className="auth-input-group">
               <label className="auth-input-label">EMAIL</label>
               <div className="auth-input-wrapper">
@@ -410,10 +420,10 @@ const LoginRegisterForm = ({ setToken, setUser, notify, subView, setSubView }) =
                 />
               </div>
             </div>
-            
+
             <div className="auth-input-group">
               {isLogin && (
-                <span 
+                <span
                   className="auth-forgot-link"
                   onClick={() => setSubView("forgot")}
                 >
@@ -471,7 +481,7 @@ const LoginRegisterForm = ({ setToken, setUser, notify, subView, setSubView }) =
           </div>
 
           <div className="auth-social-stack">
-            <GoogleIdentityButton 
+            <GoogleIdentityButton
               mode={subView}
               onCredential={handleGoogleCredential}
             />
@@ -489,7 +499,7 @@ const LoginRegisterForm = ({ setToken, setUser, notify, subView, setSubView }) =
 
           <p className="auth-switch">
             {isLogin ? "Chưa có tài khoản? " : "Đã có tài khoản? "}
-            <span 
+            <span
               className="auth-switch-link"
               onClick={() => setSubView(isLogin ? "register" : "login")}
             >
@@ -528,13 +538,13 @@ const ForgotPasswordForm = ({ setSubView, notify, setResetEmail }) => {
 
   return (
     <div className="auth-form-container">
-      <motion.div 
+      <motion.div
         className="auth-card"
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -50 }}
       >
-        <div 
+        <div
           className="auth-back-button"
           onClick={() => setSubView("login")}
         >
@@ -598,13 +608,13 @@ const ResetPasswordForm = ({ setSubView, notify, email }) => {
 
   return (
     <div className="auth-form-container">
-      <motion.div 
+      <motion.div
         className="auth-card"
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -50 }}
       >
-        <div 
+        <div
           className="auth-back-button"
           onClick={() => setSubView("login")}
         >
