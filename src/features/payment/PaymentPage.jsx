@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check } from 'lucide-react';
+import { gsap } from 'gsap';
 import { PageContainer } from '../../components/layout/PageContainer';
 import { PageHeader } from '../../components/layout/PageHeader';
-import { Stepper } from '../../components/ui/Stepper';
+import { AnimatedStepper } from '../../components/ui/AnimatedStepper';
 import { LoadingState, ErrorState } from '../../components/ui/states';
 import { Button } from '../../components/ui/Button';
 import { PackageCard } from './PackageCard';
@@ -35,6 +36,13 @@ export const PaymentPage = ({ fetchUser, notify, setView }) => {
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [successCredits, setSuccessCredits] = useState(0);
 
+  // Animation refs
+  const titleRef = useRef(null);
+  const subtitleRef = useRef(null);
+  const stepperRef = useRef(null);
+  const cardsRef = useRef(null);
+  const hasAnimated = useRef(false);
+
   // Load packages from API
   useEffect(() => {
     let cancelled = false;
@@ -63,6 +71,73 @@ export const PaymentPage = ({ fetchUser, notify, setView }) => {
     };
   }, []);
 
+  // Page entrance animation with GSAP
+  useEffect(() => {
+    if (loadingPkg || hasAnimated.current || stage !== 0) return;
+
+    const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (shouldReduceMotion) {
+      hasAnimated.current = true;
+      return;
+    }
+
+    const tl = gsap.timeline({ delay: 0.1 });
+
+    // Title fade-up with blur
+    if (titleRef.current) {
+      tl.fromTo(
+        titleRef.current,
+        { opacity: 0, y: 20, filter: 'blur(10px)' },
+        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.6, ease: 'power2.out' },
+        0
+      );
+    }
+
+    // Subtitle fade-up
+    if (subtitleRef.current) {
+      tl.fromTo(
+        subtitleRef.current,
+        { opacity: 0, y: 15 },
+        { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' },
+        0.15
+      );
+    }
+
+    // Stepper reveal
+    if (stepperRef.current) {
+      tl.fromTo(
+        stepperRef.current,
+        { opacity: 0, x: -30 },
+        { opacity: 1, x: 0, duration: 0.5, ease: 'power2.out' },
+        0.3
+      );
+    }
+
+    // Cards stagger reveal
+    if (cardsRef.current) {
+      const cards = cardsRef.current.querySelectorAll('.pricing-card');
+      tl.fromTo(
+        cards,
+        { opacity: 0, y: 36, scale: 0.96 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: 'back.out(1.2)',
+        },
+        0.5
+      );
+    }
+
+    hasAnimated.current = true;
+
+    return () => {
+      tl.kill();
+    };
+  }, [loadingPkg, stage]);
+
   const selectPackage = (pkg) => {
     setSelectedPkg(pkg);
     setStage(1);
@@ -73,6 +148,7 @@ export const PaymentPage = ({ fetchUser, notify, setView }) => {
     setSelectedPkg(null);
     setQrData(null);
     setPaymentSuccess(false);
+    hasAnimated.current = false;
   };
 
   const buyPackage = async () => {
@@ -167,10 +243,25 @@ export const PaymentPage = ({ fetchUser, notify, setView }) => {
 
   return (
     <PageContainer>
-      <PageHeader title={t('payment.title')} subtitle={t('payment.subtitle')} centered />
+      {/* Enhanced PageHeader with animation refs */}
+      <div className="mb-8 flex flex-col items-center gap-3 text-center md:mb-10">
+        <h2
+          ref={titleRef}
+          className="font-heading text-3xl font-extrabold leading-[1.35] text-balance text-navy dark:text-ivory md:text-4xl md:leading-[1.32]"
+        >
+          {t('payment.title')}
+        </h2>
+        <p
+          ref={subtitleRef}
+          className="mx-auto max-w-2xl text-base leading-paragraph text-muted dark:text-dark-text-muted"
+        >
+          {t('payment.subtitle')}
+        </p>
+      </div>
 
-      <div className="mb-12">
-        <Stepper steps={steps} current={currentStage} />
+      {/* Animated Stepper */}
+      <div ref={stepperRef} className="mb-10 md:mb-12">
+        <AnimatedStepper steps={steps} current={currentStage} />
       </div>
 
       {currentStage === 0 && (
@@ -178,9 +269,19 @@ export const PaymentPage = ({ fetchUser, notify, setView }) => {
           {loadingPkg && <LoadingState message={t('common.loading')} />}
           {pkgError && <ErrorState message={pkgError} />}
           {!loadingPkg && !pkgError && (
-            <div className="grid gap-6 md:grid-cols-3">
-              {packages.map((pkg) => (
-                <PackageCard key={pkg.id} pkg={pkg} onSelect={selectPackage} />
+            <div
+              ref={cardsRef}
+              className="grid gap-6 md:grid-cols-3 md:gap-8"
+            >
+              {packages.map((pkg, index) => (
+                <div key={pkg.id} className="pricing-card">
+                  <PackageCard
+                    pkg={pkg}
+                    onSelect={selectPackage}
+                    selected={selectedPkg?.id === pkg.id}
+                    animatePrice={!hasAnimated.current}
+                  />
+                </div>
               ))}
             </div>
           )}

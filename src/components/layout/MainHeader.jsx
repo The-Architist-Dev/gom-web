@@ -6,29 +6,26 @@ import { Plus, User, CreditCard, FileText, LogOut, Shield, ChevronDown, Zap, Gif
 import { Avatar } from '../ui/Avatar';
 import { LanguageToggle } from '../ui/LanguageToggle';
 import { ThemeToggle } from '../../theme/ThemeToggle';
+import { useTheme } from '../../theme/ThemeProvider';
+import PillNav from '../ui/PillNav';
 import { cn } from '../../lib/utils';
 
 export const MainHeader = ({ user, quota, logout }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
+  const { resolvedTheme } = useTheme();
   const [showDropdown, setShowDropdown] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
   const badgeRef = useRef(null);
 
   const navItems = [
-    { path: '/', label: t('nav.home') },
-    { path: '/ceramics', label: t('nav.lines') },
-    { path: '/history', label: t('nav.history') },
-    { path: '/contact', label: t('nav.contact') },
-    { path: '/about', label: t('nav.about') },
+    { href: '/', label: t('nav.home') },
+    { href: '/ceramics', label: t('nav.lines') },
+    { href: '/history', label: t('nav.history') },
+    { href: '/contact', label: t('nav.contact') },
+    { href: '/about', label: t('nav.about') },
   ];
-
-  // Check if current path matches nav item
-  const isActive = (path) => {
-    if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
-  };
 
   const toggleDropdown = (e) => {
     e.stopPropagation();
@@ -50,38 +47,45 @@ export const MainHeader = ({ user, quota, logout }) => {
   const tokenBalance = quota?.token_balance ?? 0;
   const noQuota = remainingFree <= 0 && tokenBalance <= 0;
 
+  // PillNav colors based on theme - FIXED for proper contrast
+  const pillNavColors = resolvedTheme === 'dark' 
+    ? {
+        baseColor: 'rgba(255, 255, 255, 0.06)',     // Subtle container background
+        pillColor: '#F7F2E8',                        // Ivory for active pill
+        hoveredPillTextColor: '#102A56',             // Navy text on hover (when pill is ivory)
+        pillTextColor: '#F7F2E8',                    // Ivory text for inactive pills
+      }
+    : {
+        baseColor: 'rgba(16, 42, 86, 0.04)',        // Subtle navy tint container
+        pillColor: '#102A56',                        // Navy for active pill
+        hoveredPillTextColor: '#FFFFFF',             // White text on hover (when pill is navy)
+        pillTextColor: '#102A56',                    // Navy text for inactive pills
+      };
+
   return (
     <header className="sticky top-0 z-40 border-b border-stroke/60 bg-ivory/85 backdrop-blur-md dark:border-dark-stroke dark:bg-dark-bg/85">
-      <div className="mx-auto flex h-16 max-w-content items-center gap-4 px-4 sm:px-6 lg:gap-6 lg:px-8">
-        {/* Logo */}
+      <div className="mx-auto flex h-16 max-w-content items-center gap-6 px-4 sm:px-6 lg:px-8">
+        {/* Logo Text - visible on larger screens */}
         <Link
           to="/"
-          className="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-80"
+          className="hidden shrink-0 items-center gap-2 transition-opacity hover:opacity-80 lg:flex"
           aria-label="Home"
         >
-          <img src="/logo.png" alt="The Archivist" className="h-9 w-9 object-contain" />
-          <span className="hidden font-heading text-lg font-bold text-navy dark:text-ivory sm:inline">
+          <span className="font-heading text-lg font-bold text-navy dark:text-ivory">
             The Archivist
           </span>
         </Link>
 
-        {/* Nav (desktop) */}
-        <nav className="hidden flex-1 justify-center gap-1 lg:flex">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={cn(
-                'rounded-full px-4 py-2 text-sm font-bold transition-all',
-                isActive(item.path)
-                  ? 'bg-navy text-white dark:bg-gold dark:text-navy-dark'
-                  : 'text-muted hover:bg-surface-alt hover:text-navy dark:text-dark-text-muted dark:hover:bg-dark-surface-alt dark:hover:text-ivory'
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        {/* PillNav - NO logo, just nav items */}
+        <div className="flex-1 flex justify-center lg:flex-initial">
+          <PillNav
+            showLogo={false}
+            items={navItems}
+            activeHref={location.pathname}
+            initialLoadAnimation={false}
+            {...pillNavColors}
+          />
+        </div>
 
         {/* Right cluster */}
         <div className="ml-auto flex items-center gap-2">
@@ -133,24 +137,6 @@ export const MainHeader = ({ user, quota, logout }) => {
           </button>
         </div>
       </div>
-
-      {/* Mobile nav */}
-      <nav className="flex justify-center gap-1 overflow-x-auto border-t border-stroke/60 px-4 py-2 lg:hidden dark:border-dark-stroke">
-        {navItems.map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
-            className={cn(
-              'whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-bold transition-all',
-              isActive(item.path)
-                ? 'bg-navy text-white dark:bg-gold dark:text-navy-dark'
-                : 'text-muted hover:bg-surface-alt dark:text-dark-text-muted dark:hover:bg-dark-surface-alt'
-            )}
-          >
-            {item.label}
-          </Link>
-        ))}
-      </nav>
 
       {/* Dropdown */}
       {showDropdown &&

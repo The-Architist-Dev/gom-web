@@ -1,58 +1,79 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card } from '../../components/ui/Card';
-import { Badge } from '../../components/ui/Badge';
-import { Button } from '../../components/ui/Button';
-import { cn, formatNumber } from '../../lib/utils';
+import { MagicPricingCard } from '../../components/ui/MagicPricingCard';
+import { ShimmerBadge } from '../../components/ui/ShimmerBadge';
+import { ShimmerButton } from '../../components/ui/ShimmerButton';
+import { CountUpNumber } from '../../components/ui/CountUpNumber';
+import { formatNumber } from '../../lib/utils';
 
-export const PackageCard = ({ pkg, onSelect }) => {
+export const PackageCard = ({ pkg, onSelect, selected = false, animatePrice = false }) => {
   const { t } = useTranslation();
+  const [priceAnimated, setPriceAnimated] = useState(false);
   const featured = !!pkg.featured || pkg.is_popular;
   const credits = pkg.credits ?? pkg.credit_amount ?? 0;
   const price = pkg.price ?? pkg.amount ?? 0;
   const pricePerCredit = credits > 0 ? Math.round(price / credits) : 0;
 
   return (
-    <Card
-      padded={false}
-      className={cn(
-        'flex flex-col p-8 md:p-10',
-        featured
-          ? 'border-2 border-gold ring-2 ring-gold/30 md:scale-[1.03]'
-          : 'border-stroke dark:border-dark-stroke'
-      )}
+    <MagicPricingCard
+      featured={featured}
+      selected={selected}
+      onClick={() => onSelect(pkg)}
+      className="flex flex-col"
     >
-      <div className="mb-3 flex items-center gap-2">
+      {/* Top section: Label + Badge */}
+      <div className="mb-4 flex min-h-[32px] items-center gap-2">
         <span className="text-xs font-extrabold uppercase tracking-widest text-muted dark:text-dark-text-muted">
           {pkg.name}
         </span>
-        {pkg.discount && <Badge variant="danger">{pkg.discount}</Badge>}
-        {featured && !pkg.discount && <Badge variant="gold">★</Badge>}
+        {pkg.discount && <ShimmerBadge variant="danger">{pkg.discount}</ShimmerBadge>}
+        {featured && !pkg.discount && <ShimmerBadge variant="gold">★ Phổ biến</ShimmerBadge>}
       </div>
 
-      <h3 className="font-heading text-2xl font-extrabold text-navy dark:text-ivory">
+      {/* Credits amount */}
+      <h3 className="font-heading text-2xl font-extrabold leading-tight text-navy dark:text-ivory md:text-3xl">
         {formatNumber(credits)} {t('payment.credits')}
       </h3>
-      <p className="mt-1 text-xs text-muted dark:text-dark-text-muted">
+      
+      {/* Price per credit */}
+      <p className="mt-2 text-xs font-medium text-muted dark:text-dark-text-muted">
         {t('payment.perCredit', { price: formatNumber(pricePerCredit) })}
       </p>
 
-      <div className="mt-8 flex items-baseline gap-1">
-        <span className="font-heading text-4xl font-black text-navy dark:text-ivory">
-          {formatNumber(price)}
-        </span>
-        <span className="text-base font-bold text-navy dark:text-ivory">đ</span>
+      {/* Price - with count-up animation */}
+      <div className="mt-6 flex items-baseline gap-1.5">
+        {animatePrice && !priceAnimated ? (
+          <CountUpNumber
+            value={price}
+            duration={1.2}
+            ease="power2.out"
+            format={(n) => formatNumber(Math.round(n))}
+            className="font-heading text-4xl font-black text-navy dark:text-ivory md:text-5xl"
+            onComplete={() => setPriceAnimated(true)}
+          />
+        ) : (
+          <span className="font-heading text-4xl font-black text-navy dark:text-ivory md:text-5xl">
+            {formatNumber(price)}
+          </span>
+        )}
+        <span className="text-lg font-bold text-navy dark:text-ivory">đ</span>
       </div>
 
-      <Button
-        size="lg"
-        variant={featured ? 'gold' : 'primary'}
-        className="mt-auto pt-2 w-full"
-        onClick={() => onSelect(pkg)}
-      >
-        {t('payment.select')}
-      </Button>
-    </Card>
+      {/* Button - aligned at bottom */}
+      <div className="mt-8 pt-4">
+        <ShimmerButton
+          size="lg"
+          variant={featured ? 'gold' : 'primary'}
+          className="w-full"
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(pkg);
+          }}
+        >
+          {t('payment.select')}
+        </ShimmerButton>
+      </div>
+    </MagicPricingCard>
   );
 };
 
