@@ -140,10 +140,11 @@ export const ContactPage = ({ notify }) => {
             delay={0}
             color="#0A1A42"
             shineColor="#C9D8E6"
+            darkColor="#F7F2E8"
+            darkShineColor="#DCE7F0"
             spread={90}
             direction="left"
             yoyo={false}
-            className="dark:!text-ivory"
           />
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-paragraph text-muted dark:text-dark-text-muted md:text-base md:leading-paragraph-relaxed">

@@ -40,9 +40,9 @@ export const MagicPricingCard = ({
       className={cn(
         'relative overflow-hidden rounded-[28px] bg-surface p-8 shadow-sm transition-shadow duration-300 cursor-pointer',
         'dark:bg-dark-surface',
-        featured && 'border-2 border-ceramic ring-2 ring-gold/20',
+        featured && 'border-2 border-ceramic-dark ring-4 ring-ceramic/30 shadow-glow dark:border-ceramic dark:ring-ceramic/20',
         !featured && 'border border-stroke dark:border-dark-stroke',
-        selected && 'border-2 border-navy ring-2 ring-navy/20 dark:border-ceramic dark:ring-gold/20',
+        selected && 'border-2 border-navy ring-2 ring-navy/20 dark:border-ceramic dark:ring-ceramic/20',
         isHovered && 'shadow-xl',
         className
       )}
@@ -54,7 +54,7 @@ export const MagicPricingCard = ({
           style={{
             opacity: isHovered ? 0.15 : 0,
             background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, ${
-              featured ? 'rgba(212, 175, 55, 0.4)' : 'rgba(15, 38, 92, 0.3)'
+              featured ? 'rgba(201, 216, 230, 0.5)' : 'rgba(15, 38, 92, 0.3)'
             }, transparent 40%)`,
           }}
         />

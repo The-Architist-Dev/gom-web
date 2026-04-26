@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 /**
- * ShinyText - Animated shiny text effect
+ * ShinyText - Animated shiny text effect with dark mode support
  * From React Bits
  */
 const ShinyText = ({
@@ -10,6 +10,8 @@ const ShinyText = ({
   delay = 0,
   color = '#b5b5b5',
   shineColor = '#ffffff',
+  darkColor = null,
+  darkShineColor = null,
   spread = 120,
   direction = 'left',
   yoyo = false,
@@ -26,14 +28,19 @@ const ShinyText = ({
     const animationDuration = speed * 1000;
     const spreadDeg = spread;
 
+    // Detect dark mode
+    const isDark = document.documentElement.classList.contains('dark');
+    const finalColor = isDark && darkColor ? darkColor : color;
+    const finalShineColor = isDark && darkShineColor ? darkShineColor : shineColor;
+
     // Create gradient
     const gradient = `linear-gradient(
       ${direction === 'left' ? '90deg' : direction === 'right' ? '-90deg' : '0deg'},
-      ${color} 0%,
-      ${color} ${50 - spreadDeg / 2}%,
-      ${shineColor} 50%,
-      ${color} ${50 + spreadDeg / 2}%,
-      ${color} 100%
+      ${finalColor} 0%,
+      ${finalColor} ${50 - spreadDeg / 2}%,
+      ${finalShineColor} 50%,
+      ${finalColor} ${50 + spreadDeg / 2}%,
+      ${finalColor} 100%
     )`;
 
     element.style.background = gradient;
@@ -41,6 +48,28 @@ const ShinyText = ({
     element.style.WebkitBackgroundClip = 'text';
     element.style.WebkitTextFillColor = 'transparent';
     element.style.backgroundClip = 'text';
+
+    // Watch for theme changes
+    const observer = new MutationObserver(() => {
+      const isDarkNow = document.documentElement.classList.contains('dark');
+      const newColor = isDarkNow && darkColor ? darkColor : color;
+      const newShineColor = isDarkNow && darkShineColor ? darkShineColor : shineColor;
+      
+      const newGradient = `linear-gradient(
+        ${direction === 'left' ? '90deg' : direction === 'right' ? '-90deg' : '0deg'},
+        ${newColor} 0%,
+        ${newColor} ${50 - spreadDeg / 2}%,
+        ${newShineColor} 50%,
+        ${newColor} ${50 + spreadDeg / 2}%,
+        ${newColor} 100%
+      )`;
+      element.style.background = newGradient;
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
 
     // Animation
     const keyframes = yoyo
@@ -77,8 +106,9 @@ const ShinyText = ({
 
     return () => {
       document.head.removeChild(styleSheet);
+      observer.disconnect();
     };
-  }, [speed, delay, color, shineColor, spread, direction, yoyo, pauseOnHover, disabled]);
+  }, [speed, delay, color, shineColor, darkColor, darkShineColor, spread, direction, yoyo, pauseOnHover, disabled]);
 
   if (disabled) {
     return <span className={className}>{text}</span>;

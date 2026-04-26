@@ -51,6 +51,8 @@ export const HistoryPage = ({ setView, notify }) => {
             delay={0}
             color="#0A1A42"
             shineColor="#9FB7C9"
+            darkColor="#F7F2E8"
+            darkShineColor="#DCE7F0"
             spread={80}
             direction="right"
             yoyo={false}

@@ -46,7 +46,7 @@ export const AboutPage = () => {
     <PageContainer>
       {/* Hero */}
       <div className="mb-20 text-center">
-        <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-ceramic leading-eyebrow">
+        <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-ceramic-dark dark:text-ceramic leading-eyebrow">
           <Landmark size={14} />
           {t('about.eyebrow')}
         </span>
@@ -57,10 +57,11 @@ export const AboutPage = () => {
             delay={0}
             color="#0A1A42"
             shineColor="#B8CAD8"
+            darkColor="#F7F2E8"
+            darkShineColor="#DCE7F0"
             spread={85}
             direction="left"
             yoyo={false}
-            className="dark:!text-ivory"
           />
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-base leading-paragraph text-muted dark:text-dark-text-muted md:text-lg md:leading-paragraph-relaxed">

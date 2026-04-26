@@ -15,6 +15,7 @@ import { QRStage } from './QRStage';
 import { paymentApi } from './api';
 import { getErrorMessage } from '../../lib/utils';
 import { VIEWS } from '../../lib/constants';
+import ShinyText from '../../components/ui/ShinyText';
 
 // Fallback packages when API fails
 const FALLBACK_PACKAGES = [
@@ -247,9 +248,20 @@ export const PaymentPage = ({ fetchUser, notify, setView }) => {
       <div className="mb-8 flex flex-col items-center gap-3 text-center md:mb-10">
         <h2
           ref={titleRef}
-          className="font-heading text-3xl font-extrabold leading-[1.35] text-balance text-navy dark:text-ivory md:text-4xl md:leading-[1.32]"
+          className="font-heading text-3xl font-extrabold leading-[1.35] text-balance md:text-4xl md:leading-[1.32]"
         >
-          {t('payment.title')}
+          <ShinyText
+            text={t('payment.title')}
+            speed={3}
+            delay={0}
+            color="#0A1A42"
+            shineColor="#B8CAD8"
+            darkColor="#F7F2E8"
+            darkShineColor="#DCE7F0"
+            spread={85}
+            direction="left"
+            yoyo={false}
+          />
         </h2>
         <p
           ref={subtitleRef}

@@ -26,8 +26,8 @@ export const PackageCard = ({ pkg, onSelect, selected = false, animatePrice = fa
         <span className="text-xs font-extrabold uppercase tracking-widest text-muted dark:text-dark-text-muted">
           {pkg.name}
         </span>
-        {pkg.discount && <ShimmerBadge variant="danger">{pkg.discount}</ShimmerBadge>}
-        {featured && !pkg.discount && <ShimmerBadge variant="gold">★ Phổ biến</ShimmerBadge>}
+        {pkg.discount && <ShimmerBadge variant="ceramic">{pkg.discount}</ShimmerBadge>}
+        {featured && !pkg.discount && <ShimmerBadge variant="ceramic">★ Phổ biến</ShimmerBadge>}
       </div>
 
       {/* Credits amount */}
@@ -63,7 +63,7 @@ export const PackageCard = ({ pkg, onSelect, selected = false, animatePrice = fa
       <div className="mt-8 pt-4">
         <ShimmerButton
           size="lg"
-          variant={featured ? 'gold' : 'primary'}
+          variant={featured ? 'ceramic' : 'primary'}
           className="w-full"
           onClick={(e) => {
             e.stopPropagation();

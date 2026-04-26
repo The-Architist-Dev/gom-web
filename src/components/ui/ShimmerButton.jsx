@@ -32,6 +32,7 @@ export const ShimmerButton = React.forwardRef(function ShimmerButton(
     outline:
       'border border-stroke bg-transparent text-navy hover:bg-surface-alt dark:border-dark-stroke dark:text-dark-text dark:hover:bg-dark-surface-alt',
     danger: 'bg-danger text-white hover:bg-danger/90',
+    ceramic: 'bg-gradient-ceramic text-navy-dark hover:shadow-glow dark:bg-ceramic dark:text-navy-dark dark:hover:bg-ceramic-hover',
     gold: 'bg-gradient-gold text-navy-dark hover:shadow-glow',
     link: 'bg-transparent text-navy underline-offset-4 hover:underline px-0 py-0 dark:text-ceramic',
   };
