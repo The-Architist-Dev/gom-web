@@ -78,3 +78,4 @@ export const PackageCard = ({ pkg, onSelect, selected = false, animatePrice = fa
 };
 
 export default PackageCard;
+

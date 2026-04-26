@@ -40,7 +40,7 @@ export const ModelShowcaseSection = () => {
         >
           {/* Eyebrow */}
           <div className="mb-4 flex items-center justify-center gap-2">
-            <span className="inline-flex items-center gap-2 rounded-full bg-gold/15 px-4 py-1.5 text-xs font-extrabold uppercase tracking-wider text-gold-dark">
+            <span className="inline-flex items-center gap-2 rounded-full bg-ceramic/15 px-4 py-1.5 text-xs font-extrabold uppercase tracking-wider text-ceramic-dark">
               <Box size={14} />
               {t('home.3d.eyebrow')}
             </span>
@@ -68,7 +68,7 @@ export const ModelShowcaseSection = () => {
           <div className="relative w-full max-w-2xl">
             {/* Interactive badge */}
             <div className="absolute -top-4 left-1/2 z-10 -translate-x-1/2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-navy px-4 py-1.5 text-xs font-bold text-white shadow-lg dark:bg-gold dark:text-navy-dark">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-navy px-4 py-1.5 text-xs font-bold text-white shadow-lg dark:bg-ceramic dark:text-navy-dark">
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75 dark:bg-navy-dark" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-white dark:bg-navy-dark" />
@@ -87,3 +87,4 @@ export const ModelShowcaseSection = () => {
 };
 
 export default ModelShowcaseSection;
+

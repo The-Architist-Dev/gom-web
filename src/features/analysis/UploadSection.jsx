@@ -20,7 +20,7 @@ export const UploadSection = ({ file, preview, loading, error, onFileChange, onA
 
         <div className="mt-8">
           <div
-            className="relative mx-auto flex aspect-video max-w-2xl cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed border-stroke bg-surface-alt transition-all hover:border-gold dark:border-dark-stroke dark:bg-dark-surface-alt"
+            className="relative mx-auto flex aspect-video max-w-2xl cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed border-stroke bg-surface-alt transition-all hover:border-ceramic dark:border-dark-stroke dark:bg-dark-surface-alt"
             onClick={() => !preview && fileRef.current?.click()}
           >
             {preview ? (
@@ -44,7 +44,7 @@ export const UploadSection = ({ file, preview, loading, error, onFileChange, onA
               </>
             ) : (
               <div className="flex flex-col items-center gap-3 px-6 py-10 text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gold/15 text-gold-dark">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-ceramic/15 text-ceramic-dark">
                   <ImagePlus size={28} />
                 </div>
                 <p className="text-sm font-bold text-navy dark:text-ivory">
@@ -91,3 +91,4 @@ export const UploadSection = ({ file, preview, loading, error, onFileChange, onA
 };
 
 export default UploadSection;
+

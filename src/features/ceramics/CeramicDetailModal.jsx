@@ -28,7 +28,7 @@ export const CeramicDetailModal = ({ item, onClose }) => {
                 className={cn(
                   'flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all',
                   viewMode === 'image'
-                    ? 'bg-navy text-white shadow-sm dark:bg-gold dark:text-navy-dark'
+                    ? 'bg-navy text-white shadow-sm dark:bg-ceramic dark:text-navy-dark'
                     : 'text-muted hover:text-navy dark:text-dark-text-muted dark:hover:text-ivory'
                 )}
               >
@@ -40,7 +40,7 @@ export const CeramicDetailModal = ({ item, onClose }) => {
                 className={cn(
                   'flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all',
                   viewMode === '3d'
-                    ? 'bg-navy text-white shadow-sm dark:bg-gold dark:text-navy-dark'
+                    ? 'bg-navy text-white shadow-sm dark:bg-ceramic dark:text-navy-dark'
                     : 'text-muted hover:text-navy dark:text-dark-text-muted dark:hover:text-ivory'
                 )}
               >
@@ -146,3 +146,4 @@ const Section = ({ title, children }) => (
 );
 
 export default CeramicDetailModal;
+

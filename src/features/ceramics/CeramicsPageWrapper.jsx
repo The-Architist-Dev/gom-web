@@ -7,3 +7,4 @@ export const CeramicsPageWrapper = () => {
 
   return <CeramicsPage notify={notify} />;
 };
+

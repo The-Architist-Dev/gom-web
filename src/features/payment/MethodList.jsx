@@ -59,7 +59,7 @@ export const MethodList = ({ pkg, purchasing, onBack, onPick }) => {
             disabled={purchasing}
             onClick={() => onPick(m.id)}
             className={cn(
-              'flex items-center justify-between rounded-2xl border border-stroke bg-surface p-5 text-left transition-all hover:border-gold hover:shadow-md dark:border-dark-stroke dark:bg-dark-surface',
+              'flex items-center justify-between rounded-2xl border border-stroke bg-surface p-5 text-left transition-all hover:border-ceramic hover:shadow-md dark:border-dark-stroke dark:bg-dark-surface',
               purchasing && 'pointer-events-none opacity-60'
             )}
           >
@@ -68,7 +68,7 @@ export const MethodList = ({ pkg, purchasing, onBack, onPick }) => {
                 {m.iconType === 'image' ? (
                   <img src={m.iconUrl} alt={m.name} className="h-8 w-8 rounded-md object-contain" />
                 ) : (
-                  <Building2 className="text-navy dark:text-gold" size={22} />
+                  <Building2 className="text-navy dark:text-ceramic" size={22} />
                 )}
               </div>
               <div>
@@ -77,7 +77,7 @@ export const MethodList = ({ pkg, purchasing, onBack, onPick }) => {
               </div>
             </div>
             {purchasing ? (
-              <Loader2 className="animate-spin text-navy dark:text-gold" size={18} />
+              <Loader2 className="animate-spin text-navy dark:text-ceramic" size={18} />
             ) : (
               <ArrowRight className="text-muted dark:text-dark-text-muted" size={18} />
             )}
@@ -96,3 +96,4 @@ export const MethodList = ({ pkg, purchasing, onBack, onPick }) => {
 };
 
 export default MethodList;
+

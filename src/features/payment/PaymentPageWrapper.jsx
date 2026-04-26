@@ -20,3 +20,4 @@ export const PaymentPageWrapper = () => {
 
   return <PaymentPage fetchUser={fetchUser} notify={notify} setView={setView} />;
 };
+

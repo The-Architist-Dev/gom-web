@@ -18,3 +18,4 @@ export const TransactionsPageWrapper = () => {
 
   return <TransactionsPage setView={setView} notify={notify} />;
 };
+

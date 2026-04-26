@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Sparkles, Upload, ArrowRight } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
+import RotatingText from '../../components/ui/RotatingText';
 
 export const HeroSection = ({ onUpload, onExplore, featuredImage }) => {
   const { t } = useTranslation();
@@ -10,7 +11,7 @@ export const HeroSection = ({ onUpload, onExplore, featuredImage }) => {
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
-        <div className="absolute -left-32 top-0 h-96 w-96 rounded-full bg-gold/15 blur-3xl" />
+        <div className="absolute -left-32 top-0 h-96 w-96 rounded-full bg-ceramic/15 blur-3xl" />
         <div className="absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-navy/10 blur-3xl" />
       </div>
 
@@ -21,12 +22,27 @@ export const HeroSection = ({ onUpload, onExplore, featuredImage }) => {
           transition={{ duration: 0.6 }}
           className="flex flex-col justify-center"
         >
-          <span className="inline-flex w-fit items-center gap-2 rounded-full bg-gold/15 px-4 py-1.5 text-xs font-extrabold uppercase tracking-wider text-gold-dark leading-eyebrow">
+          <span className="inline-flex w-fit items-center gap-2 rounded-full bg-ceramic/15 px-4 py-1.5 text-xs font-extrabold uppercase tracking-wider text-ceramic-dark leading-eyebrow">
             <Sparkles size={12} />
             AI Multi-Agent Debate
           </span>
           <h1 className="mt-6 font-heading text-4xl font-extrabold leading-[1.35] text-balance text-navy dark:text-ivory md:text-5xl md:leading-[1.32] lg:text-6xl lg:leading-[1.3]">
-            {t('home.heroTitle')}
+            Khám phá{' '}
+            <RotatingText
+              texts={['di sản', 'tinh hoa', 'kho tàng', 'bảo vật']}
+              mainClassName="px-2 sm:px-3 bg-gradient-to-r from-ceramic via-ceramic-soft to-ceramic text-navy overflow-hidden py-1 sm:py-1.5 md:py-2 justify-center rounded-lg inline-flex"
+              staggerFrom="last"
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '-120%' }}
+              staggerDuration={0.025}
+              splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1"
+              transition={{ type: 'spring', damping: 30, stiffness: 400 }}
+              rotationInterval={2500}
+              splitBy="characters"
+              autoloop
+            />{' '}
+            gốm sứ
           </h1>
           <p className="mt-6 max-w-xl text-base leading-paragraph text-muted dark:text-dark-text-muted md:text-lg md:leading-paragraph-relaxed">
             {t('home.heroSubtitle')}
@@ -80,3 +96,4 @@ export const HeroSection = ({ onUpload, onExplore, featuredImage }) => {
 };
 
 export default HeroSection;
+

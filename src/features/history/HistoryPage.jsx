@@ -12,6 +12,7 @@ import { historyApi } from './api';
 import { HistoryDetailModal } from './HistoryDetailModal';
 import { formatDate, getErrorMessage } from '../../lib/utils';
 import { VIEWS } from '../../lib/constants';
+import ShinyText from '../../components/ui/ShinyText';
 
 export const HistoryPage = ({ setView, notify }) => {
   const { t } = useTranslation();
@@ -43,7 +44,18 @@ export const HistoryPage = ({ setView, notify }) => {
   return (
     <PageContainer>
       <PageHeader
-        title={t('history.title')}
+        title={
+          <ShinyText
+            text={t('history.title')}
+            speed={3}
+            delay={0}
+            color="#0A1A42"
+            shineColor="#9FB7C9"
+            spread={80}
+            direction="right"
+            yoyo={false}
+          />
+        }
         subtitle={t('history.subtitle')}
         actions={
           <Button variant="ghost" size="sm" leftIcon={<RefreshCw size={14} />} onClick={fetchData}>
@@ -124,3 +136,4 @@ export const HistoryPage = ({ setView, notify }) => {
 };
 
 export default HistoryPage;
+

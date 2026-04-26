@@ -7,3 +7,4 @@ export const ContactPageWrapper = () => {
 
   return <ContactPage notify={notify} />;
 };
+

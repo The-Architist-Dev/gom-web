@@ -65,3 +65,4 @@ export const MagicCard = ({
 };
 
 export default MagicCard;
+

@@ -9,3 +9,4 @@ export const AdminPageWrapper = () => {
 
   return <AdminPage user={user} notify={notify} />;
 };
+

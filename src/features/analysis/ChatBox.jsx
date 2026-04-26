@@ -104,7 +104,7 @@ export const ChatBox = ({ user, onClose }) => {
                   className={
                     'max-w-[80%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm ' +
                     (m.isUser
-                      ? 'bg-navy text-white dark:bg-gold dark:text-navy-dark'
+                      ? 'bg-navy text-white dark:bg-ceramic dark:text-navy-dark'
                       : m.isError
                       ? 'bg-danger/15 text-danger'
                       : 'bg-surface text-navy dark:bg-dark-surface dark:text-dark-text')
@@ -131,13 +131,13 @@ export const ChatBox = ({ user, onClose }) => {
               onKeyDown={onKeyDown}
               placeholder={t('analysis.chat.placeholder')}
               disabled={loading}
-              className="flex-1 rounded-full border border-stroke bg-surface-alt px-5 py-3 text-sm text-navy placeholder:text-muted focus:border-gold focus:bg-surface focus:outline-none dark:border-dark-stroke dark:bg-dark-surface-alt dark:text-dark-text dark:placeholder:text-dark-text-muted"
+              className="flex-1 rounded-full border border-stroke bg-surface-alt px-5 py-3 text-sm text-navy placeholder:text-muted focus:border-ceramic focus:bg-surface focus:outline-none dark:border-dark-stroke dark:bg-dark-surface-alt dark:text-dark-text dark:placeholder:text-dark-text-muted"
             />
             <button
               type="button"
               onClick={send}
               disabled={loading || !input.trim()}
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-navy text-white transition-colors hover:bg-navy-light disabled:opacity-50 dark:bg-gold dark:text-navy-dark dark:hover:bg-gold-light"
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-navy text-white transition-colors hover:bg-navy-light disabled:opacity-50 dark:bg-ceramic dark:text-navy-dark dark:hover:bg-ceramic-light"
               aria-label="Send"
             >
               {loading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
@@ -151,3 +151,4 @@ export const ChatBox = ({ user, onClose }) => {
 };
 
 export default ChatBox;
+

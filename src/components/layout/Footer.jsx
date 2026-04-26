@@ -78,19 +78,19 @@ export const Footer = () => {
             </h4>
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2 text-muted dark:text-dark-text-muted">
-                <Mail size={16} className="mt-0.5 shrink-0 text-gold" />
+                <Mail size={16} className="mt-0.5 shrink-0 text-ceramic" />
                 <a href="mailto:dongnguyenkh123@gmail.com" className="hover:text-navy dark:hover:text-ivory">
                   dongnguyenkh123@gmail.com
                 </a>
               </li>
               <li className="flex items-start gap-2 text-muted dark:text-dark-text-muted">
-                <Phone size={16} className="mt-0.5 shrink-0 text-gold" />
+                <Phone size={16} className="mt-0.5 shrink-0 text-ceramic" />
                 <a href="tel:0949085842" className="hover:text-navy dark:hover:text-ivory">
                   0949 085 842
                 </a>
               </li>
               <li className="flex items-start gap-2 text-muted dark:text-dark-text-muted">
-                <MapPin size={16} className="mt-0.5 shrink-0 text-gold" />
+                <MapPin size={16} className="mt-0.5 shrink-0 text-ceramic" />
                 <span>Cần Thơ, Việt Nam</span>
               </li>
             </ul>
@@ -121,10 +121,11 @@ const SocialLink = ({ href, icon }) => (
     href={href}
     target="_blank"
     rel="noreferrer"
-    className="flex h-9 w-9 items-center justify-center rounded-full border border-stroke text-muted transition-colors hover:border-gold hover:text-gold dark:border-dark-stroke dark:text-dark-text-muted"
+    className="flex h-9 w-9 items-center justify-center rounded-full border border-stroke text-muted transition-colors hover:border-ceramic hover:text-ceramic dark:border-dark-stroke dark:text-dark-text-muted"
   >
     {icon}
   </a>
 );
 
 export default Footer;
+

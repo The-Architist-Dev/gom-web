@@ -24,7 +24,7 @@ export const ShimmerButton = React.forwardRef(function ShimmerButton(
 
   const variants = {
     primary:
-      'bg-navy text-white hover:bg-navy-light hover:shadow-lg dark:bg-gold dark:text-navy-dark dark:hover:bg-gold-light',
+      'bg-navy text-white hover:bg-navy-light hover:shadow-lg dark:bg-ceramic dark:text-navy-dark dark:hover:bg-ceramic-light',
     secondary:
       'bg-surface-alt text-navy hover:bg-stroke dark:bg-dark-surface-alt dark:text-dark-text dark:hover:bg-dark-stroke',
     ghost:
@@ -33,7 +33,7 @@ export const ShimmerButton = React.forwardRef(function ShimmerButton(
       'border border-stroke bg-transparent text-navy hover:bg-surface-alt dark:border-dark-stroke dark:text-dark-text dark:hover:bg-dark-surface-alt',
     danger: 'bg-danger text-white hover:bg-danger/90',
     gold: 'bg-gradient-gold text-navy-dark hover:shadow-glow',
-    link: 'bg-transparent text-navy underline-offset-4 hover:underline px-0 py-0 dark:text-gold',
+    link: 'bg-transparent text-navy underline-offset-4 hover:underline px-0 py-0 dark:text-ceramic',
   };
 
   const sizes = {
@@ -88,3 +88,4 @@ export const ShimmerButton = React.forwardRef(function ShimmerButton(
 });
 
 export default ShimmerButton;
+

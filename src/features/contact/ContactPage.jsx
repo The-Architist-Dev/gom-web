@@ -25,10 +25,11 @@ import { Input, Textarea, Label } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { contactApi } from './api';
 import { getErrorMessage, isValidEmail } from '../../lib/utils';
+import ShinyText from '../../components/ui/ShinyText';
 
 const ContactInfoCard = ({ icon: Icon, title, value, note, ctaText, ctaLink }) => (
   <Card hoverable className="text-center">
-    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gold/15 text-gold-dark">
+    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-ceramic/15 text-ceramic-dark">
       <Icon size={22} />
     </div>
     <h4 className="mb-1 font-heading text-base font-bold leading-card text-navy dark:text-ivory">{title}</h4>
@@ -37,7 +38,7 @@ const ContactInfoCard = ({ icon: Icon, title, value, note, ctaText, ctaLink }) =
     {ctaText && (
       <a
         href={ctaLink}
-        className="inline-flex items-center gap-1 text-xs font-bold text-gold-dark hover:underline"
+        className="inline-flex items-center gap-1 text-xs font-bold text-ceramic-dark hover:underline"
       >
         {ctaText}
         <ArrowRight size={12} />
@@ -129,11 +130,21 @@ export const ContactPage = ({ notify }) => {
     <PageContainer>
       {/* Hero */}
       <div className="mb-12 text-center">
-        <span className="text-xs font-extrabold uppercase tracking-wider leading-eyebrow text-gold">
+        <span className="text-xs font-extrabold uppercase tracking-wider leading-eyebrow text-ceramic-dark dark:text-ceramic">
           {t('contact.eyebrow')}
         </span>
         <h1 className="mt-4 font-heading text-3xl font-extrabold leading-[1.35] text-balance text-navy dark:text-ivory md:text-5xl md:leading-[1.32]">
-          {t('contact.title')}
+          <ShinyText
+            text={t('contact.title')}
+            speed={3.5}
+            delay={0}
+            color="#0A1A42"
+            shineColor="#C9D8E6"
+            spread={90}
+            direction="left"
+            yoyo={false}
+            className="dark:!text-ivory"
+          />
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-paragraph text-muted dark:text-dark-text-muted md:text-base md:leading-paragraph-relaxed">
           {t('contact.subtitle')}
@@ -271,13 +282,13 @@ export const ContactPage = ({ notify }) => {
         <div className="space-y-6">
           <Card>
             <h4 className="mb-4 flex items-center gap-2 font-heading text-base font-bold leading-card text-navy dark:text-ivory">
-              <ShieldCheck className="text-gold" size={18} />
+              <ShieldCheck className="text-ceramic" size={18} />
               {t('contact.system.title')}
             </h4>
             <ul className="space-y-3">
               {systemItems.map((it, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gold/10 text-gold-dark">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ceramic/10 text-ceramic-dark">
                     <it.icon size={14} />
                   </div>
                   <span className="text-muted dark:text-dark-text-muted">{it.text}</span>
@@ -301,3 +312,4 @@ export const ContactPage = ({ notify }) => {
 };
 
 export default ContactPage;
+

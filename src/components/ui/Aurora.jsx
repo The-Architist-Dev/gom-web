@@ -70,3 +70,4 @@ export const Aurora = ({ colorStops = ["#0F265C", "#D4AF37", "#F7F1E8", "#9A6A4F
 
   return <canvas ref={canvasRef} className="aurora-canvas" />;
 };
+

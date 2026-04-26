@@ -23,7 +23,7 @@ export const AnimatedEmptyState = ({
         <motion.div
           animate={{ y: [0, -8, 0] }}
           transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-          className="flex h-20 w-20 items-center justify-center rounded-full bg-gold/10 text-gold-dark dark:bg-gold/15"
+          className="flex h-20 w-20 items-center justify-center rounded-full bg-ceramic/10 text-ceramic-dark dark:bg-ceramic/15"
         >
           <Icon size={36} strokeWidth={1.5} />
         </motion.div>
@@ -61,3 +61,4 @@ export const AnimatedEmptyState = ({
 );
 
 export default AnimatedEmptyState;
+

@@ -45,7 +45,7 @@ export const AdminPage = ({ user, notify }) => {
             className={cn(
               '-mb-px flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-bold transition-colors',
               tab === it.id
-                ? 'border-gold text-navy dark:text-ivory'
+                ? 'border-ceramic text-navy dark:text-ivory'
                 : 'border-transparent text-muted hover:text-navy dark:text-dark-text-muted dark:hover:text-ivory'
             )}
           >
@@ -109,7 +109,7 @@ const DashboardTab = () => {
             <span className="text-xs font-extrabold uppercase tracking-widest text-muted dark:text-dark-text-muted">
               {t('admin.stats.' + c.key)}
             </span>
-            <c.icon className="text-gold" size={18} />
+            <c.icon className="text-ceramic" size={18} />
           </div>
           <p className="mt-3 font-heading text-3xl font-black text-navy dark:text-ivory">
             {c.value}
@@ -274,3 +274,4 @@ const PredictionsTab = () => {
 };
 
 export default AdminPage;
+

@@ -14,7 +14,7 @@ export const Stepper = ({ steps, current = 0, className }) => (
               className={cn(
                 'flex h-8 w-8 items-center justify-center rounded-full text-xs font-extrabold transition-colors',
                 active
-                  ? 'bg-navy text-white dark:bg-gold dark:text-navy-dark'
+                  ? 'bg-navy text-white dark:bg-ceramic dark:text-navy-dark'
                   : 'bg-stroke text-muted dark:bg-dark-stroke dark:text-dark-text-muted'
               )}
             >
@@ -41,3 +41,4 @@ export const Stepper = ({ steps, current = 0, className }) => (
 );
 
 export default Stepper;
+

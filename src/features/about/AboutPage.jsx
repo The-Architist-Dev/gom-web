@@ -6,6 +6,7 @@ import { PageContainer } from '../../components/layout/PageContainer';
 import { Card } from '../../components/ui/Card';
 import { CountUpNumber } from '../../components/motion';
 import { analysisApi } from '../analysis/api';
+import ShinyText from '../../components/ui/ShinyText';
 
 export const AboutPage = () => {
   const { t } = useTranslation();
@@ -45,12 +46,22 @@ export const AboutPage = () => {
     <PageContainer>
       {/* Hero */}
       <div className="mb-20 text-center">
-        <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-gold leading-eyebrow">
+        <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-ceramic leading-eyebrow">
           <Landmark size={14} />
           {t('about.eyebrow')}
         </span>
         <h1 className="mx-auto mt-4 max-w-3xl font-heading text-3xl font-extrabold leading-[1.35] text-balance text-navy dark:text-ivory md:text-5xl md:leading-[1.32]">
-          {t('about.title')}
+          <ShinyText
+            text={t('about.title')}
+            speed={4}
+            delay={0}
+            color="#0A1A42"
+            shineColor="#B8CAD8"
+            spread={85}
+            direction="left"
+            yoyo={false}
+            className="dark:!text-ivory"
+          />
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-base leading-paragraph text-muted dark:text-dark-text-muted md:text-lg md:leading-paragraph-relaxed">
           {t('about.subtitle')}
@@ -69,7 +80,7 @@ export const AboutPage = () => {
           >
             <Card hoverable className="h-full text-center">
               <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-stroke bg-surface-alt dark:border-dark-stroke dark:bg-dark-surface-alt">
-                <f.icon className="h-10 w-10 text-navy dark:text-gold" />
+                <f.icon className="h-10 w-10 text-navy dark:text-ceramic" />
               </div>
               <h3 className="mb-3 font-heading text-xl font-bold leading-card text-navy dark:text-ivory">
                 {f.title}
@@ -88,7 +99,7 @@ export const AboutPage = () => {
           <div>
             <h3 className="font-heading text-3xl font-black leading-[1.32] text-balance md:text-4xl md:leading-[1.3]">
               {t('about.mission.title')}{' '}
-              <span className="text-gold">{t('about.mission.highlight')}</span>
+              <span className="text-ceramic">{t('about.mission.highlight')}</span>
             </h3>
             <p className="mt-6 text-base leading-paragraph-relaxed text-white/85">
               {t('about.mission.p1')}
@@ -99,7 +110,7 @@ export const AboutPage = () => {
           </div>
           <div className="rounded-3xl bg-white/95 p-10 text-navy shadow-2xl">
             <div>
-              <div className="font-heading text-5xl font-black text-gold">
+              <div className="font-heading text-5xl font-black text-ceramic">
                 {stats.total_analyzed !== null
                   ? <CountUpNumber end={stats.total_analyzed} separator="," />
                   : '...'}
@@ -111,7 +122,7 @@ export const AboutPage = () => {
             </div>
             <div className="my-8 h-px bg-stroke" />
             <div>
-              <div className="font-heading text-5xl font-black text-gold">
+              <div className="font-heading text-5xl font-black text-ceramic">
                 {stats.accuracy !== null
                   ? <CountUpNumber end={stats.accuracy} decimals={1} suffix="%" />
                   : '...'}
@@ -129,3 +140,4 @@ export const AboutPage = () => {
 };
 
 export default AboutPage;
+

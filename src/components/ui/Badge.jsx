@@ -7,7 +7,7 @@ const variants = {
   warning: 'bg-warning/15 text-warning',
   danger: 'bg-danger/15 text-danger',
   info: 'bg-info/15 text-info',
-  gold: 'bg-gold/20 text-gold-dark',
+  gold: 'bg-ceramic/20 text-ceramic-dark',
   navy: 'bg-navy/15 text-navy dark:bg-navy/30 dark:text-ivory',
 };
 
@@ -25,3 +25,4 @@ export const Badge = ({ variant = 'default', className, children, ...props }) =>
 );
 
 export default Badge;
+

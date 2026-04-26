@@ -3,7 +3,7 @@ import { cn } from '../../lib/utils';
 
 const variants = {
   primary:
-    'bg-navy text-white hover:bg-navy-light hover:shadow-lg active:scale-[0.98] dark:bg-gold dark:text-navy-dark dark:hover:bg-gold-light',
+    'bg-navy text-white hover:bg-navy-light hover:shadow-lg active:scale-[0.98] dark:bg-ceramic dark:text-navy-dark dark:hover:bg-ceramic-light',
   secondary:
     'bg-surface-alt text-navy hover:bg-stroke active:scale-[0.98] dark:bg-dark-surface-alt dark:text-dark-text dark:hover:bg-dark-stroke',
   ghost:
@@ -12,7 +12,7 @@ const variants = {
     'border border-stroke bg-transparent text-navy hover:bg-surface-alt dark:border-dark-stroke dark:text-dark-text dark:hover:bg-dark-surface-alt',
   danger: 'bg-danger text-white hover:bg-danger/90 active:scale-[0.98]',
   gold: 'bg-gradient-gold text-navy-dark hover:shadow-glow active:scale-[0.98]',
-  link: 'bg-transparent text-navy underline-offset-4 hover:underline px-0 py-0 dark:text-gold',
+  link: 'bg-transparent text-navy underline-offset-4 hover:underline px-0 py-0 dark:text-ceramic',
 };
 
 const sizes = {
@@ -66,3 +66,4 @@ export const Button = React.forwardRef(function Button(
 });
 
 export default Button;
+

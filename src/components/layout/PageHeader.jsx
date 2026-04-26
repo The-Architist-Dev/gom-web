@@ -11,7 +11,7 @@ export const PageHeader = ({ eyebrow, title, subtitle, actions, className, cente
     )}
   >
     {eyebrow && (
-      <span className="text-xs font-extrabold uppercase tracking-wider leading-eyebrow text-gold">
+      <span className="text-xs font-extrabold uppercase tracking-wider leading-eyebrow text-ceramic">
         {eyebrow}
       </span>
     )}
@@ -33,3 +33,4 @@ export const PageHeader = ({ eyebrow, title, subtitle, actions, className, cente
 );
 
 export default PageHeader;
+

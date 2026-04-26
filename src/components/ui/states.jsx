@@ -9,7 +9,7 @@ export const LoadingState = ({ message = 'Đang tải...', className }) => (
       className
     )}
   >
-    <Loader2 className="h-8 w-8 animate-spin text-navy dark:text-gold" />
+    <Loader2 className="h-8 w-8 animate-spin text-navy dark:text-ceramic" />
     <p className="text-sm">{message}</p>
   </div>
 );
@@ -63,7 +63,7 @@ export const ErrorState = ({
       <button
         type="button"
         onClick={onRetry}
-        className="rounded-full bg-navy px-5 py-2 text-sm font-semibold text-white hover:bg-navy-light dark:bg-gold dark:text-navy-dark"
+        className="rounded-full bg-navy px-5 py-2 text-sm font-semibold text-white hover:bg-navy-light dark:bg-ceramic dark:text-navy-dark"
       >
         Thử lại
       </button>
@@ -79,3 +79,4 @@ export const Skeleton = ({ className }) => (
     )}
   />
 );
+

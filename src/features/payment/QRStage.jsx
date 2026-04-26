@@ -34,7 +34,7 @@ export const QRStage = ({ qrData, purchasing, notify, onConfirm, onCancel, onSim
           {/* QR side */}
           <div className="flex flex-col items-center justify-center bg-surface-alt p-10 dark:bg-dark-surface-alt lg:w-2/5">
             <div className="mb-6 text-center">
-              <p className="text-xs font-extrabold uppercase tracking-widest text-gold-dark">
+              <p className="text-xs font-extrabold uppercase tracking-widest text-ceramic-dark">
                 {t('payment.qr.title')}
               </p>
               <h3 className="mt-2 font-heading text-base font-extrabold text-navy dark:text-ivory">
@@ -48,10 +48,10 @@ export const QRStage = ({ qrData, purchasing, notify, onConfirm, onCancel, onSim
                 alt="VietQR"
                 className="block h-64 w-64 sm:h-72 sm:w-72"
               />
-              <span className="absolute left-0 top-0 h-8 w-8 rounded-tl-3xl border-l-4 border-t-4 border-gold" />
-              <span className="absolute right-0 top-0 h-8 w-8 rounded-tr-3xl border-r-4 border-t-4 border-gold" />
-              <span className="absolute bottom-0 left-0 h-8 w-8 rounded-bl-3xl border-b-4 border-l-4 border-gold" />
-              <span className="absolute bottom-0 right-0 h-8 w-8 rounded-br-3xl border-b-4 border-r-4 border-gold" />
+              <span className="absolute left-0 top-0 h-8 w-8 rounded-tl-3xl border-l-4 border-t-4 border-ceramic" />
+              <span className="absolute right-0 top-0 h-8 w-8 rounded-tr-3xl border-r-4 border-t-4 border-ceramic" />
+              <span className="absolute bottom-0 left-0 h-8 w-8 rounded-bl-3xl border-b-4 border-l-4 border-ceramic" />
+              <span className="absolute bottom-0 right-0 h-8 w-8 rounded-br-3xl border-b-4 border-r-4 border-ceramic" />
             </div>
 
             <div className="mt-6 flex items-center gap-2 text-xs font-semibold text-muted dark:text-dark-text-muted">
@@ -77,7 +77,7 @@ export const QRStage = ({ qrData, purchasing, notify, onConfirm, onCancel, onSim
                   key={idx}
                   className={
                     it.featured
-                      ? 'rounded-xl border border-dashed border-gold bg-gold/10 p-4'
+                      ? 'rounded-xl border border-dashed border-ceramic bg-ceramic/10 p-4'
                       : ''
                   }
                 >
@@ -127,7 +127,7 @@ export const QRStage = ({ qrData, purchasing, notify, onConfirm, onCancel, onSim
                   <button
                     type="button"
                     onClick={onSimulate}
-                    className="inline-flex items-center gap-1.5 text-xs font-extrabold text-gold underline-offset-2 hover:underline"
+                    className="inline-flex items-center gap-1.5 text-xs font-extrabold text-ceramic underline-offset-2 hover:underline"
                   >
                     <FlaskConical size={12} />
                     {t('payment.qr.simulate')}
@@ -149,3 +149,4 @@ export const QRStage = ({ qrData, purchasing, notify, onConfirm, onCancel, onSim
 };
 
 export default QRStage;
+

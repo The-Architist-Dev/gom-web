@@ -39,3 +39,4 @@ export const STORAGE_KEYS = {
   THEME: 'theme',
   LANG: 'i18nextLng',
 };
+

@@ -32,3 +32,4 @@ export function useView(defaultView = 'debate') {
 
   return [view, navigate];
 }
+

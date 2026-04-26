@@ -7,3 +7,4 @@ export const paymentApi = {
   history: () => apiClient.get('/payment/history'),
   testComplete: (paymentId) => apiClient.post(`/payment/test-complete/${paymentId}`),
 };
+

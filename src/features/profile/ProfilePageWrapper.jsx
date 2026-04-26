@@ -9,3 +9,4 @@ export const ProfilePageWrapper = () => {
 
   return <ProfilePage user={user} fetchUser={fetchUser} notify={notify} />;
 };
+

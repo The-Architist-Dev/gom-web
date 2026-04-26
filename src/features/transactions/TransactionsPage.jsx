@@ -123,3 +123,4 @@ export const TransactionsPage = ({ setView, notify }) => {
 };
 
 export default TransactionsPage;
+

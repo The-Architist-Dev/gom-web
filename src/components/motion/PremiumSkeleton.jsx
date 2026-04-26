@@ -49,3 +49,4 @@ export const TableRowSkeleton = ({ cols = 4 }) => (
 
 export const PremiumSkeleton = Skeleton;
 export default Skeleton;
+

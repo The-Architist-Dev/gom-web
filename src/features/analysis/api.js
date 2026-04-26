@@ -9,3 +9,4 @@ export const analysisApi = {
   chat: (question) => apiClient.post('/ai/chat', { question }),
   getStats: () => apiClient.get('/stats'),
 };
+

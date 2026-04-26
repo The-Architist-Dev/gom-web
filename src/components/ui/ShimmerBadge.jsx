@@ -9,9 +9,9 @@ import { cn } from '../../lib/utils';
 export const ShimmerBadge = ({ children, variant = 'danger', className }) => {
   const variants = {
     danger: 'bg-danger/15 text-danger',
-    gold: 'bg-gold/15 text-gold-dark',
+    gold: 'bg-ceramic/15 text-ceramic-dark',
     success: 'bg-success/15 text-success',
-    navy: 'bg-navy/15 text-navy dark:bg-gold/15 dark:text-gold',
+    navy: 'bg-navy/15 text-navy dark:bg-ceramic/15 dark:text-ceramic',
   };
 
   return (
@@ -45,3 +45,4 @@ export const ShimmerBadge = ({ children, variant = 'danger', className }) => {
 };
 
 export default ShimmerBadge;
+

@@ -16,7 +16,7 @@ export const Input = React.forwardRef(function Input(
         ref={ref}
         className={cn(
           'w-full rounded-xl border bg-surface-alt px-4 py-3 text-sm text-gray-900 placeholder:text-muted',
-          'transition-all duration-200 focus:bg-surface focus:outline-none focus:border-gold',
+          'transition-all duration-200 focus:bg-surface focus:outline-none focus:border-ceramic',
           'dark:bg-dark-surface-alt dark:text-dark-text dark:placeholder:text-dark-text-muted',
           error
             ? 'border-danger focus:border-danger'
@@ -46,7 +46,7 @@ export const Textarea = React.forwardRef(function Textarea(
       rows={rows}
       className={cn(
         'w-full resize-none rounded-xl border bg-surface-alt px-4 py-3 text-sm text-gray-900 placeholder:text-muted',
-        'transition-all duration-200 focus:bg-surface focus:outline-none focus:border-gold',
+        'transition-all duration-200 focus:bg-surface focus:outline-none focus:border-ceramic',
         'dark:bg-dark-surface-alt dark:text-dark-text dark:placeholder:text-dark-text-muted',
         error
           ? 'border-danger focus:border-danger'
@@ -76,3 +76,4 @@ export const FieldError = ({ children }) => {
 };
 
 export default Input;
+

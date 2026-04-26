@@ -92,7 +92,7 @@ export const MainHeader = ({ user, quota, logout }) => {
           {/* Quota */}
           <div className="hidden items-center gap-1 md:flex">
             {tokenBalance > 0 && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-gold/15 px-2.5 py-1 text-xs font-bold text-gold-dark">
+              <span className="inline-flex items-center gap-1 rounded-full bg-ceramic/15 px-2.5 py-1 text-xs font-bold text-ceramic-dark">
                 <Zap size={12} />
                 {tokenBalance}
               </span>
@@ -113,7 +113,7 @@ export const MainHeader = ({ user, quota, logout }) => {
           {/* Top up CTA */}
           <Link
             to="/payment"
-            className="hidden items-center gap-1.5 rounded-full bg-gradient-gold px-4 py-2 text-xs font-extrabold text-navy-dark shadow-sm transition-all hover:shadow-glow active:scale-95 sm:inline-flex"
+            className="hidden items-center gap-1.5 rounded-full bg-navy px-4 py-2 text-xs font-extrabold text-white shadow-sm transition-all hover:bg-navy-light hover:shadow-md active:scale-95 dark:bg-ceramic dark:text-navy-dark dark:hover:bg-ceramic-hover sm:inline-flex"
           >
             <Plus size={14} strokeWidth={3} />
             <span>{t('header.topupShort')}</span>
@@ -212,7 +212,7 @@ export const MainHeader = ({ user, quota, logout }) => {
 const DropdownItem = ({ icon, label, onClick, variant = 'default' }) => {
   const cls = {
     default: 'text-navy hover:bg-surface-alt dark:text-dark-text dark:hover:bg-dark-surface-alt',
-    gold: 'text-gold-dark hover:bg-gold/10',
+    gold: 'text-ceramic-dark hover:bg-ceramic/10',
     danger: 'text-danger hover:bg-danger/10',
   }[variant];
 
@@ -229,3 +229,4 @@ const DropdownItem = ({ icon, label, onClick, variant = 'default' }) => {
 };
 
 export default MainHeader;
+

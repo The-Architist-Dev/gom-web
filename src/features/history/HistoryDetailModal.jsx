@@ -85,3 +85,4 @@ export const HistoryDetailModal = ({ item, onClose }) => {
 };
 
 export default HistoryDetailModal;
+

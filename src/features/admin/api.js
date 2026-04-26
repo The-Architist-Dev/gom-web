@@ -21,3 +21,4 @@ export const adminApi = {
   // Predictions
   predictions: () => apiClient.get('/admin/predictions'),
 };
+

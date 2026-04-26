@@ -9,3 +9,4 @@ export const authApi = {
   logout: () => apiClient.post('/logout'),
   me: () => apiClient.get('/user'),
 };
+

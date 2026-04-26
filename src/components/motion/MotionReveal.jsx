@@ -45,3 +45,4 @@ export const MotionRevealGroup = ({ children, stagger = 0.1, className = '' }) =
 };
 
 export default MotionReveal;
+

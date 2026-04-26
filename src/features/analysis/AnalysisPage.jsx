@@ -134,7 +134,7 @@ export const AnalysisPage = ({ token, notify, quota, setQuota, setView, user }) 
             transition={{ delay: i * 0.1 }}
           >
             <Card hoverable className="h-full text-center">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gold/15 text-gold-dark">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-ceramic/15 text-ceramic-dark">
                 <it.icon size={22} />
               </div>
               <h3 className="font-heading text-lg font-bold leading-card text-navy dark:text-ivory">
@@ -217,7 +217,7 @@ export const AnalysisPage = ({ token, notify, quota, setQuota, setView, user }) 
                   )}
                 </div>
                 <div className="p-5">
-                  <span className="text-xs font-extrabold uppercase tracking-wider leading-eyebrow text-gold-dark">
+                  <span className="text-xs font-extrabold uppercase tracking-wider leading-eyebrow text-ceramic-dark">
                     {line.era}
                   </span>
                   <h3 className="mt-1 font-heading text-lg font-bold leading-card text-navy dark:text-ivory">
@@ -237,3 +237,4 @@ export const AnalysisPage = ({ token, notify, quota, setQuota, setView, user }) 
 };
 
 export default AnalysisPage;
+

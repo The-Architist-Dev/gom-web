@@ -74,3 +74,4 @@ export function useAuth() {
 
   return { token, setToken, user, setUser, quota, setQuota, logout, fetchUser };
 }
+

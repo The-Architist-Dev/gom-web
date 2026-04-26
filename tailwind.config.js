@@ -12,10 +12,13 @@ module.exports = {
           dark: '#0A1A42',
           light: '#142C6E',
         },
-        gold: {
-          DEFAULT: '#D4AF37',
-          dark: '#B89125',
-          light: '#E5C962',
+        // Ceramic blue accent - replacing gold
+        ceramic: {
+          DEFAULT: '#C9D8E6',
+          soft: '#DCE7F0',
+          hover: '#9FB7C9',
+          border: '#B8CAD8',
+          dark: '#7A95AD',
         },
         clay: '#8B3A3A',
         muted: '#6F6A64',
@@ -50,7 +53,7 @@ module.exports = {
         md: '0 8px 24px rgba(0, 0, 0, 0.08)',
         lg: '0 16px 48px rgba(0, 0, 0, 0.12)',
         xl: '0 30px 80px rgba(0, 0, 0, 0.06)',
-        glow: '0 0 40px rgba(212, 175, 55, 0.3)',
+        glow: '0 0 40px rgba(201, 216, 230, 0.3)',
       },
       keyframes: {
         fadeIn: {
@@ -87,9 +90,9 @@ module.exports = {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       backgroundImage: {
-        'gradient-gold': 'linear-gradient(135deg, #D4AF37 0%, #E5C962 100%)',
+        'gradient-ceramic': 'linear-gradient(135deg, #C9D8E6 0%, #DCE7F0 100%)',
         'gradient-navy': 'linear-gradient(135deg, #0F265C 0%, #142C6E 100%)',
-        'shimmer-gold': 'linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent)',
+        'shimmer-ceramic': 'linear-gradient(90deg, transparent, rgba(201,216,230,0.3), transparent)',
       },
       lineHeight: {
         // Display headings (hero, large titles) - Vietnamese-friendly with extra space

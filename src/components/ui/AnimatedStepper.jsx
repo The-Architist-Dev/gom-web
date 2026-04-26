@@ -77,7 +77,7 @@ export const AnimatedStepper = ({ steps, current = 0, className }) => {
                 className={cn(
                   'flex h-10 w-10 items-center justify-center rounded-full text-sm font-extrabold transition-all duration-300',
                   active
-                    ? 'bg-navy text-white shadow-md dark:bg-gold dark:text-navy-dark'
+                    ? 'bg-navy text-white shadow-md dark:bg-ceramic dark:text-navy-dark'
                     : 'bg-stroke text-muted dark:bg-dark-stroke dark:text-dark-text-muted'
                 )}
               >
@@ -102,7 +102,7 @@ export const AnimatedStepper = ({ steps, current = 0, className }) => {
               >
                 {done && (
                   <div
-                    className="line-fill absolute inset-0 origin-left bg-navy dark:bg-gold"
+                    className="line-fill absolute inset-0 origin-left bg-navy dark:bg-ceramic"
                     style={{ transform: 'scaleX(1)' }}
                   />
                 )}
@@ -116,3 +116,4 @@ export const AnimatedStepper = ({ steps, current = 0, className }) => {
 };
 
 export default AnimatedStepper;
+

@@ -40,9 +40,9 @@ export const MagicPricingCard = ({
       className={cn(
         'relative overflow-hidden rounded-[28px] bg-surface p-8 shadow-sm transition-shadow duration-300 cursor-pointer',
         'dark:bg-dark-surface',
-        featured && 'border-2 border-gold ring-2 ring-gold/20',
+        featured && 'border-2 border-ceramic ring-2 ring-gold/20',
         !featured && 'border border-stroke dark:border-dark-stroke',
-        selected && 'border-2 border-navy ring-2 ring-navy/20 dark:border-gold dark:ring-gold/20',
+        selected && 'border-2 border-navy ring-2 ring-navy/20 dark:border-ceramic dark:ring-gold/20',
         isHovered && 'shadow-xl',
         className
       )}
@@ -77,7 +77,7 @@ export const MagicPricingCard = ({
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-          className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-navy text-white dark:bg-gold dark:text-navy-dark"
+          className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-navy text-white dark:bg-ceramic dark:text-navy-dark"
         >
           <Check size={16} strokeWidth={3} />
         </motion.div>
@@ -90,3 +90,4 @@ export const MagicPricingCard = ({
 };
 
 export default MagicPricingCard;
+

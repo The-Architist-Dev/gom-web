@@ -19,3 +19,4 @@ export const HistoryPageWrapper = () => {
 
   return <HistoryPage setView={setView} notify={notify} />;
 };
+

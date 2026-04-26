@@ -106,7 +106,7 @@ export const ProfilePage = ({ user, fetchUser, notify }) => {
               className={cn(
                 '-mb-px flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-bold transition-colors',
                 tab === t2.id
-                  ? 'border-gold text-navy dark:text-ivory'
+                  ? 'border-ceramic text-navy dark:text-ivory'
                   : 'border-transparent text-muted hover:text-navy dark:text-dark-text-muted dark:hover:text-ivory'
               )}
             >
@@ -196,3 +196,4 @@ export const ProfilePage = ({ user, fetchUser, notify }) => {
 };
 
 export default ProfilePage;
+

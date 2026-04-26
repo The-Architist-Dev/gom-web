@@ -10,6 +10,7 @@ import { LoadingState, EmptyState, ErrorState } from '../../components/ui/states
 import { CeramicDetailModal } from './CeramicDetailModal';
 import { ceramicsApi } from './api';
 import { cn, getErrorMessage } from '../../lib/utils';
+import ShinyText from '../../components/ui/ShinyText';
 
 export const CeramicsPage = ({ notify }) => {
   const { t } = useTranslation();
@@ -61,7 +62,21 @@ export const CeramicsPage = ({ notify }) => {
 
   return (
     <PageContainer>
-      <PageHeader title={t('ceramics.title')} subtitle={t('ceramics.subtitle')} />
+      <PageHeader 
+        title={
+          <ShinyText
+            text={t('ceramics.title')}
+            speed={3}
+            delay={0}
+            color="#0A1A42"
+            shineColor="#B8CAD8"
+            spread={80}
+            direction="left"
+            yoyo={false}
+          />
+        }
+        subtitle={t('ceramics.subtitle')} 
+      />
 
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center">
         <div className="flex-1">
@@ -81,7 +96,7 @@ export const CeramicsPage = ({ notify }) => {
               className={cn(
                 'rounded-full border px-3 py-1.5 text-xs font-bold uppercase transition-colors',
                 country === c
-                  ? 'border-navy bg-navy text-white dark:border-gold dark:bg-gold dark:text-navy-dark'
+                  ? 'border-navy bg-navy text-white dark:border-ceramic dark:bg-ceramic dark:text-navy-dark'
                   : 'border-stroke bg-surface text-muted hover:border-navy hover:text-navy dark:border-dark-stroke dark:bg-dark-surface dark:text-dark-text-muted dark:hover:text-ivory'
               )}
             >
@@ -134,7 +149,7 @@ export const CeramicsPage = ({ notify }) => {
                   {line.name}
                 </h3>
                 {line.era && (
-                  <p className="mt-1 text-xs font-semibold uppercase tracking-wider leading-eyebrow text-gold-dark">
+                  <p className="mt-1 text-xs font-semibold uppercase tracking-wider leading-eyebrow text-ceramic-dark">
                     {line.era}
                   </p>
                 )}
@@ -155,3 +170,4 @@ export const CeramicsPage = ({ notify }) => {
 };
 
 export default CeramicsPage;
+

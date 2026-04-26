@@ -20,7 +20,7 @@ import { cn } from '../../lib/utils';
 const SECTION_TONE = {
   agents: { icon: Bot, color: 'text-info', bg: 'bg-info/10' },
   debate: { icon: Users, color: 'text-clay', bg: 'bg-clay/10' },
-  details: { icon: BookOpen, color: 'text-gold-dark', bg: 'bg-gold/10' },
+  details: { icon: BookOpen, color: 'text-ceramic-dark', bg: 'bg-ceramic/10' },
 };
 
 export const ResultDashboard = ({ result, preview, user, onReset }) => {
@@ -52,7 +52,7 @@ export const ResultDashboard = ({ result, preview, user, onReset }) => {
         className="overflow-hidden rounded-3xl bg-gradient-navy p-8 text-white shadow-lg md:p-12"
       >
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-          <Badge variant="gold" className="!bg-gold !text-navy-dark">
+          <Badge variant="gold" className="!bg-ceramic !text-navy-dark">
             <ShieldCheck size={12} />
             {t('analysis.result.verdict')}
           </Badge>
@@ -90,7 +90,7 @@ export const ResultDashboard = ({ result, preview, user, onReset }) => {
                   initial={{ width: 0 }}
                   animate={{ width: confidence + '%' }}
                   transition={{ duration: 0.8, ease: 'easeOut' }}
-                  className="h-full bg-gold"
+                  className="h-full bg-ceramic"
                 />
               </div>
               {certainty && (
@@ -258,3 +258,4 @@ const AgentCard = ({ agent }) => {
 };
 
 export default ResultDashboard;
+

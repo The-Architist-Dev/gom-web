@@ -342,3 +342,4 @@ export const PaymentPage = ({ fetchUser, notify, setView }) => {
 };
 
 export default PaymentPage;
+
