@@ -140,8 +140,8 @@ export const ContactPage = ({ notify }) => {
             delay={0}
             color="#0A1A42"
             shineColor="#C9D8E6"
-            darkColor="#F7F2E8"
-            darkShineColor="#DCE7F0"
+            darkColor="#9CA3AF"
+            darkShineColor="#FFFFFF"
             spread={90}
             direction="left"
             yoyo={false}

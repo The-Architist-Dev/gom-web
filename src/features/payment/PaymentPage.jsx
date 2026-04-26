@@ -256,8 +256,8 @@ export const PaymentPage = ({ fetchUser, notify, setView }) => {
             delay={0}
             color="#0A1A42"
             shineColor="#B8CAD8"
-            darkColor="#F7F2E8"
-            darkShineColor="#DCE7F0"
+            darkColor="#9CA3AF"
+            darkShineColor="#FFFFFF"
             spread={85}
             direction="left"
             yoyo={false}

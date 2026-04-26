@@ -28,42 +28,36 @@ const ShinyText = ({
     const animationDuration = speed * 1000;
     const spreadDeg = spread;
 
-    // Detect dark mode
-    const isDark = document.documentElement.classList.contains('dark');
-    const finalColor = isDark && darkColor ? darkColor : color;
-    const finalShineColor = isDark && darkShineColor ? darkShineColor : shineColor;
+    const applyShinyEffect = () => {
+      // Detect dark mode
+      const isDark = document.documentElement.classList.contains('dark');
+      const finalColor = isDark && darkColor ? darkColor : color;
+      const finalShineColor = isDark && darkShineColor ? darkShineColor : shineColor;
 
-    // Create gradient
-    const gradient = `linear-gradient(
-      ${direction === 'left' ? '90deg' : direction === 'right' ? '-90deg' : '0deg'},
-      ${finalColor} 0%,
-      ${finalColor} ${50 - spreadDeg / 2}%,
-      ${finalShineColor} 50%,
-      ${finalColor} ${50 + spreadDeg / 2}%,
-      ${finalColor} 100%
-    )`;
+      // Create gradient
+      const gradient = `linear-gradient(
+        ${direction === 'left' ? '90deg' : direction === 'right' ? '-90deg' : '0deg'},
+        ${finalColor} 0%,
+        ${finalColor} ${50 - spreadDeg / 2}%,
+        ${finalShineColor} 50%,
+        ${finalColor} ${50 + spreadDeg / 2}%,
+        ${finalColor} 100%
+      )`;
 
-    element.style.background = gradient;
-    element.style.backgroundSize = '200% auto';
-    element.style.WebkitBackgroundClip = 'text';
-    element.style.WebkitTextFillColor = 'transparent';
-    element.style.backgroundClip = 'text';
+      element.style.background = gradient;
+      element.style.backgroundSize = '200% auto';
+      element.style.WebkitBackgroundClip = 'text';
+      element.style.WebkitTextFillColor = 'transparent';
+      element.style.backgroundClip = 'text';
+      element.style.color = 'transparent';
+    };
+
+    // Apply initial effect
+    applyShinyEffect();
 
     // Watch for theme changes
     const observer = new MutationObserver(() => {
-      const isDarkNow = document.documentElement.classList.contains('dark');
-      const newColor = isDarkNow && darkColor ? darkColor : color;
-      const newShineColor = isDarkNow && darkShineColor ? darkShineColor : shineColor;
-      
-      const newGradient = `linear-gradient(
-        ${direction === 'left' ? '90deg' : direction === 'right' ? '-90deg' : '0deg'},
-        ${newColor} 0%,
-        ${newColor} ${50 - spreadDeg / 2}%,
-        ${newShineColor} 50%,
-        ${newColor} ${50 + spreadDeg / 2}%,
-        ${newColor} 100%
-      )`;
-      element.style.background = newGradient;
+      applyShinyEffect();
     });
 
     observer.observe(document.documentElement, {

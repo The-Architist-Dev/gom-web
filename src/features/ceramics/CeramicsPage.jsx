@@ -70,8 +70,8 @@ export const CeramicsPage = ({ notify }) => {
             delay={0}
             color="#0A1A42"
             shineColor="#B8CAD8"
-            darkColor="#F7F2E8"
-            darkShineColor="#DCE7F0"
+            darkColor="#9CA3AF"
+            darkShineColor="#FFFFFF"
             spread={80}
             direction="left"
             yoyo={false}
