@@ -11,17 +11,17 @@ export const PageHeader = ({ eyebrow, title, subtitle, actions, className, cente
     )}
   >
     {eyebrow && (
-      <span className="text-xs font-extrabold uppercase tracking-[0.2em] text-gold">
+      <span className="text-xs font-extrabold uppercase tracking-wider leading-eyebrow text-gold">
         {eyebrow}
       </span>
     )}
-    <h2 className="font-heading text-3xl font-extrabold text-navy dark:text-ivory md:text-4xl">
+    <h2 className="font-heading text-3xl font-extrabold leading-heading text-balance text-navy dark:text-ivory md:text-4xl md:leading-display-relaxed">
       {title}
     </h2>
     {subtitle && (
       <p
         className={cn(
-          'max-w-2xl text-base leading-relaxed text-muted dark:text-dark-text-muted',
+          'max-w-2xl text-base leading-paragraph text-muted dark:text-dark-text-muted md:leading-paragraph-relaxed',
           centered && 'mx-auto text-center'
         )}
       >

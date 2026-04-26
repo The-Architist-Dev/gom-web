@@ -222,10 +222,10 @@ export const PaymentPage = ({ fetchUser, notify, setView }) => {
                 <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-success/20 text-success">
                   <Check size={36} strokeWidth={3} />
                 </div>
-                <h3 className="font-heading text-2xl font-bold text-navy dark:text-ivory">
+                <h3 className="font-heading text-2xl font-bold leading-heading text-navy dark:text-ivory">
                   {t('payment.success.title')}
                 </h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted dark:text-dark-text-muted">
+                <p className="mt-3 text-sm leading-paragraph text-muted dark:text-dark-text-muted">
                   {t('payment.success.msg', { credits: successCredits })}
                 </p>
                 <Button variant="primary" size="lg" onClick={finish} className="mt-6 w-full">

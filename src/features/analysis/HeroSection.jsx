@@ -21,14 +21,14 @@ export const HeroSection = ({ onUpload, onExplore, featuredImage }) => {
           transition={{ duration: 0.6 }}
           className="flex flex-col justify-center"
         >
-          <span className="inline-flex w-fit items-center gap-2 rounded-full bg-gold/15 px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold-dark">
+          <span className="inline-flex w-fit items-center gap-2 rounded-full bg-gold/15 px-4 py-1.5 text-xs font-extrabold uppercase tracking-wider text-gold-dark leading-eyebrow">
             <Sparkles size={12} />
             AI Multi-Agent Debate
           </span>
-          <h1 className="mt-6 font-heading text-4xl font-extrabold leading-[1.1] text-navy dark:text-ivory md:text-5xl lg:text-6xl">
+          <h1 className="mt-6 font-heading text-4xl font-extrabold leading-display text-balance text-navy dark:text-ivory md:text-5xl lg:text-6xl">
             {t('home.heroTitle')}
           </h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-muted dark:text-dark-text-muted md:text-lg">
+          <p className="mt-6 max-w-xl text-base leading-paragraph text-muted dark:text-dark-text-muted md:text-lg md:leading-paragraph-relaxed">
             {t('home.heroSubtitle')}
           </p>
           <div className="mt-8 flex flex-wrap gap-4">

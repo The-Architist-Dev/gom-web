@@ -130,16 +130,16 @@ export const CeramicsPage = ({ notify }) => {
                   {line.is_featured && <Badge variant="gold">{t('ceramics.featured')}</Badge>}
                   {line.country && <Badge variant="navy">{line.country}</Badge>}
                 </div>
-                <h3 className="font-heading text-lg font-bold text-navy dark:text-ivory">
+                <h3 className="font-heading text-lg font-bold leading-card text-navy dark:text-ivory">
                   {line.name}
                 </h3>
                 {line.era && (
-                  <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-gold-dark">
+                  <p className="mt-1 text-xs font-semibold uppercase tracking-wider leading-eyebrow text-gold-dark">
                     {line.era}
                   </p>
                 )}
                 {line.description && (
-                  <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted dark:text-dark-text-muted">
+                  <p className="mt-2 line-clamp-2 text-sm leading-paragraph text-muted dark:text-dark-text-muted">
                     {line.description}
                   </p>
                 )}

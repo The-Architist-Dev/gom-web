@@ -45,14 +45,14 @@ export const AboutPage = () => {
     <PageContainer>
       {/* Hero */}
       <div className="mb-20 text-center">
-        <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.25em] text-gold">
+        <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-gold leading-eyebrow">
           <Landmark size={14} />
           {t('about.eyebrow')}
         </span>
-        <h1 className="mx-auto mt-4 max-w-3xl font-heading text-3xl font-extrabold leading-tight text-navy dark:text-ivory md:text-5xl">
+        <h1 className="mx-auto mt-4 max-w-3xl font-heading text-3xl font-extrabold leading-heading text-balance text-navy dark:text-ivory md:text-5xl md:leading-display-relaxed">
           {t('about.title')}
         </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted dark:text-dark-text-muted">
+        <p className="mx-auto mt-6 max-w-2xl text-base leading-paragraph text-muted dark:text-dark-text-muted md:text-lg md:leading-paragraph-relaxed">
           {t('about.subtitle')}
         </p>
       </div>
@@ -71,10 +71,10 @@ export const AboutPage = () => {
               <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-stroke bg-surface-alt dark:border-dark-stroke dark:bg-dark-surface-alt">
                 <f.icon className="h-10 w-10 text-navy dark:text-gold" />
               </div>
-              <h3 className="mb-3 font-heading text-xl font-bold text-navy dark:text-ivory">
+              <h3 className="mb-3 font-heading text-xl font-bold leading-card text-navy dark:text-ivory">
                 {f.title}
               </h3>
-              <p className="text-sm leading-relaxed text-muted dark:text-dark-text-muted">
+              <p className="text-sm leading-paragraph text-muted dark:text-dark-text-muted">
                 {f.desc}
               </p>
             </Card>
@@ -86,14 +86,14 @@ export const AboutPage = () => {
       <div className="overflow-hidden rounded-3xl bg-gradient-navy p-10 text-white shadow-lg md:p-16">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <div>
-            <h3 className="font-heading text-3xl font-black leading-tight md:text-4xl">
+            <h3 className="font-heading text-3xl font-black leading-heading text-balance md:text-4xl md:leading-display-relaxed">
               {t('about.mission.title')}{' '}
               <span className="text-gold">{t('about.mission.highlight')}</span>
             </h3>
-            <p className="mt-6 text-base leading-relaxed text-white/85">
+            <p className="mt-6 text-base leading-paragraph-relaxed text-white/85">
               {t('about.mission.p1')}
             </p>
-            <p className="mt-4 text-base leading-relaxed text-white/85">
+            <p className="mt-4 text-base leading-paragraph-relaxed text-white/85">
               {t('about.mission.p2')}
             </p>
           </div>
@@ -104,7 +104,7 @@ export const AboutPage = () => {
                   ? <CountUpNumber end={stats.total_analyzed} separator="," />
                   : '...'}
               </div>
-              <div className="mt-3 flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-muted">
+              <div className="mt-3 flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-muted leading-eyebrow">
                 <ImageIcon size={14} />
                 {t('about.mission.stats1')}
               </div>
@@ -116,7 +116,7 @@ export const AboutPage = () => {
                   ? <CountUpNumber end={stats.accuracy} decimals={1} suffix="%" />
                   : '...'}
               </div>
-              <div className="mt-3 flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-muted">
+              <div className="mt-3 flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-muted leading-eyebrow">
                 <CheckCircle2 size={14} />
                 {t('about.mission.stats2')}
               </div>

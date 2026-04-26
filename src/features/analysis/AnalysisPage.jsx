@@ -136,10 +136,10 @@ export const AnalysisPage = ({ token, notify, quota, setQuota, setView, user }) 
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gold/15 text-gold-dark">
                 <it.icon size={22} />
               </div>
-              <h3 className="font-heading text-lg font-bold text-navy dark:text-ivory">
+              <h3 className="font-heading text-lg font-bold leading-card text-navy dark:text-ivory">
                 {t('home.trust.' + it.k)}
               </h3>
-              <p className="mt-2 text-sm text-muted dark:text-dark-text-muted">
+              <p className="mt-2 text-sm leading-paragraph text-muted dark:text-dark-text-muted">
                 {t('home.trust.' + it.k + 'Desc')}
               </p>
             </Card>
@@ -160,7 +160,7 @@ export const AnalysisPage = ({ token, notify, quota, setQuota, setView, user }) 
       {/* Featured lines */}
       <section className="py-16">
         <div className="mb-10 flex items-center justify-between">
-          <h2 className="font-heading text-3xl font-extrabold text-navy dark:text-ivory">
+          <h2 className="font-heading text-3xl font-extrabold leading-heading text-navy dark:text-ivory">
             {t('home.featured.title')}
           </h2>
           <Button
@@ -213,13 +213,13 @@ export const AnalysisPage = ({ token, notify, quota, setQuota, setView, user }) 
                   )}
                 </div>
                 <div className="p-5">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-gold-dark">
+                  <span className="text-xs font-extrabold uppercase tracking-wider leading-eyebrow text-gold-dark">
                     {line.era}
                   </span>
-                  <h3 className="mt-1 font-heading text-lg font-bold text-navy dark:text-ivory">
+                  <h3 className="mt-1 font-heading text-lg font-bold leading-card text-navy dark:text-ivory">
                     {line.name}
                   </h3>
-                  <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted dark:text-dark-text-muted">
+                  <p className="mt-2 line-clamp-2 text-sm leading-paragraph text-muted dark:text-dark-text-muted">
                     {line.description}
                   </p>
                 </div>

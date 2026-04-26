@@ -31,9 +31,9 @@ const ContactInfoCard = ({ icon: Icon, title, value, note, ctaText, ctaLink }) =
     <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gold/15 text-gold-dark">
       <Icon size={22} />
     </div>
-    <h4 className="mb-1 font-heading text-base font-bold text-navy dark:text-ivory">{title}</h4>
-    <p className="mb-1 text-base font-bold text-navy dark:text-ivory">{value}</p>
-    <p className="mb-3 text-xs leading-relaxed text-muted dark:text-dark-text-muted">{note}</p>
+    <h4 className="mb-1 font-heading text-base font-bold leading-card text-navy dark:text-ivory">{title}</h4>
+    <p className="mb-1 text-base font-bold leading-button text-navy dark:text-ivory">{value}</p>
+    <p className="mb-3 text-xs leading-paragraph text-muted dark:text-dark-text-muted">{note}</p>
     {ctaText && (
       <a
         href={ctaLink}
@@ -69,7 +69,7 @@ const FAQItem = ({ question, answer }) => {
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <p className="pb-4 text-sm leading-relaxed text-muted dark:text-dark-text-muted">
+            <p className="pb-4 text-sm leading-paragraph-relaxed text-muted dark:text-dark-text-muted">
               {answer}
             </p>
           </motion.div>
@@ -129,13 +129,13 @@ export const ContactPage = ({ notify }) => {
     <PageContainer>
       {/* Hero */}
       <div className="mb-12 text-center">
-        <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-gold">
+        <span className="text-xs font-extrabold uppercase tracking-wider leading-eyebrow text-gold">
           {t('contact.eyebrow')}
         </span>
-        <h1 className="mt-4 font-heading text-3xl font-extrabold text-navy dark:text-ivory md:text-5xl">
+        <h1 className="mt-4 font-heading text-3xl font-extrabold leading-heading text-balance text-navy dark:text-ivory md:text-5xl md:leading-display-relaxed">
           {t('contact.title')}
         </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted dark:text-dark-text-muted md:text-base">
+        <p className="mx-auto mt-4 max-w-2xl text-sm leading-paragraph text-muted dark:text-dark-text-muted md:text-base md:leading-paragraph-relaxed">
           {t('contact.subtitle')}
         </p>
       </div>
@@ -172,7 +172,7 @@ export const ContactPage = ({ notify }) => {
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Form */}
         <Card className="lg:col-span-2">
-          <h3 className="font-heading text-xl font-bold text-navy dark:text-ivory">
+          <h3 className="font-heading text-xl font-bold leading-card text-navy dark:text-ivory">
             {t('contact.form.title')}
           </h3>
           <p className="mt-1 text-sm text-muted dark:text-dark-text-muted">
@@ -270,7 +270,7 @@ export const ContactPage = ({ notify }) => {
         {/* Side */}
         <div className="space-y-6">
           <Card>
-            <h4 className="mb-4 flex items-center gap-2 font-heading text-base font-bold text-navy dark:text-ivory">
+            <h4 className="mb-4 flex items-center gap-2 font-heading text-base font-bold leading-card text-navy dark:text-ivory">
               <ShieldCheck className="text-gold" size={18} />
               {t('contact.system.title')}
             </h4>
@@ -287,7 +287,7 @@ export const ContactPage = ({ notify }) => {
           </Card>
 
           <Card>
-            <h4 className="mb-2 font-heading text-base font-bold text-navy dark:text-ivory">
+            <h4 className="mb-2 font-heading text-base font-bold leading-card text-navy dark:text-ivory">
               {t('contact.faq.title')}
             </h4>
             <FAQItem question={t('contact.faq.q1')} answer={t('contact.faq.a1')} />
