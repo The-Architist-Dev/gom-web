@@ -21,13 +21,13 @@ apiClient.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err?.response?.status === 401) {
-      // Token expired/invalid - clear and reload
+      // Token expired/invalid - clear and redirect to auth
       const wasAuthed = !!localStorage.getItem(STORAGE_KEYS.TOKEN);
       localStorage.removeItem(STORAGE_KEYS.TOKEN);
       localStorage.removeItem(STORAGE_KEYS.USER);
       if (wasAuthed && typeof window !== 'undefined') {
-        // Soft reload to land on auth screen, but only if we were authed
-        window.location.hash = '';
+        // Redirect to auth page using hash router
+        window.location.hash = '#/auth';
       }
     }
     return Promise.reject(err);

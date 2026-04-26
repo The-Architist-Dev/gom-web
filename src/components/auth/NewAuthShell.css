@@ -266,6 +266,15 @@
   margin-bottom: 16px;
 }
 
+/* Label row - contains label and forgot link side by side */
+.auth-input-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 7px;
+  width: 100%;
+}
+
 .auth-input-label {
   font-size: 0.68rem;
   font-weight: 800;
@@ -276,10 +285,16 @@
   display: block;
 }
 
+/* When label is inside label-row, remove bottom margin */
+.auth-input-label-row .auth-input-label {
+  margin-bottom: 0;
+}
+
 .auth-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .auth-input-icon {
@@ -340,17 +355,17 @@
 .auth-forgot-link {
   font-size: 0.68rem;
   font-weight: 800;
-  color: #8B3A3A;
+  color: #8b3a3a;
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   transition: color 0.2s;
-  float: right;
-  margin-bottom: 7px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .auth-forgot-link:hover {
-  color: #D4AF37;
+  color: #d4af37;
 }
 
 .auth-submit {

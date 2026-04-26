@@ -1,26 +1,34 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Plus, User, CreditCard, FileText, LogOut, Shield, ChevronDown, Zap, Gift } from 'lucide-react';
 import { Avatar } from '../ui/Avatar';
 import { LanguageToggle } from '../ui/LanguageToggle';
 import { ThemeToggle } from '../../theme/ThemeToggle';
 import { cn } from '../../lib/utils';
-import { VIEWS } from '../../lib/constants';
 
-export const MainHeader = ({ user, quota, view, setView, logout }) => {
+export const MainHeader = ({ user, quota, logout }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
   const [showDropdown, setShowDropdown] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
   const badgeRef = useRef(null);
 
   const navItems = [
-    { id: VIEWS.DEBATE, label: t('nav.home') },
-    { id: VIEWS.LINES, label: t('nav.lines') },
-    { id: VIEWS.HISTORY, label: t('nav.history') },
-    { id: VIEWS.CONTACT, label: t('nav.contact') },
-    { id: VIEWS.ABOUT, label: t('nav.about') },
+    { path: '/', label: t('nav.home') },
+    { path: '/ceramics', label: t('nav.lines') },
+    { path: '/history', label: t('nav.history') },
+    { path: '/contact', label: t('nav.contact') },
+    { path: '/about', label: t('nav.about') },
   ];
+
+  // Check if current path matches nav item
+  const isActive = (path) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
+  };
 
   const toggleDropdown = (e) => {
     e.stopPropagation();
@@ -46,9 +54,8 @@ export const MainHeader = ({ user, quota, view, setView, logout }) => {
     <header className="sticky top-0 z-40 border-b border-stroke/60 bg-ivory/85 backdrop-blur-md dark:border-dark-stroke dark:bg-dark-bg/85">
       <div className="mx-auto flex h-16 max-w-content items-center gap-4 px-4 sm:px-6 lg:gap-6 lg:px-8">
         {/* Logo */}
-        <button
-          type="button"
-          onClick={() => setView(VIEWS.DEBATE)}
+        <Link
+          to="/"
           className="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-80"
           aria-label="Home"
         >
@@ -56,24 +63,23 @@ export const MainHeader = ({ user, quota, view, setView, logout }) => {
           <span className="hidden font-heading text-lg font-bold text-navy dark:text-ivory sm:inline">
             The Archivist
           </span>
-        </button>
+        </Link>
 
         {/* Nav (desktop) */}
         <nav className="hidden flex-1 justify-center gap-1 lg:flex">
           {navItems.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setView(item.id)}
+            <Link
+              key={item.path}
+              to={item.path}
               className={cn(
                 'rounded-full px-4 py-2 text-sm font-bold transition-all',
-                view === item.id
+                isActive(item.path)
                   ? 'bg-navy text-white dark:bg-gold dark:text-navy-dark'
                   : 'text-muted hover:bg-surface-alt hover:text-navy dark:text-dark-text-muted dark:hover:bg-dark-surface-alt dark:hover:text-ivory'
               )}
             >
               {item.label}
-            </button>
+            </Link>
           ))}
         </nav>
 
@@ -101,14 +107,13 @@ export const MainHeader = ({ user, quota, view, setView, logout }) => {
           </div>
 
           {/* Top up CTA */}
-          <button
-            type="button"
-            onClick={() => setView(VIEWS.PAYMENT)}
+          <Link
+            to="/payment"
             className="hidden items-center gap-1.5 rounded-full bg-gradient-gold px-4 py-2 text-xs font-extrabold text-navy-dark shadow-sm transition-all hover:shadow-glow active:scale-95 sm:inline-flex"
           >
             <Plus size={14} strokeWidth={3} />
             <span>{t('header.topupShort')}</span>
-          </button>
+          </Link>
 
           {/* Theme */}
           <ThemeToggle />
@@ -132,19 +137,18 @@ export const MainHeader = ({ user, quota, view, setView, logout }) => {
       {/* Mobile nav */}
       <nav className="flex justify-center gap-1 overflow-x-auto border-t border-stroke/60 px-4 py-2 lg:hidden dark:border-dark-stroke">
         {navItems.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => setView(item.id)}
+          <Link
+            key={item.path}
+            to={item.path}
             className={cn(
               'whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-bold transition-all',
-              view === item.id
+              isActive(item.path)
                 ? 'bg-navy text-white dark:bg-gold dark:text-navy-dark'
                 : 'text-muted hover:bg-surface-alt dark:text-dark-text-muted dark:hover:bg-dark-surface-alt'
             )}
           >
             {item.label}
-          </button>
+          </Link>
         ))}
       </nav>
 
@@ -165,7 +169,7 @@ export const MainHeader = ({ user, quota, view, setView, logout }) => {
               icon={<User size={16} />}
               label={t('header.myProfile')}
               onClick={() => {
-                setView(VIEWS.PROFILE);
+                navigate('/profile');
                 setShowDropdown(false);
               }}
             />
@@ -173,7 +177,7 @@ export const MainHeader = ({ user, quota, view, setView, logout }) => {
               icon={<FileText size={16} />}
               label={t('header.transactionHistory')}
               onClick={() => {
-                setView(VIEWS.TRANSACTION_HISTORY);
+                navigate('/transactions');
                 setShowDropdown(false);
               }}
             />
@@ -181,7 +185,7 @@ export const MainHeader = ({ user, quota, view, setView, logout }) => {
               icon={<CreditCard size={16} />}
               label={t('header.topup')}
               onClick={() => {
-                setView(VIEWS.PAYMENT);
+                navigate('/payment');
                 setShowDropdown(false);
               }}
             />
@@ -194,7 +198,7 @@ export const MainHeader = ({ user, quota, view, setView, logout }) => {
                   label={t('nav.admin')}
                   variant="gold"
                   onClick={() => {
-                    setView(VIEWS.ADMIN);
+                    navigate('/admin');
                     setShowDropdown(false);
                   }}
                 />
@@ -206,9 +210,10 @@ export const MainHeader = ({ user, quota, view, setView, logout }) => {
               icon={<LogOut size={16} />}
               label={t('nav.logout')}
               variant="danger"
-              onClick={() => {
-                logout();
+              onClick={async () => {
                 setShowDropdown(false);
+                await logout();
+                navigate('/auth');
               }}
             />
           </div>,

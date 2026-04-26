@@ -1,13 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Facebook, Linkedin, Github } from 'lucide-react';
-import { VIEWS } from '../../lib/constants';
 
-export const Footer = ({ setView }) => {
+export const Footer = () => {
   const { t } = useTranslation();
   const year = new Date().getFullYear();
-
-  const navigate = (id) => () => setView?.(id);
 
   return (
     <footer className="border-t border-stroke bg-surface dark:border-dark-stroke dark:bg-dark-surface">
@@ -38,16 +36,16 @@ export const Footer = ({ setView }) => {
             </h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <FooterLink onClick={navigate(VIEWS.DEBATE)} label={t('nav.home')} />
+                <FooterLink to="/" label={t('nav.home')} />
               </li>
               <li>
-                <FooterLink onClick={navigate(VIEWS.LINES)} label={t('nav.lines')} />
+                <FooterLink to="/ceramics" label={t('nav.lines')} />
               </li>
               <li>
-                <FooterLink onClick={navigate(VIEWS.HISTORY)} label={t('nav.history')} />
+                <FooterLink to="/history" label={t('nav.history')} />
               </li>
               <li>
-                <FooterLink onClick={navigate(VIEWS.PAYMENT)} label={t('nav.payment')} />
+                <FooterLink to="/payment" label={t('nav.payment')} />
               </li>
             </ul>
           </div>
@@ -59,16 +57,16 @@ export const Footer = ({ setView }) => {
             </h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <FooterLink onClick={navigate(VIEWS.CONTACT)} label={t('nav.contact')} />
+                <FooterLink to="/contact" label={t('nav.contact')} />
               </li>
               <li>
-                <FooterLink onClick={navigate(VIEWS.ABOUT)} label={t('nav.about')} />
+                <FooterLink to="/about" label={t('nav.about')} />
               </li>
               <li>
-                <FooterLink onClick={navigate(VIEWS.TERMS)} label={t('nav.terms')} />
+                <FooterLink to="/terms" label={t('nav.terms')} />
               </li>
               <li>
-                <FooterLink onClick={navigate(VIEWS.PRIVACY)} label={t('nav.privacy')} />
+                <FooterLink to="/privacy" label={t('nav.privacy')} />
               </li>
             </ul>
           </div>
@@ -109,14 +107,13 @@ export const Footer = ({ setView }) => {
   );
 };
 
-const FooterLink = ({ onClick, label }) => (
-  <button
-    type="button"
-    onClick={onClick}
+const FooterLink = ({ to, label }) => (
+  <Link
+    to={to}
     className="text-muted transition-colors hover:text-navy dark:text-dark-text-muted dark:hover:text-ivory"
   >
     {label}
-  </button>
+  </Link>
 );
 
 const SocialLink = ({ href, icon }) => (
