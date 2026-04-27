@@ -34,10 +34,17 @@ export const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/auth');
+  const handleLogout = async () => {
+    try {
+      await logout(); // Call API logout
+      navigate('/auth');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Still redirect even if API fails
+      navigate('/auth');
+    }
   };
 
   const isActive = (path) => {
@@ -129,8 +136,8 @@ export const AdminLayout = () => {
                 {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
               </button>
               <button
-                onClick={handleLogout}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                onClick={() => setShowLogoutModal(true)}
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-100 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
               >
                 <LogOut size={16} />
               </button>
@@ -174,6 +181,46 @@ export const AdminLayout = () => {
           <Outlet />
         </main>
       </div>
+      
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+                <LogOut className="text-red-600 dark:text-red-400" size={24} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  Confirm Logout
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Are you sure you want to logout?
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowLogoutModal(false)}
+                className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowLogoutModal(false);
+                  handleLogout();
+                }}
+                className="flex-1 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* Toast container is mounted globally by NotifyProvider in App.jsx */}
     </div>
   );
