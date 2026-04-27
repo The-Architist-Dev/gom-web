@@ -30,7 +30,7 @@ const palette = {
 export const ToastContainer = ({ toasts, onDismiss }) => {
   if (typeof document === 'undefined') return null;
   return createPortal(
-    <div className="pointer-events-none fixed right-4 top-4 z-[10000] flex w-full max-w-sm flex-col gap-3">
+    <div className="pointer-events-none fixed right-4 bottom-4 z-[10000] flex w-full max-w-sm flex-col gap-3">
       <AnimatePresence>
         {toasts.map((t) => {
           const cfg = palette[t.type] || palette.info;
@@ -38,9 +38,9 @@ export const ToastContainer = ({ toasts, onDismiss }) => {
           return (
             <motion.div
               key={t.id}
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 100 }}
+              initial={{ opacity: 0, x: 100, y: 100 }}
+              animate={{ opacity: 1, x: 0, y: 0 }}
+              exit={{ opacity: 0, x: 100, y: 100 }}
               transition={{ type: 'spring', damping: 25, stiffness: 250 }}
               className={cn(
                 'pointer-events-auto flex items-start gap-3 rounded-2xl border bg-surface p-4 shadow-md',
