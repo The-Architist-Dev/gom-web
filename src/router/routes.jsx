@@ -20,6 +20,13 @@ import { AboutPage } from '../features/about/AboutPage';
 import { TermsPage } from '../features/legal/TermsPage';
 import { PrivacyPage } from '../features/legal/PrivacyPage';
 import { AdminPageWrapper } from '../features/admin/AdminPageWrapper';
+import { AdminLayout } from '../features/admin/AdminLayout';
+import { DashboardPageWrapper } from '../features/admin/pages/DashboardPageWrapper';
+import { UsersPageWrapper } from '../features/admin/pages/UsersPageWrapper';
+import { CeramicsPageWrapper as AdminCeramicsPageWrapper } from '../features/admin/pages/CeramicsPageWrapper';
+import { PaymentsPageWrapper } from '../features/admin/pages/PaymentsPageWrapper';
+import { PredictionsPageWrapper } from '../features/admin/pages/PredictionsPageWrapper';
+import { TokenHistoryPageWrapper } from '../features/admin/pages/TokenHistoryPageWrapper';
 
 // Guards
 import { ProtectedRoute } from './ProtectedRoute';
@@ -46,6 +53,43 @@ export const routes = [
           {
             index: true,
             element: <NewAuthShell />,
+          },
+        ],
+      },
+    ],
+  },
+
+  // ── Admin Routes (separate layout, no header/footer) ──
+  {
+    path: '/admin',
+    element: <AdminRoute />,
+    children: [
+      {
+        element: <AdminLayout />,
+        children: [
+          {
+            index: true,
+            element: <DashboardPageWrapper />,
+          },
+          {
+            path: 'users',
+            element: <UsersPageWrapper />,
+          },
+          {
+            path: 'ceramics',
+            element: <AdminCeramicsPageWrapper />,
+          },
+          {
+            path: 'payments',
+            element: <PaymentsPageWrapper />,
+          },
+          {
+            path: 'predictions',
+            element: <PredictionsPageWrapper />,
+          },
+          {
+            path: 'token-history',
+            element: <TokenHistoryPageWrapper />,
           },
         ],
       },
@@ -99,18 +143,6 @@ export const routes = [
             <TransactionsPageWrapper />
           </ProtectedRoute>
         ),
-      },
-
-      // Admin routes
-      {
-        path: 'admin',
-        element: <AdminRoute />,
-        children: [
-          {
-            index: true,
-            element: <AdminPageWrapper />,
-          },
-        ],
       },
 
       // Public routes (accessible without auth)

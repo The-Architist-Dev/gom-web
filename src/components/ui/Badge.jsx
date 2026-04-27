@@ -9,6 +9,8 @@ const variants = {
   info: 'bg-info/15 text-info',
   gold: 'bg-ceramic/20 text-ceramic-dark',
   navy: 'bg-navy/15 text-navy dark:bg-navy/30 dark:text-ivory',
+  admin: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+  user: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
 };
 
 export const Badge = ({ variant = 'default', className, children, ...props }) => (

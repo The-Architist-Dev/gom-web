@@ -1,24 +1,35 @@
 import apiClient from '../../lib/apiClient';
 
+/**
+ * Centralized admin API client. All admin pages should call these helpers
+ * (no scattered fetches in components).
+ */
 export const adminApi = {
   // Dashboard
   dashboard: () => apiClient.get('/admin/dashboard'),
 
   // Users
-  users: () => apiClient.get('/admin/users'),
+  users: (params) => apiClient.get('/admin/users', { params }),
+  getUser: (id) => apiClient.get(`/admin/users/${id}`),
   updateUser: (id, data) => apiClient.put(`/admin/users/${id}`, data),
   deleteUser: (id) => apiClient.delete(`/admin/users/${id}`),
 
   // Ceramic lines
-  ceramics: () => apiClient.get('/admin/ceramic-lines'),
+  ceramics: (params) => apiClient.get('/admin/ceramic-lines', { params }),
+  getCeramic: (id) => apiClient.get(`/admin/ceramic-lines/${id}`),
   createCeramic: (data) => apiClient.post('/admin/ceramic-lines', data),
   updateCeramic: (id, data) => apiClient.put(`/admin/ceramic-lines/${id}`, data),
   deleteCeramic: (id) => apiClient.delete(`/admin/ceramic-lines/${id}`),
 
-  // Payments
-  payments: () => apiClient.get('/admin/payments'),
+  // Payments (read-only)
+  payments: (params) => apiClient.get('/admin/payments', { params }),
+  getPayment: (id) => apiClient.get(`/admin/payments/${id}`),
 
-  // Predictions
-  predictions: () => apiClient.get('/admin/predictions'),
+  // Predictions (read-only + detail)
+  predictions: (params) => apiClient.get('/admin/predictions', { params }),
+  getPrediction: (id) => apiClient.get(`/admin/predictions/${id}`),
+
+  // Token history (read-only)
+  tokenHistory: (params) => apiClient.get('/admin/token-history', { params }),
 };
 

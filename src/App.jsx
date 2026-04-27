@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { HashRouter, RouterProvider, createHashRouter, useNavigate, useLocation } from 'react-router-dom';
 import { routes } from './router/routes';
 import { GOOGLE_CLIENT_ID } from './lib/constants';
+import { NotifyProvider } from './hooks/useNotify';
 
 // Create router instance
 const router = createHashRouter(routes);
@@ -14,13 +15,13 @@ const LegacyHashRedirect = () => {
   useEffect(() => {
     // Handle legacy hash routes like /#payment, /#home, etc.
     const hash = window.location.hash;
-    
+
     // Extract legacy view from hash (e.g., /#payment -> payment)
     const legacyMatch = hash.match(/^#\/?([^/]+)$/);
-    
+
     if (legacyMatch) {
       const legacyView = legacyMatch[1];
-      
+
       // Map legacy views to new routes
       const legacyMap = {
         'debate': '/',
@@ -41,7 +42,7 @@ const LegacyHashRedirect = () => {
       };
 
       const newPath = legacyMap[legacyView];
-      
+
       if (newPath && location.pathname !== newPath) {
         console.log('[Legacy Redirect]', legacyView, '->', newPath);
         navigate(newPath, { replace: true });
@@ -75,7 +76,11 @@ function App() {
     meta.setAttribute('content', GOOGLE_CLIENT_ID);
   }, []);
 
-  return <RouterProvider router={router} />;
+  return (
+    <NotifyProvider>
+      <RouterProvider router={router} />
+    </NotifyProvider>
+  );
 }
 
 export default App;
