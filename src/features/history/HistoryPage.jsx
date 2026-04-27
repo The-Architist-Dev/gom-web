@@ -97,7 +97,10 @@ export const HistoryPage = ({ setView, notify }) => {
       {!loading && !error && list.length > 0 && (
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {list.map((item) => {
-            const confidence = Math.round((item.confidence ?? item.certainty ?? 0) * 100) || null;
+            const rawConfidence = item.confidence ?? item.certainty ?? 0;
+            const confidence = rawConfidence > 1 
+              ? Math.round(rawConfidence) 
+              : Math.round(rawConfidence * 100);
             const imgSrc = item.image_url || (item.image_path ? `/storage/${item.image_path}` : null);
             return (
               <Card
@@ -128,7 +131,7 @@ export const HistoryPage = ({ setView, notify }) => {
                     <span className="text-xs font-semibold text-muted dark:text-dark-text-muted">
                       {formatDate(item.created_at)}
                     </span>
-                    {confidence !== null && <Badge variant="gold">{confidence}%</Badge>}
+                    {confidence > 0 && <Badge variant="gold">{confidence}%</Badge>}
                   </div>
                   <h3 className="line-clamp-1 font-heading text-lg font-bold text-navy dark:text-ivory">
                     {item.predicted_label || item.name || '—'}
