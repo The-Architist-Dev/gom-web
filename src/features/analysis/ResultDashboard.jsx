@@ -47,6 +47,7 @@ export const ResultDashboard = ({ result, preview, user, onReset }) => {
           prediction={result} 
           imageUrl={preview}
           showUserInfo={false}
+          showDebugInfo={false}
         />
       </motion.div>
 

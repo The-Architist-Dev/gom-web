@@ -12,7 +12,7 @@ export const PredictionDetailModal = ({ isOpen, onClose, prediction }) => {
       title="Prediction Details"
       size="xl"
     >
-      <PredictionDetailView prediction={prediction} showUserInfo={true} />
+      <PredictionDetailView prediction={prediction} showUserInfo={true} showDebugInfo={true} />
     </Modal>
   );
 };

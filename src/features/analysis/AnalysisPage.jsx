@@ -74,6 +74,8 @@ export const AnalysisPage = ({ token, notify, quota, setQuota, setView, user }) 
       const res = await analysisApi.predict(formData);
       const data = res.data?.data || res.data;
       const q = res.data?.quota || data?.quota || {};
+      const predictionId = res.data?.db_id || data?.db_id;
+      
       if (q.free_used !== undefined && setQuota) {
         setQuota({
           free_used: q.free_used,
@@ -82,7 +84,14 @@ export const AnalysisPage = ({ token, notify, quota, setQuota, setView, user }) 
         });
       }
       notify?.(t('analysis.completeMsg'), 'success');
-      setResult(data);
+      
+      // Redirect to history with prediction ID in URL
+      if (predictionId) {
+        window.location.hash = `#/history?openId=${predictionId}`;
+      } else {
+        // Fallback: show result on current page
+        setResult(data);
+      }
     } catch (err) {
       const msg = getErrorMessage(err, t('errors.server'));
       setError(msg);

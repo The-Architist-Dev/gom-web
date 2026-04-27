@@ -16,7 +16,7 @@ import { Badge } from './Badge';
 import { formatDate } from '../../lib/utils';
 import { cn } from '../../lib/utils';
 
-export const PredictionDetailView = ({ prediction, imageUrl, showUserInfo = true }) => {
+export const PredictionDetailView = ({ prediction, imageUrl, showUserInfo = true, showDebugInfo = true }) => {
   const { t } = useTranslation();
 
   if (!prediction) return null;
@@ -165,13 +165,14 @@ export const PredictionDetailView = ({ prediction, imageUrl, showUserInfo = true
         finalReport={finalReport}
         visualFeatures={visualFeatures}
         result={result}
+        showDebugInfo={showDebugInfo}
       />
     </div>
   );
 };
 
 // AI Result Sections Component
-const AIResultSections = ({ agentPredictions, debate, finalReport, visualFeatures, result }) => {
+const AIResultSections = ({ agentPredictions, debate, finalReport, visualFeatures, result, showDebugInfo }) => {
   const { t } = useTranslation();
 
   if (!agentPredictions?.length && !debate?.length && !finalReport?.reasoning && !visualFeatures) {
@@ -240,7 +241,7 @@ const AIResultSections = ({ agentPredictions, debate, finalReport, visualFeature
       )}
 
       {/* Visual Features */}
-      {visualFeatures && (
+      {showDebugInfo && visualFeatures && (
         <details className="rounded-xl border border-stroke bg-surface p-4 dark:border-dark-stroke dark:bg-dark-surface">
           <summary className="cursor-pointer select-none text-sm font-semibold text-navy hover:text-navy-light dark:text-ivory dark:hover:text-ceramic">
             <span className="inline-flex items-center gap-2">
@@ -255,7 +256,7 @@ const AIResultSections = ({ agentPredictions, debate, finalReport, visualFeature
       )}
 
       {/* Raw JSON */}
-      {result && (
+      {showDebugInfo && result && (
         <details className="rounded-xl border border-stroke bg-surface p-4 dark:border-dark-stroke dark:bg-dark-surface">
           <summary className="cursor-pointer select-none text-sm font-semibold text-navy hover:text-navy-light dark:text-ivory dark:hover:text-ceramic">
             <span className="inline-flex items-center gap-2">

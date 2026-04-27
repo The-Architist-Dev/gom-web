@@ -17,7 +17,7 @@ export const HeroSection = ({ onUpload, onExplore, featuredImage }) => {
   React.useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'}/ceramic-lines?featured=1`);
+        const response = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:8000/api'}/ceramic-lines?featured=1`);
         const data = await response.json();
         const ceramicImages = data.data
           ?.filter(item => item.image_url)

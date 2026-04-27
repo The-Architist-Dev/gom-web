@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import { History as HistoryIcon, RefreshCw } from 'lucide-react';
 import { PageContainer } from '../../components/layout/PageContainer';
 import { PageHeader } from '../../components/layout/PageHeader';
@@ -16,6 +17,7 @@ import ShinyText from '../../components/ui/ShinyText';
 
 export const HistoryPage = ({ setView, notify }) => {
   const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,6 +30,17 @@ export const HistoryPage = ({ setView, notify }) => {
       const res = await historyApi.list();
       const data = Array.isArray(res.data) ? res.data : res.data?.data || [];
       setList(data);
+      
+      // Check if there's a prediction ID to open from URL
+      const openId = searchParams.get('openId');
+      if (openId) {
+        const item = data.find(d => d.id === parseInt(openId));
+        if (item) {
+          setSelected(item);
+        }
+        // Clear the URL param after opening
+        setSearchParams({});
+      }
     } catch (err) {
       const msg = getErrorMessage(err);
       setError(msg);
@@ -35,7 +48,7 @@ export const HistoryPage = ({ setView, notify }) => {
     } finally {
       setLoading(false);
     }
-  }, [notify]);
+  }, [notify, searchParams, setSearchParams]);
 
   useEffect(() => {
     fetchData();
