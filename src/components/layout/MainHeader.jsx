@@ -93,22 +93,34 @@ export const MainHeader = ({ user, quota, logout }) => {
 
         {/* Right cluster */}
         <div className="ml-auto flex items-center gap-2">
-          {/* Quota */}
-          <div className="hidden items-center gap-1 md:flex">
+          {/* Quota - Hover to see label */}
+          <div className="hidden items-center gap-2 md:flex">
             {tokenBalance > 0 && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-ceramic/15 px-2.5 py-1 text-xs font-bold text-ceramic-dark">
-                <Zap size={12} />
-                {tokenBalance}
-              </span>
+              <div 
+                className="group relative flex items-center gap-1.5 rounded-full bg-ceramic/15 px-3 py-1.5 transition-all hover:bg-ceramic/25"
+                title="Tín dụng"
+              >
+                <Zap size={14} className="text-ceramic-dark" />
+                <span className="text-xs font-bold text-ceramic-dark">{tokenBalance}</span>
+                <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-navy px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 dark:bg-ivory dark:text-navy">
+                  Tín dụng
+                </span>
+              </div>
             )}
             {remainingFree > 0 && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-success/15 px-2.5 py-1 text-xs font-bold text-success">
-                <Gift size={12} />
-                {remainingFree}
-              </span>
+              <div 
+                className="group relative flex items-center gap-1.5 rounded-full bg-success/15 px-3 py-1.5 transition-all hover:bg-success/25"
+                title="Lượt miễn phí"
+              >
+                <Gift size={14} className="text-success" />
+                <span className="text-xs font-bold text-success">{remainingFree}</span>
+                <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-navy px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 dark:bg-ivory dark:text-navy">
+                  Lượt miễn phí
+                </span>
+              </div>
             )}
             {noQuota && (
-              <span className="rounded-full bg-danger/15 px-2.5 py-1 text-xs font-bold text-danger">
+              <span className="rounded-full bg-danger/15 px-3 py-1.5 text-xs font-bold text-danger">
                 {t('header.noQuota')}
               </span>
             )}

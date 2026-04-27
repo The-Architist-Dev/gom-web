@@ -8,18 +8,18 @@ export const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-stroke bg-surface dark:border-dark-stroke dark:bg-dark-surface">
+    <footer className="border-t border-stroke bg-navy dark:border-dark-stroke dark:bg-navy-dark">
       <div className="mx-auto max-w-content px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2">
               <img src="/logo.png" alt="The Archivist" className="h-10 w-10 object-contain" />
-              <h3 className="font-heading text-xl font-bold text-navy dark:text-ivory">
+              <h3 className="font-heading text-xl font-bold text-ivory">
                 The Archivist
               </h3>
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-muted dark:text-dark-text-muted">
+            <p className="mt-3 text-sm leading-relaxed text-ivory/80">
               {t('app.tagline')}
             </p>
             <div className="mt-4 flex gap-3">
@@ -31,7 +31,7 @@ export const Footer = () => {
 
           {/* Product */}
           <div>
-            <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-muted dark:text-dark-text-muted">
+            <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-ivory/70">
               {t('footer.product')}
             </h4>
             <ul className="space-y-2 text-sm">
@@ -52,7 +52,7 @@ export const Footer = () => {
 
           {/* Support */}
           <div>
-            <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-muted dark:text-dark-text-muted">
+            <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-ivory/70">
               {t('footer.support')}
             </h4>
             <ul className="space-y-2 text-sm">
@@ -73,23 +73,23 @@ export const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-muted dark:text-dark-text-muted">
+            <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-ivory/70">
               {t('footer.company')}
             </h4>
             <ul className="space-y-3 text-sm">
-              <li className="flex items-start gap-2 text-muted dark:text-dark-text-muted">
+              <li className="flex items-start gap-2 text-ivory/80">
                 <Mail size={16} className="mt-0.5 shrink-0 text-ceramic" />
-                <a href="mailto:dongnguyenkh123@gmail.com" className="hover:text-navy dark:hover:text-ivory">
+                <a href="mailto:dongnguyenkh123@gmail.com" className="hover:text-ivory transition-colors">
                   dongnguyenkh123@gmail.com
                 </a>
               </li>
-              <li className="flex items-start gap-2 text-muted dark:text-dark-text-muted">
+              <li className="flex items-start gap-2 text-ivory/80">
                 <Phone size={16} className="mt-0.5 shrink-0 text-ceramic" />
-                <a href="tel:0949085842" className="hover:text-navy dark:hover:text-ivory">
+                <a href="tel:0949085842" className="hover:text-ivory transition-colors">
                   0949 085 842
                 </a>
               </li>
-              <li className="flex items-start gap-2 text-muted dark:text-dark-text-muted">
+              <li className="flex items-start gap-2 text-ivory/80">
                 <MapPin size={16} className="mt-0.5 shrink-0 text-ceramic" />
                 <span>Cần Thơ, Việt Nam</span>
               </li>
@@ -97,8 +97,8 @@ export const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-stroke pt-6 dark:border-dark-stroke">
-          <p className="text-center text-xs text-muted dark:text-dark-text-muted">
+        <div className="mt-10 border-t border-ivory/20 pt-6">
+          <p className="text-center text-xs text-ivory/70">
             {t('footer.rights', { year })}
           </p>
         </div>
@@ -110,7 +110,7 @@ export const Footer = () => {
 const FooterLink = ({ to, label }) => (
   <Link
     to={to}
-    className="text-muted transition-colors hover:text-navy dark:text-dark-text-muted dark:hover:text-ivory"
+    className="text-ivory/80 transition-colors hover:text-ivory"
   >
     {label}
   </Link>
@@ -121,7 +121,7 @@ const SocialLink = ({ href, icon }) => (
     href={href}
     target="_blank"
     rel="noreferrer"
-    className="flex h-9 w-9 items-center justify-center rounded-full border border-stroke text-muted transition-colors hover:border-ceramic hover:text-ceramic dark:border-dark-stroke dark:text-dark-text-muted"
+    className="flex h-9 w-9 items-center justify-center rounded-full border border-ivory/30 text-ivory/80 transition-colors hover:border-ceramic hover:bg-ceramic/10 hover:text-ceramic"
   >
     {icon}
   </a>

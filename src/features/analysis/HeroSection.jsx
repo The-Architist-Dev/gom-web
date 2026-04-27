@@ -1,13 +1,71 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
-import { Sparkles, Upload, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Sparkles, Upload, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { GlareHover } from '../../components/ui/GlareHover';
 import RotatingText from '../../components/ui/RotatingText';
 
 export const HeroSection = ({ onUpload, onExplore, featuredImage }) => {
   const { t } = useTranslation();
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [direction, setDirection] = React.useState(1); // 1 = right to left, -1 = left to right
+  const [images, setImages] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  // Fetch featured ceramic images from API
+  React.useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'}/ceramic-lines?featured=1`);
+        const data = await response.json();
+        const ceramicImages = data.data
+          ?.filter(item => item.image_url)
+          .map(item => item.image_url)
+          .slice(0, 5) || [];
+        
+        // Fallback images if no data
+        const fallbackImages = [
+          'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&q=80&w=900',
+          'https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&q=80&w=900',
+          'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?auto=format&fit=crop&q=80&w=900',
+        ];
+        
+        setImages(ceramicImages.length > 0 ? ceramicImages : fallbackImages);
+      } catch (error) {
+        console.error('Failed to fetch ceramic images:', error);
+        setImages([
+          'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&q=80&w=900',
+          'https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&q=80&w=900',
+          'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?auto=format&fit=crop&q=80&w=900',
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchImages();
+  }, []);
+
+  // Auto-rotate carousel (right to left by default)
+  React.useEffect(() => {
+    if (images.length <= 1) return;
+    const interval = setInterval(() => {
+      setDirection(1); // Always go right to left on auto
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [images.length]);
+
+  const nextImage = () => {
+    setDirection(1); // Right to left
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setDirection(-1); // Left to right
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
   const rotatingWords = t('home.heroRotatingWords', { returnObjects: true });
   const safeRotatingWords =
     Array.isArray(rotatingWords) && rotatingWords.length > 0
@@ -101,20 +159,79 @@ export const HeroSection = ({ onUpload, onExplore, featuredImage }) => {
           className="relative flex items-center justify-center"
         >
           <div className="absolute inset-0 -z-10 rounded-[40px] bg-gradient-navy opacity-10 blur-2xl" />
-          <div className="overflow-hidden rounded-[40px] border-4 border-stroke bg-surface shadow-xl dark:border-dark-stroke dark:bg-dark-surface">
-            <img
-              src={
-                featuredImage ||
-                'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&q=80&w=900'
-              }
-              alt="Heritage ceramic"
-              className="h-[420px] w-full object-cover md:h-[500px]"
-              onError={(e) => {
-                e.currentTarget.src =
-                  'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&q=80&w=900';
-                e.currentTarget.onerror = null;
-              }}
-            />
+          
+          {/* Carousel Container */}
+          <div className="relative w-full overflow-hidden rounded-[40px] border-4 border-stroke bg-surface shadow-xl dark:border-dark-stroke dark:bg-dark-surface">
+            {isLoading ? (
+              <div className="flex h-[420px] w-full items-center justify-center md:h-[500px]">
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-ceramic border-t-transparent" />
+              </div>
+            ) : (
+              <>
+                <AnimatePresence mode="wait" initial={false} custom={direction}>
+                  <motion.img
+                    key={currentIndex}
+                    custom={direction}
+                    src={images[currentIndex]}
+                    alt={`Heritage ceramic ${currentIndex + 1}`}
+                    className="h-[420px] w-full object-cover md:h-[500px]"
+                    initial={{ x: direction > 0 ? 300 : -300, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: direction > 0 ? -300 : 300, opacity: 0 }}
+                    transition={{ 
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 30,
+                      duration: 0.5
+                    }}
+                    onError={(e) => {
+                      e.currentTarget.src =
+                        'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&q=80&w=900';
+                      e.currentTarget.onerror = null;
+                    }}
+                  />
+                </AnimatePresence>
+
+                {/* Navigation Buttons - Navy color */}
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-navy/90 p-2.5 text-white backdrop-blur-sm transition-all hover:bg-navy hover:scale-110 active:scale-95 dark:bg-navy/90 dark:hover:bg-navy-light"
+                      aria-label="Previous image"
+                    >
+                      <ChevronLeft size={24} strokeWidth={2.5} />
+                    </button>
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-navy/90 p-2.5 text-white backdrop-blur-sm transition-all hover:bg-navy hover:scale-110 active:scale-95 dark:bg-navy/90 dark:hover:bg-navy-light"
+                      aria-label="Next image"
+                    >
+                      <ChevronRight size={24} strokeWidth={2.5} />
+                    </button>
+
+                    {/* Dots Indicator - Navy color */}
+                    <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+                      {images.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            setDirection(idx > currentIndex ? 1 : -1);
+                            setCurrentIndex(idx);
+                          }}
+                          className={`h-2 rounded-full transition-all ${
+                            idx === currentIndex
+                              ? 'w-8 bg-navy dark:bg-ceramic'
+                              : 'w-2 bg-white/60 hover:bg-white/90'
+                          }`}
+                          aria-label={`Go to image ${idx + 1}`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </>
+            )}
           </div>
         </motion.div>
       </div>
