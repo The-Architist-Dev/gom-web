@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Loader2, Copy, FlaskConical } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -9,6 +10,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 
 export const QRStage = ({ qrData, purchasing, notify, onConfirm, onCancel, onSimulate }) => {
   const { t } = useTranslation();
+  const prefersReducedMotion = useReducedMotion();
 
   const copy = async (text) => {
     const ok = await copyToClipboard(text);
@@ -28,8 +30,17 @@ export const QRStage = ({ qrData, purchasing, notify, onConfirm, onCancel, onSim
   ];
 
   return (
-    <div className="mx-auto max-w-4xl">
-      <Card padded={false} className="overflow-hidden">
+    <motion.div
+      initial={{ opacity: 0, y: 28, scale: 0.98 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.58, ease: [0.22, 1, 0.36, 1] }}
+      className="mx-auto max-w-4xl"
+    >
+      <Card
+        padded={false}
+        className="overflow-hidden rounded-[30px] border-ceramic-border/75 bg-[#FFFCF7] shadow-[0_24px_58px_-34px_rgba(16,42,86,0.72)] dark:border-ceramic/28 dark:bg-[#101B35]"
+      >
         <div className="flex flex-col lg:flex-row">
           {/* QR side */}
           <div className="flex flex-col items-center justify-center bg-surface-alt p-10 dark:bg-dark-surface-alt lg:w-2/5">
@@ -42,7 +53,18 @@ export const QRStage = ({ qrData, purchasing, notify, onConfirm, onCancel, onSim
               </h3>
             </div>
 
-            <div className="relative rounded-3xl bg-white p-5 shadow-md">
+            <motion.div
+              whileHover={
+                prefersReducedMotion
+                  ? undefined
+                  : {
+                      y: -8,
+                      scale: 1.02,
+                    }
+              }
+              transition={{ type: 'spring', stiffness: 230, damping: 22 }}
+              className="relative rounded-3xl bg-white p-5 shadow-md"
+            >
               <img
                 src={qrData?.qr_url}
                 alt="VietQR"
@@ -52,7 +74,14 @@ export const QRStage = ({ qrData, purchasing, notify, onConfirm, onCancel, onSim
               <span className="absolute right-0 top-0 h-8 w-8 rounded-tr-3xl border-r-4 border-t-4 border-ceramic" />
               <span className="absolute bottom-0 left-0 h-8 w-8 rounded-bl-3xl border-b-4 border-l-4 border-ceramic" />
               <span className="absolute bottom-0 right-0 h-8 w-8 rounded-br-3xl border-b-4 border-r-4 border-ceramic" />
-            </div>
+              {!prefersReducedMotion && (
+                <motion.span
+                  className="pointer-events-none absolute top-0 h-px w-20 bg-gradient-to-r from-transparent via-ceramic-hover to-transparent"
+                  animate={{ x: ['-20%', '350%'] }}
+                  transition={{ repeat: Infinity, duration: 3.1, ease: 'easeInOut' }}
+                />
+              )}
+            </motion.div>
 
             <div className="mt-6 flex items-center gap-2 text-xs font-semibold text-muted dark:text-dark-text-muted">
               <Loader2 className="animate-spin" size={14} />
@@ -67,7 +96,7 @@ export const QRStage = ({ qrData, purchasing, notify, onConfirm, onCancel, onSim
                 {t('payment.qr.details')}
               </p>
               <p className="mt-1 font-heading text-3xl font-black text-navy dark:text-ivory">
-                {formatNumber(qrData?.amount ?? 0)}đ
+                {formatNumber(qrData?.amount ?? 0)} đ
               </p>
             </div>
 
@@ -77,7 +106,7 @@ export const QRStage = ({ qrData, purchasing, notify, onConfirm, onCancel, onSim
                   key={idx}
                   className={
                     it.featured
-                      ? 'rounded-xl border border-dashed border-ceramic bg-ceramic/10 p-4'
+                      ? 'rounded-xl border border-dashed border-ceramic bg-ceramic/10 p-4 shadow-[0_16px_35px_-28px_rgba(16,42,86,0.65)]'
                       : ''
                   }
                 >
@@ -144,7 +173,7 @@ export const QRStage = ({ qrData, purchasing, notify, onConfirm, onCancel, onSim
           ⚠️ {t('payment.qr.warning')}
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

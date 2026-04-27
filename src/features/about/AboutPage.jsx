@@ -3,10 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Landmark, ShieldCheck, Database, Users, Image as ImageIcon, CheckCircle2 } from 'lucide-react';
 import { PageContainer } from '../../components/layout/PageContainer';
-import { Card } from '../../components/ui/Card';
-import { CountUpNumber } from '../../components/motion';
 import { analysisApi } from '../analysis/api';
 import ShinyText from '../../components/ui/ShinyText';
+import { AboutBentoGrid, AboutBentoCard, MissionStatementCard } from './AboutCards';
 
 export const AboutPage = () => {
   const { t } = useTranslation();
@@ -42,10 +41,32 @@ export const AboutPage = () => {
     },
   ];
 
+  const missionStats = [
+    {
+      value: stats.total_analyzed ?? 0,
+      label: t('about.mission.stats1'),
+      icon: ImageIcon,
+      progress: 86,
+    },
+    {
+      value: stats.accuracy ?? 0,
+      decimals: 1,
+      suffix: '%',
+      label: t('about.mission.stats2'),
+      icon: CheckCircle2,
+      progress: Math.min(Math.max(stats.accuracy ?? 0, 0), 100),
+    },
+  ];
+
   return (
     <PageContainer>
       {/* Hero */}
-      <div className="mb-20 text-center">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.62, ease: [0.22, 1, 0.36, 1] }}
+        className="mb-20 text-center"
+      >
         <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-ceramic-dark dark:text-ceramic leading-eyebrow">
           <Landmark size={14} />
           {t('about.eyebrow')}
@@ -67,75 +88,66 @@ export const AboutPage = () => {
         <p className="mx-auto mt-6 max-w-2xl text-base leading-paragraph text-muted dark:text-dark-text-muted md:text-lg md:leading-paragraph-relaxed">
           {t('about.subtitle')}
         </p>
-      </div>
+      </motion.div>
 
       {/* Features */}
-      <div className="mb-20 grid gap-6 md:grid-cols-3">
-        {features.map((f, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-          >
-            <Card hoverable className="h-full text-center">
-              <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-stroke bg-surface-alt dark:border-dark-stroke dark:bg-dark-surface-alt">
-                <f.icon className="h-10 w-10 text-navy dark:text-ceramic" />
-              </div>
-              <h3 className="mb-3 font-heading text-xl font-bold leading-card text-navy dark:text-ivory">
-                {f.title}
-              </h3>
-              <p className="text-sm leading-paragraph text-muted dark:text-dark-text-muted">
-                {f.desc}
-              </p>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+      <AboutBentoGrid className="mb-20">
+        <AboutBentoCard
+          icon={features[0].icon}
+          title={features[0].title}
+          desc={features[0].desc}
+          className="md:col-span-4"
+          index={0}
+        />
+
+        <AboutBentoCard
+          icon={features[1].icon}
+          title={features[1].title}
+          desc={features[1].desc}
+          className="md:col-span-2"
+          index={1}
+        />
+
+        <AboutBentoCard
+          icon={features[2].icon}
+          title={features[2].title}
+          desc={features[2].desc}
+          className="md:col-span-3"
+          index={2}
+        />
+
+        <motion.article
+          initial={{ opacity: 0, y: 28, x: 20, scale: 0.96 }}
+          whileInView={{ opacity: 1, y: 0, x: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.64, ease: [0.22, 1, 0.36, 1] }}
+          className="relative overflow-hidden rounded-[26px] border border-ceramic-border/80 bg-[#FFFCF7] p-7 shadow-[0_24px_58px_-36px_rgba(16,42,86,0.68)] dark:border-ceramic/30 dark:bg-[#0F1830] md:col-span-3"
+        >
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-ceramic-soft/35 via-transparent to-[#C9A227]/5 dark:from-ceramic/18 dark:to-[#C9A227]/10" />
+          <p className="relative text-xs font-extrabold uppercase tracking-[0.2em] text-ceramic-dark dark:text-ceramic">
+            Editorial Narrative
+          </p>
+          <h3 className="relative mt-3 font-heading text-2xl font-bold leading-[1.22] text-navy dark:text-ivory">
+            {t('about.mission.title')}
+          </h3>
+          <p className="relative mt-4 text-sm leading-[1.84] text-muted dark:text-dark-text-muted">
+            {t('about.mission.p1')}
+          </p>
+          <div className="relative mt-6 h-px bg-gradient-to-r from-ceramic-hover via-[#C9A227]/70 to-transparent" />
+          <p className="relative mt-5 text-sm leading-[1.84] text-muted dark:text-dark-text-muted">
+            {t('about.mission.p2')}
+          </p>
+        </motion.article>
+      </AboutBentoGrid>
 
       {/* Mission */}
-      <div className="overflow-hidden rounded-3xl bg-gradient-navy p-10 text-white shadow-lg md:p-16">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
-          <div>
-            <h3 className="font-heading text-3xl font-black leading-[1.32] text-balance md:text-4xl md:leading-[1.3]">
-              {t('about.mission.title')}{' '}
-              <span className="text-ceramic">{t('about.mission.highlight')}</span>
-            </h3>
-            <p className="mt-6 text-base leading-paragraph-relaxed text-white/85">
-              {t('about.mission.p1')}
-            </p>
-            <p className="mt-4 text-base leading-paragraph-relaxed text-white/85">
-              {t('about.mission.p2')}
-            </p>
-          </div>
-          <div className="rounded-3xl bg-white/95 p-10 text-navy shadow-2xl">
-            <div>
-              <div className="font-heading text-5xl font-black text-ceramic">
-                {stats.total_analyzed !== null
-                  ? <CountUpNumber end={stats.total_analyzed} separator="," />
-                  : '...'}
-              </div>
-              <div className="mt-3 flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-muted leading-eyebrow">
-                <ImageIcon size={14} />
-                {t('about.mission.stats1')}
-              </div>
-            </div>
-            <div className="my-8 h-px bg-stroke" />
-            <div>
-              <div className="font-heading text-5xl font-black text-ceramic">
-                {stats.accuracy !== null
-                  ? <CountUpNumber end={stats.accuracy} decimals={1} suffix="%" />
-                  : '...'}
-              </div>
-              <div className="mt-3 flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-muted leading-eyebrow">
-                <CheckCircle2 size={14} />
-                {t('about.mission.stats2')}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <MissionStatementCard
+        title={t('about.mission.title')}
+        highlight={t('about.mission.highlight')}
+        p1={t('about.mission.p1')}
+        p2={t('about.mission.p2')}
+        stats={missionStats}
+      />
     </PageContainer>
   );
 };

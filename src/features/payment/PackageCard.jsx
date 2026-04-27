@@ -1,29 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { MagicPricingCard } from '../../components/ui/MagicPricingCard';
 import { ShimmerBadge } from '../../components/ui/ShimmerBadge';
-import { ShimmerButton } from '../../components/ui/ShimmerButton';
-import { CountUpNumber } from '../../components/ui/CountUpNumber';
+import { PricingMotionCard } from './PricingMotionCard';
+import { PackageSelectButton } from './PackageSelectButton';
+import { AnimatedPrice } from './AnimatedPrice';
 import { formatNumber } from '../../lib/utils';
 
-export const PackageCard = ({ pkg, onSelect, selected = false, animatePrice = false }) => {
+export const PackageCard = ({
+  pkg,
+  onSelect,
+  selected = false,
+  animatePrice = false,
+  dimmed = false,
+}) => {
   const { t } = useTranslation();
-  const [priceAnimated, setPriceAnimated] = useState(false);
   const featured = !!pkg.featured || pkg.is_popular;
   const credits = pkg.credits ?? pkg.credit_amount ?? 0;
   const price = pkg.price ?? pkg.amount ?? 0;
   const pricePerCredit = credits > 0 ? Math.round(price / credits) : 0;
 
   return (
-    <MagicPricingCard
+    <PricingMotionCard
       featured={featured}
       selected={selected}
+      dimmed={dimmed}
       onClick={() => onSelect(pkg)}
       className="flex flex-col"
     >
       {/* Top section: Label + Badge */}
       <div className="mb-4 flex min-h-[32px] items-center gap-2">
-        <span className="text-xs font-extrabold uppercase tracking-widest text-muted dark:text-dark-text-muted">
+        <span className="text-xs font-extrabold uppercase tracking-[0.18em] text-muted dark:text-dark-text-muted">
           {pkg.name}
         </span>
         {pkg.discount && <ShimmerBadge variant="ceramic">{pkg.discount}</ShimmerBadge>}
@@ -42,38 +48,28 @@ export const PackageCard = ({ pkg, onSelect, selected = false, animatePrice = fa
 
       {/* Price - with count-up animation */}
       <div className="mt-6 flex items-baseline gap-1.5">
-        {animatePrice && !priceAnimated ? (
-          <CountUpNumber
-            value={price}
-            duration={1.2}
-            ease="power2.out"
-            format={(n) => formatNumber(Math.round(n))}
-            className="font-heading text-4xl font-black text-navy dark:text-ivory md:text-5xl"
-            onComplete={() => setPriceAnimated(true)}
-          />
-        ) : (
-          <span className="font-heading text-4xl font-black text-navy dark:text-ivory md:text-5xl">
-            {formatNumber(price)}
-          </span>
-        )}
-        <span className="text-lg font-bold text-navy dark:text-ivory">đ</span>
+        <AnimatedPrice
+          value={price}
+          play={animatePrice}
+          suffix=" đ"
+          className="font-heading text-4xl font-black text-navy dark:text-ivory md:text-[2.85rem]"
+        />
       </div>
 
       {/* Button - aligned at bottom */}
-      <div className="mt-8 pt-4">
-        <ShimmerButton
-          size="lg"
-          variant={featured ? 'ceramic' : 'primary'}
-          className="w-full"
+      <div className="mt-8 border-t border-ceramic-border/60 pt-5 dark:border-ceramic/22">
+        <PackageSelectButton
+          selected={selected || featured}
           onClick={(e) => {
             e.stopPropagation();
             onSelect(pkg);
           }}
+          aria-label={`${t('payment.select')} ${pkg.name}`}
         >
           {t('payment.select')}
-        </ShimmerButton>
+        </PackageSelectButton>
       </div>
-    </MagicPricingCard>
+    </PricingMotionCard>
   );
 };
 

@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Box } from 'lucide-react';
 import ModelViewer from '../../components/3d/ModelViewer';
 
@@ -10,6 +10,8 @@ import ModelViewer from '../../components/3d/ModelViewer';
  */
 export const ModelShowcaseSection = () => {
   const { t } = useTranslation();
+  const prefersReducedMotion = useReducedMotion();
+  const [isViewerHovered, setIsViewerHovered] = useState(false);
 
   // Stable props to prevent ModelViewer remount
   const viewerProps = useMemo(() => ({
@@ -59,10 +61,10 @@ export const ModelShowcaseSection = () => {
 
         {/* 3D Viewer Container */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 36, scale: 0.97 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.65, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="mt-12 flex justify-center"
         >
           <div className="relative w-full max-w-2xl">
@@ -78,7 +80,53 @@ export const ModelShowcaseSection = () => {
             </div>
 
             {/* 3D Viewer - stable props, no key prop */}
-            <ModelViewer {...viewerProps} t={t} />
+            <motion.div
+              onMouseEnter={() => setIsViewerHovered(true)}
+              onMouseLeave={() => setIsViewerHovered(false)}
+              whileHover={
+                prefersReducedMotion
+                  ? undefined
+                  : {
+                      y: -10,
+                      scale: 1.014,
+                    }
+              }
+              transition={{ type: 'spring', stiffness: 240, damping: 24 }}
+              className="group relative overflow-hidden rounded-[30px] border border-ceramic-border/80 bg-[#FFFCF7] p-2 shadow-[0_28px_60px_-40px_rgba(16,42,86,0.7)] dark:border-ceramic/35 dark:bg-[#101A33]"
+            >
+              <div
+                className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                style={{
+                  background:
+                    'radial-gradient(420px circle at 50% 20%, rgba(201, 216, 230, 0.3), transparent 70%)',
+                }}
+              />
+
+              {!prefersReducedMotion && (
+                <motion.span
+                  aria-hidden
+                  className="pointer-events-none absolute top-0 h-px w-28 bg-gradient-to-r from-transparent via-ceramic-hover to-transparent"
+                  animate={{ x: ['-10%', '320%'] }}
+                  transition={{ repeat: Infinity, duration: 3.4, ease: 'easeInOut' }}
+                />
+              )}
+
+              <motion.div
+                animate={
+                  prefersReducedMotion
+                    ? undefined
+                    : {
+                        rotateX: isViewerHovered ? 1.8 : 0,
+                        rotateY: isViewerHovered ? -1.8 : 0,
+                      }
+                }
+                style={{ transformPerspective: 1200 }}
+                transition={{ duration: 0.45, ease: 'easeOut' }}
+                className="relative"
+              >
+                <ModelViewer {...viewerProps} t={t} />
+              </motion.div>
+            </motion.div>
           </div>
         </motion.div>
       </div>

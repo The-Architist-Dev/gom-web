@@ -1,21 +1,23 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { PageContainer } from '../../components/layout/PageContainer';
-import { PageHeader } from '../../components/layout/PageHeader';
-import { AnimatedStepper } from '../../components/ui/AnimatedStepper';
+import { PaymentStepper } from './PaymentStepper';
 import { LoadingState, ErrorState } from '../../components/ui/states';
 import { Button } from '../../components/ui/Button';
 import { PackageCard } from './PackageCard';
 import { MethodList } from './MethodList';
 import { QRStage } from './QRStage';
 import { paymentApi } from './api';
-import { getErrorMessage } from '../../lib/utils';
+import { cn, getErrorMessage } from '../../lib/utils';
 import { VIEWS } from '../../lib/constants';
 import ShinyText from '../../components/ui/ShinyText';
+
+gsap.registerPlugin(useGSAP);
 
 // Fallback packages when API fails
 const FALLBACK_PACKAGES = [
@@ -26,6 +28,7 @@ const FALLBACK_PACKAGES = [
 
 export const PaymentPage = ({ fetchUser, notify, setView }) => {
   const { t } = useTranslation();
+  const prefersReducedMotion = useReducedMotion();
   const [packages, setPackages] = useState([]);
   const [loadingPkg, setLoadingPkg] = useState(true);
   const [pkgError, setPkgError] = useState(null);
@@ -42,7 +45,9 @@ export const PaymentPage = ({ fetchUser, notify, setView }) => {
   const subtitleRef = useRef(null);
   const stepperRef = useRef(null);
   const cardsRef = useRef(null);
+  const pageRef = useRef(null);
   const hasAnimated = useRef(false);
+  const selectionTimeoutRef = useRef(null);
 
   // Load packages from API
   useEffect(() => {
@@ -72,76 +77,107 @@ export const PaymentPage = ({ fetchUser, notify, setView }) => {
     };
   }, []);
 
-  // Page entrance animation with GSAP
-  useEffect(() => {
-    if (loadingPkg || hasAnimated.current || stage !== 0) return;
+  useGSAP(
+    () => {
+      if (loadingPkg || stage !== 0 || hasAnimated.current || !pageRef.current) return;
 
-    const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (shouldReduceMotion) {
+      if (prefersReducedMotion) {
+        hasAnimated.current = true;
+        return;
+      }
+
+      const cards = cardsRef.current?.querySelectorAll('.pricing-card') || [];
+      const popularCard = cardsRef.current?.querySelector('.pricing-card-popular');
+
+      const timeline = gsap.timeline({ delay: 0.08, defaults: { ease: 'power3.out' } });
+
+      timeline
+        .fromTo(
+          titleRef.current,
+          { opacity: 0, y: 24, filter: 'blur(10px)' },
+          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.62 },
+          0
+        )
+        .fromTo(
+          subtitleRef.current,
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: 0.5 },
+          0.12
+        )
+        .fromTo(
+          stepperRef.current,
+          { opacity: 0, x: -36 },
+          { opacity: 1, x: 0, duration: 0.52 },
+          0.26
+        )
+        .fromTo(
+          cards,
+          { opacity: 0, y: 48, scale: 0.94 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.64,
+            stagger: 0.12,
+            ease: 'back.out(1.25)',
+          },
+          0.38
+        );
+
+      if (popularCard) {
+        timeline
+          .fromTo(
+            popularCard,
+            { y: 0, scale: 1 },
+            { y: -7, scale: 1.04, duration: 0.22, ease: 'power2.out' },
+            '>-0.05'
+          )
+          .to(popularCard, { y: 0, scale: 1, duration: 0.28, ease: 'back.out(1.6)' });
+      }
+
       hasAnimated.current = true;
-      return;
+
+      return () => timeline.kill();
+    },
+    {
+      scope: pageRef,
+      dependencies: [loadingPkg, stage, prefersReducedMotion, packages.length],
+      revertOnUpdate: true,
     }
+  );
 
-    const tl = gsap.timeline({ delay: 0.1 });
-
-    // Title fade-up with blur
-    if (titleRef.current) {
-      tl.fromTo(
-        titleRef.current,
-        { opacity: 0, y: 20, filter: 'blur(10px)' },
-        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.6, ease: 'power2.out' },
-        0
-      );
-    }
-
-    // Subtitle fade-up
-    if (subtitleRef.current) {
-      tl.fromTo(
-        subtitleRef.current,
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' },
-        0.15
-      );
-    }
-
-    // Stepper reveal
-    if (stepperRef.current) {
-      tl.fromTo(
-        stepperRef.current,
-        { opacity: 0, x: -30 },
-        { opacity: 1, x: 0, duration: 0.5, ease: 'power2.out' },
-        0.3
-      );
-    }
-
-    // Cards stagger reveal
-    if (cardsRef.current) {
-      const cards = cardsRef.current.querySelectorAll('.pricing-card');
-      tl.fromTo(
-        cards,
-        { opacity: 0, y: 36, scale: 0.96 },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: 'back.out(1.2)',
-        },
-        0.5
-      );
-    }
-
-    hasAnimated.current = true;
-
+  useEffect(() => {
     return () => {
-      tl.kill();
+      if (selectionTimeoutRef.current) {
+        clearTimeout(selectionTimeoutRef.current);
+      }
     };
-  }, [loadingPkg, stage]);
+  }, []);
 
   const selectPackage = (pkg) => {
     setSelectedPkg(pkg);
-    setStage(1);
+
+    if (prefersReducedMotion || !cardsRef.current) {
+      setStage(1);
+      return;
+    }
+
+    const selectedCard = cardsRef.current.querySelector(`[data-package-id="${pkg.id}"]`);
+    const otherCards = cardsRef.current.querySelectorAll(`[data-package-id]:not([data-package-id="${pkg.id}"])`);
+
+    const timeline = gsap.timeline({ defaults: { ease: 'power2.out' } });
+    timeline
+      .to(otherCards, { opacity: 0.78, scale: 0.985, duration: 0.2 }, 0)
+      .fromTo(selectedCard, { y: 0, scale: 1 }, { y: -10, scale: 1.052, duration: 0.22 }, 0)
+      .to(selectedCard, { y: 0, scale: 1, duration: 0.28, ease: 'back.out(1.5)' }, 0.2);
+
+    if (selectionTimeoutRef.current) {
+      clearTimeout(selectionTimeoutRef.current);
+    }
+
+    selectionTimeoutRef.current = setTimeout(() => {
+      setStage(1);
+    }, 280);
   };
 
   const reset = () => {
@@ -245,7 +281,7 @@ export const PaymentPage = ({ fetchUser, notify, setView }) => {
   return (
     <PageContainer>
       {/* Enhanced PageHeader with animation refs */}
-      <div className="mb-8 flex flex-col items-center gap-3 text-center md:mb-10">
+      <div ref={pageRef} className="mb-8 flex flex-col items-center gap-3 text-center md:mb-10">
         <h2
           ref={titleRef}
           className="font-heading text-3xl font-extrabold leading-[1.35] text-balance md:text-4xl md:leading-[1.32]"
@@ -273,7 +309,7 @@ export const PaymentPage = ({ fetchUser, notify, setView }) => {
 
       {/* Animated Stepper */}
       <div ref={stepperRef} className="mb-10 md:mb-12">
-        <AnimatedStepper steps={steps} current={currentStage} />
+        <PaymentStepper steps={steps} current={currentStage} />
       </div>
 
       {currentStage === 0 && (
@@ -285,12 +321,17 @@ export const PaymentPage = ({ fetchUser, notify, setView }) => {
               ref={cardsRef}
               className="grid gap-6 md:grid-cols-3 md:gap-8"
             >
-              {packages.map((pkg, index) => (
-                <div key={pkg.id} className="pricing-card">
+              {packages.map((pkg) => (
+                <div
+                  key={pkg.id}
+                  data-package-id={pkg.id}
+                  className={cn('pricing-card', (pkg.featured || pkg.is_popular) && 'pricing-card-popular')}
+                >
                   <PackageCard
                     pkg={pkg}
                     onSelect={selectPackage}
                     selected={selectedPkg?.id === pkg.id}
+                    dimmed={!!selectedPkg && selectedPkg.id !== pkg.id}
                     animatePrice={!hasAnimated.current}
                   />
                 </div>

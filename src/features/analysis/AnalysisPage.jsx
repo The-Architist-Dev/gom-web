@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Sparkles, ShieldCheck, Zap, ArrowRight } from 'lucide-react';
 import { PageContainer } from '../../components/layout/PageContainer';
 import { Card } from '../../components/ui/Card';
@@ -9,6 +9,8 @@ import { HeroSection } from './HeroSection';
 import { UploadSection } from './UploadSection';
 import { ResultDashboard } from './ResultDashboard';
 import { ModelShowcaseSection } from './ModelShowcaseSection';
+import { HomeSpotlightCard } from './HomeSpotlightCard';
+import { FeaturedCeramicMotionCard } from './FeaturedCeramicMotionCard';
 import { analysisApi } from './api';
 import { ceramicsApi } from '../ceramics/api';
 import { getErrorMessage } from '../../lib/utils';
@@ -16,6 +18,7 @@ import { VIEWS } from '../../lib/constants';
 
 export const AnalysisPage = ({ token, notify, quota, setQuota, setView, user }) => {
   const { t } = useTranslation();
+  const prefersReducedMotion = useReducedMotion();
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -110,6 +113,33 @@ export const AnalysisPage = ({ token, notify, quota, setQuota, setView, user }) 
   }
 
   const featuredImage = featuredLines[0]?.image_url;
+  const trustItems = [
+    { icon: Sparkles, k: 'expert' },
+    { icon: ShieldCheck, k: 'secure' },
+    { icon: Zap, k: 'instant' },
+  ];
+
+  const trustContainerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: prefersReducedMotion ? 0.04 : 0.14,
+      },
+    },
+  };
+
+  const trustCardVariants = {
+    hidden: { opacity: 0, y: 40, scale: 0.96 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: prefersReducedMotion ? 0.35 : 0.65,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    },
+  };
 
   return (
     <PageContainer>
@@ -120,32 +150,37 @@ export const AnalysisPage = ({ token, notify, quota, setQuota, setView, user }) 
       />
 
       {/* Trust signals */}
-      <section className="grid gap-6 py-12 md:grid-cols-3">
-        {[
-          { icon: Sparkles, k: 'expert' },
-          { icon: ShieldCheck, k: 'secure' },
-          { icon: Zap, k: 'instant' },
-        ].map((it, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-          >
-            <Card hoverable className="h-full text-center">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-ceramic/15 text-ceramic-dark">
-                <it.icon size={22} />
-              </div>
-              <h3 className="font-heading text-lg font-bold leading-card text-navy dark:text-ivory">
-                {t('home.trust.' + it.k)}
-              </h3>
-              <p className="mt-2 text-sm leading-paragraph text-muted dark:text-dark-text-muted">
-                {t('home.trust.' + it.k + 'Desc')}
-              </p>
-            </Card>
-          </motion.div>
-        ))}
+      <section className="py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-7"
+        >
+          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-ceramic-dark dark:text-ceramic">
+            Museum-grade Authentication
+          </p>
+        </motion.div>
+
+        <motion.div
+          variants={trustContainerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.12 }}
+          className="grid gap-6 md:grid-cols-3"
+        >
+          {trustItems.map((it, i) => (
+            <motion.div key={it.k} variants={trustCardVariants}>
+              <HomeSpotlightCard
+                icon={it.icon}
+                title={t('home.trust.' + it.k)}
+                description={t('home.trust.' + it.k + 'Desc')}
+                withBeam={i === 1}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
       </section>
 
       <UploadSection
@@ -163,8 +198,14 @@ export const AnalysisPage = ({ token, notify, quota, setQuota, setView, user }) 
 
       {/* Featured lines */}
       <section className="py-16">
-        <div className="mb-10 flex items-center justify-between">
-          <h2 className="font-heading text-3xl font-extrabold leading-heading text-navy dark:text-ivory">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-10 flex items-center justify-between"
+        >
+          <h2 className="font-heading text-3xl font-extrabold leading-[1.25] text-navy dark:text-ivory">
             {t('home.featured.title')}
           </h2>
           <Button
@@ -175,9 +216,9 @@ export const AnalysisPage = ({ token, notify, quota, setQuota, setView, user }) 
           >
             {t('common.viewAll')}
           </Button>
-        </div>
+        </motion.div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {featuredLines.length === 0 &&
             Array.from({ length: 3 }).map((_, i) => (
               <Card key={i} padded={false} className="overflow-hidden">
@@ -191,43 +232,19 @@ export const AnalysisPage = ({ token, notify, quota, setQuota, setView, user }) 
           {featuredLines.slice(0, 3).map((line, i) => (
             <motion.div
               key={line.id || i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
+              initial={{ opacity: 0, y: 40, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{
+                delay: i * 0.1,
+                duration: prefersReducedMotion ? 0.35 : 0.62,
+                ease: [0.22, 1, 0.36, 1],
+              }}
             >
-              <Card
-                padded={false}
-                hoverable
-                className="cursor-pointer overflow-hidden"
+              <FeaturedCeramicMotionCard
+                item={line}
                 onClick={() => setView?.(VIEWS.LINES)}
-              >
-                <div className="aspect-[4/3] overflow-hidden bg-surface-alt dark:bg-dark-surface-alt">
-                  {line.image_url && (
-                    <img
-                      src={line.image_url}
-                      alt={line.name}
-                      className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                      onError={(e) => {
-                        e.currentTarget.src =
-                          'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&q=80&w=800';
-                        e.currentTarget.onerror = null;
-                      }}
-                    />
-                  )}
-                </div>
-                <div className="p-5">
-                  <span className="text-xs font-extrabold uppercase tracking-wider leading-eyebrow text-ceramic-dark">
-                    {line.era}
-                  </span>
-                  <h3 className="mt-1 font-heading text-lg font-bold leading-card text-navy dark:text-ivory">
-                    {line.name}
-                  </h3>
-                  <p className="mt-2 line-clamp-2 text-sm leading-paragraph text-muted dark:text-dark-text-muted">
-                    {line.description}
-                  </p>
-                </div>
-              </Card>
+              />
             </motion.div>
           ))}
         </div>

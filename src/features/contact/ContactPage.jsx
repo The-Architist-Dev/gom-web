@@ -14,71 +14,21 @@ import {
   Zap,
   Globe,
   ShieldCheck,
-  ChevronDown,
   CheckCircle2,
   AlertTriangle,
-  ArrowRight,
 } from 'lucide-react';
 import { PageContainer } from '../../components/layout/PageContainer';
 import { Card } from '../../components/ui/Card';
 import { Input, Textarea, Label } from '../../components/ui/Input';
-import { Button } from '../../components/ui/Button';
 import { contactApi } from './api';
 import { getErrorMessage, isValidEmail } from '../../lib/utils';
 import ShinyText from '../../components/ui/ShinyText';
-
-const ContactInfoCard = ({ icon: Icon, title, value, note, ctaText, ctaLink }) => (
-  <Card hoverable className="text-center">
-    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-ceramic/15 text-ceramic-dark">
-      <Icon size={22} />
-    </div>
-    <h4 className="mb-1 font-heading text-base font-bold leading-card text-navy dark:text-ivory">{title}</h4>
-    <p className="mb-1 text-base font-bold leading-button text-navy dark:text-ivory">{value}</p>
-    <p className="mb-3 text-xs leading-paragraph text-muted dark:text-dark-text-muted">{note}</p>
-    {ctaText && (
-      <a
-        href={ctaLink}
-        className="inline-flex items-center gap-1 text-xs font-bold text-ceramic-dark hover:underline"
-      >
-        {ctaText}
-        <ArrowRight size={12} />
-      </a>
-    )}
-  </Card>
-);
-
-const FAQItem = ({ question, answer }) => {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="border-b border-stroke last:border-b-0 dark:border-dark-stroke">
-      <button
-        type="button"
-        onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between py-4 text-left"
-      >
-        <span className="text-sm font-bold text-navy dark:text-ivory">{question}</span>
-        <ChevronDown
-          size={16}
-          className={`text-muted transition-transform duration-300 ${open ? 'rotate-180' : ''} dark:text-dark-text-muted`}
-        />
-      </button>
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
-          >
-            <p className="pb-4 text-sm leading-paragraph-relaxed text-muted dark:text-dark-text-muted">
-              {answer}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
+import {
+  ContactHoverGrid,
+  ContactFormCard,
+  MagneticShimmerButton,
+  AnimatedFAQCard,
+} from './ContactCards';
 
 export const ContactPage = ({ notify }) => {
   const { t } = useTranslation();
@@ -126,10 +76,51 @@ export const ContactPage = ({ notify }) => {
     { icon: Globe, text: t('contact.system.items.global') },
   ];
 
+  const contactCards = [
+    {
+      icon: Mail,
+      title: t('contact.info.email'),
+      value: 'dongnguyenkh123@gmail.com',
+      note: t('contact.info.emailNote'),
+      ctaText: t('contact.info.emailCta'),
+      ctaLink: 'mailto:dongnguyenkh123@gmail.com',
+    },
+    {
+      icon: Phone,
+      title: t('contact.info.phone'),
+      value: '0949 085 842',
+      note: t('contact.info.phoneNote'),
+      ctaText: t('contact.info.phoneCta'),
+      ctaLink: 'tel:0949085842',
+    },
+    {
+      icon: MapPin,
+      title: t('contact.info.address'),
+      value: t('contact.info.addressValue'),
+      note: t('contact.info.addressNote'),
+      ctaText: t('contact.info.addressCta'),
+      ctaLink: '#',
+    },
+  ];
+
+  const faqItems = [
+    { question: t('contact.faq.q1'), answer: t('contact.faq.a1') },
+    { question: t('contact.faq.q2'), answer: t('contact.faq.a2') },
+    { question: t('contact.faq.q3'), answer: t('contact.faq.a3') },
+  ];
+
+  const inputFocusClass =
+    'focus:shadow-[0_0_0_4px_rgba(159,183,201,0.28)] dark:focus:shadow-[0_0_0_4px_rgba(201,216,230,0.2)]';
+
   return (
     <PageContainer>
       {/* Hero */}
-      <div className="mb-12 text-center">
+      <motion.div
+        initial={{ opacity: 0, y: 22 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="mb-12 text-center"
+      >
         <span className="text-xs font-extrabold uppercase tracking-wider leading-eyebrow text-ceramic-dark dark:text-ceramic">
           {t('contact.eyebrow')}
         </span>
@@ -150,46 +141,27 @@ export const ContactPage = ({ notify }) => {
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-paragraph text-muted dark:text-dark-text-muted md:text-base md:leading-paragraph-relaxed">
           {t('contact.subtitle')}
         </p>
-      </div>
+      </motion.div>
 
       {/* Info cards */}
-      <div className="mb-12 grid gap-6 md:grid-cols-3">
-        <ContactInfoCard
-          icon={Mail}
-          title={t('contact.info.email')}
-          value="dongnguyenkh123@gmail.com"
-          note={t('contact.info.emailNote')}
-          ctaText={t('contact.info.emailCta')}
-          ctaLink="mailto:dongnguyenkh123@gmail.com"
-        />
-        <ContactInfoCard
-          icon={Phone}
-          title={t('contact.info.phone')}
-          value="0949 085 842"
-          note={t('contact.info.phoneNote')}
-          ctaText={t('contact.info.phoneCta')}
-          ctaLink="tel:0949085842"
-        />
-        <ContactInfoCard
-          icon={MapPin}
-          title={t('contact.info.address')}
-          value={t('contact.info.addressValue')}
-          note={t('contact.info.addressNote')}
-          ctaText={t('contact.info.addressCta')}
-          ctaLink="#"
-        />
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 26, scale: 0.98 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.62, ease: [0.22, 1, 0.36, 1] }}
+        className="mb-12"
+      >
+        <ContactHoverGrid items={contactCards} />
+      </motion.div>
 
       {/* Main */}
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Form */}
-        <Card className="lg:col-span-2">
-          <h3 className="font-heading text-xl font-bold leading-card text-navy dark:text-ivory">
-            {t('contact.form.title')}
-          </h3>
-          <p className="mt-1 text-sm text-muted dark:text-dark-text-muted">
-            {t('contact.form.subtitle')}
-          </p>
+        <ContactFormCard
+          title={t('contact.form.title')}
+          subtitle={t('contact.form.subtitle')}
+          className="lg:col-span-2"
+        >
 
           <AnimatePresence>
             {feedback.type === 'success' && (
@@ -221,6 +193,7 @@ export const ContactPage = ({ notify }) => {
               <div>
                 <Label>{t('contact.form.name')}</Label>
                 <Input
+                  className={inputFocusClass}
                   name="name"
                   placeholder={t('contact.form.namePh')}
                   value={form.name}
@@ -232,6 +205,7 @@ export const ContactPage = ({ notify }) => {
               <div>
                 <Label>{t('contact.form.email')}</Label>
                 <Input
+                  className={inputFocusClass}
                   type="email"
                   name="email"
                   placeholder={t('contact.form.emailPh')}
@@ -246,6 +220,7 @@ export const ContactPage = ({ notify }) => {
             <div>
               <Label>{t('contact.form.subject')}</Label>
               <Input
+                className={inputFocusClass}
                 name="subject"
                 placeholder={t('contact.form.subjectPh')}
                 value={form.subject}
@@ -257,6 +232,7 @@ export const ContactPage = ({ notify }) => {
             <div>
               <Label>{t('contact.form.message')}</Label>
               <Textarea
+                className={inputFocusClass}
                 name="message"
                 placeholder={t('contact.form.messagePh')}
                 value={form.message}
@@ -266,47 +242,51 @@ export const ContactPage = ({ notify }) => {
               />
             </div>
 
-            <Button
+            <MagneticShimmerButton
               type="submit"
-              variant="primary"
-              size="lg"
               loading={sending}
               rightIcon={!sending && <Send size={16} />}
-              className="w-full"
+              aria-label={t('contact.form.submit')}
             >
               {sending ? t('contact.form.sending') : t('contact.form.submit')}
-            </Button>
+            </MagneticShimmerButton>
           </form>
-        </Card>
+        </ContactFormCard>
 
         {/* Side */}
-        <div className="space-y-6">
-          <Card>
+        <motion.div
+          initial={{ opacity: 0, x: 22 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.56, ease: [0.22, 1, 0.36, 1] }}
+          className="space-y-6"
+        >
+          <Card className="rounded-[26px] border-ceramic-border/75 bg-[#FFFCF7] dark:border-ceramic/30 dark:bg-[#101B36]">
             <h4 className="mb-4 flex items-center gap-2 font-heading text-base font-bold leading-card text-navy dark:text-ivory">
               <ShieldCheck className="text-ceramic" size={18} />
               {t('contact.system.title')}
             </h4>
             <ul className="space-y-3">
               {systemItems.map((it, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ceramic/10 text-ceramic-dark">
+                <motion.li
+                  key={i}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08, duration: 0.35 }}
+                  className="flex items-start gap-3 text-sm"
+                >
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ceramic/15 text-ceramic-dark dark:bg-ceramic/20 dark:text-ceramic-soft">
                     <it.icon size={14} />
                   </div>
                   <span className="text-muted dark:text-dark-text-muted">{it.text}</span>
-                </li>
+                </motion.li>
               ))}
             </ul>
           </Card>
 
-          <Card>
-            <h4 className="mb-2 font-heading text-base font-bold leading-card text-navy dark:text-ivory">
-              {t('contact.faq.title')}
-            </h4>
-            <FAQItem question={t('contact.faq.q1')} answer={t('contact.faq.a1')} />
-            <FAQItem question={t('contact.faq.q2')} answer={t('contact.faq.a2')} />
-            <FAQItem question={t('contact.faq.q3')} answer={t('contact.faq.a3')} />
-          </Card>
-        </div>
+          <AnimatedFAQCard title={t('contact.faq.title')} items={faqItems} />
+        </motion.div>
       </div>
     </PageContainer>
   );

@@ -383,7 +383,7 @@
       ],
       "s3Title": "Payment transactions",
       "s3Body": "We do not store card numbers, internet banking credentials or credit card details. All top-ups go through PCI-DSS-compliant gateways via VietQR and MoMo.",
-      "s4Title": "Contact & user rights",
+      "s4Title": "Contact and user rights",
       "s4Body": "To request deletion of your personal history, including journal entries, contact The Archivist via 'Expert contact'. Your data will be permanently destroyed in compliance with GDPR."
     }
   },
