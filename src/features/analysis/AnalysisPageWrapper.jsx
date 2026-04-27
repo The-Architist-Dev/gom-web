@@ -4,9 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useNotify } from '../../hooks/useNotify';
 import { AnalysisPage } from './AnalysisPage';
 
-/**
- * Wrapper to inject router and hooks into AnalysisPage
- */
+// Wrapper to inject router and hooks into AnalysisPage
 export const AnalysisPageWrapper = () => {
   const { token, user, quota, setQuota } = useAuth();
   const { notify } = useNotify();

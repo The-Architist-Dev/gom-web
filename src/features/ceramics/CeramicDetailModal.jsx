@@ -8,8 +8,8 @@ import { cn } from '../../lib/utils';
 
 export const CeramicDetailModal = ({ item, onClose }) => {
   const { t } = useTranslation();
-  const [viewMode, setViewMode] = useState('image'); // 'image' or '3d'
-  
+  const [viewMode, setViewMode] = useState('image');
+
   if (!item) return null;
 
   // Check if item has 3D model URL
@@ -55,10 +55,10 @@ export const CeramicDetailModal = ({ item, onClose }) => {
             {viewMode === 'image' ? (
               // Image view
               item.image_url ? (
-                <img 
-                  src={item.image_url} 
-                  alt={item.name} 
-                  className="h-full w-full object-cover" 
+                <img
+                  src={item.image_url}
+                  alt={item.name}
+                  className="h-full w-full object-cover"
                 />
               ) : (
                 <div className="flex aspect-square items-center justify-center text-muted">

@@ -1,9 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-/**
- * ShinyText - Animated shiny text effect with dark mode support
- * From React Bits
- */
+// ShinyText — animated shiny text effect with dark mode support
 const ShinyText = ({
   text,
   speed = 2,

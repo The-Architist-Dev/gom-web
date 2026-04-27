@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Suspense, useRef, useState, useEffect, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { 
-  OrbitControls, 
-  Environment, 
+import {
+  OrbitControls,
+  Environment,
   PerspectiveCamera,
   useGLTF,
   useFBX,
@@ -14,15 +14,12 @@ import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { Camera } from 'lucide-react';
 
-/**
- * ModelViewer - Stable 3D model viewer component
- * Optimized to prevent flicker/jump issues
- */
+// ModelViewer — stable 3D model viewer, optimized to prevent flicker/jump
 
 // Model component with stable rendering
-const Model = ({ 
-  url, 
-  modelXOffset = 0, 
+const Model = ({
+  url,
+  modelXOffset = 0,
   modelYOffset = 0,
   autoRotate = false,
   autoRotateSpeed = 0.35,
@@ -37,24 +34,24 @@ const Model = ({
     // Check if dark mode
     const isDark = document.documentElement.classList.contains('dark');
     threeScene.background = new THREE.Color(isDark ? '#1e293b' : '#faf9f7');
-    
+
     // Listen for theme changes
     const observer = new MutationObserver(() => {
       const isDark = document.documentElement.classList.contains('dark');
       threeScene.background = new THREE.Color(isDark ? '#1e293b' : '#faf9f7');
     });
-    
+
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['class']
     });
-    
+
     return () => observer.disconnect();
   }, [threeScene]);
 
   // Determine file type - handle query params
   const fileExtension = url.split('.').pop().split('?')[0].toLowerCase();
-  
+
   // Load model based on file type
   let scene = null;
   const [objScene, setObjScene] = useState(null);
@@ -91,27 +88,27 @@ const Model = ({
   // One-time camera fit after model loads
   useEffect(() => {
     if (!scene || hasFramedRef.current) return;
-    
+
     const timer = setTimeout(() => {
       if (!modelRef.current || hasFramedRef.current) return;
-      
+
       try {
         // Calculate bounding box
         const box = new THREE.Box3().setFromObject(modelRef.current);
         const size = box.getSize(new THREE.Vector3());
         const center = box.getCenter(new THREE.Vector3());
-        
+
         // Calculate optimal camera distance
         const maxDim = Math.max(size.x, size.y, size.z);
         const fov = camera.fov * (Math.PI / 180);
         let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
         cameraZ *= 1.5; // Add some padding
-        
+
         // Set camera position
         camera.position.set(center.x, center.y, center.z + cameraZ);
         camera.lookAt(center);
         camera.updateProjectionMatrix();
-        
+
         hasFramedRef.current = true;
       } catch (e) {
         console.warn('Could not auto-fit model:', e);
@@ -179,7 +176,7 @@ const ModelViewer = ({
 
   const handleScreenshot = () => {
     if (!canvasRef.current) return;
-    
+
     const canvas = canvasRef.current.querySelector('canvas');
     if (!canvas) return;
 
@@ -203,7 +200,7 @@ const ModelViewer = ({
       ref={canvasRef}
       shadows
       dpr={[1, 2]}
-      gl={{ 
+      gl={{
         preserveDrawingBuffer: true,
         antialias: true,
         alpha: false,
@@ -211,15 +208,15 @@ const ModelViewer = ({
       frameloop="always" // Always render for smooth auto-rotation
     >
       <PerspectiveCamera makeDefault position={[0, 0, 5]} fov={50} />
-      
+
       {/* Lighting */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
       <pointLight position={[-10, -10, -5]} intensity={0.5} />
-      
+
       {/* Environment */}
       <Environment preset={environmentPreset} />
-      
+
       {/* Model - no Bounds wrapper to prevent refit */}
       <Suspense fallback={<Loader />}>
         {error ? (
@@ -234,7 +231,7 @@ const ModelViewer = ({
           />
         )}
       </Suspense>
-      
+
       {/* Controls */}
       <OrbitControls
         enablePan={false}
@@ -258,12 +255,12 @@ const ModelViewer = ({
   ]);
 
   return (
-    <div 
+    <div
       className={`relative overflow-hidden rounded-2xl bg-surface shadow-lg dark:bg-dark-surface ${className}`}
       style={{ width, height }}
     >
       {canvasElement}
-      
+
       {/* Screenshot button */}
       {showScreenshotButton && (
         <button

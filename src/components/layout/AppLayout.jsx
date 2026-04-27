@@ -5,10 +5,7 @@ import { MainHeader } from './MainHeader';
 import { Footer } from './Footer';
 import { useNotify } from '../../hooks/useNotify';
 
-/**
- * AppLayout - main app shell with header, footer, and content area.
- * Toast container is mounted globally by NotifyProvider in App.jsx.
- */
+// AppLayout — main app shell with header, footer, and content area
 export const AppLayout = () => {
   const { token, user, quota, logout, fetchUser } = useAuth();
   const { notify } = useNotify();

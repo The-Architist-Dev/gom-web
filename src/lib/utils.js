@@ -1,24 +1,24 @@
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-/** Combine class names with Tailwind merge */
+// Combine class names with Tailwind merge
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-/** Format currency VND */
+// Format currency VND
 export function formatVND(amount) {
   if (amount == null || isNaN(amount)) return '0₫';
   return new Intl.NumberFormat('vi-VN').format(amount) + '₫';
 }
 
-/** Format number Vietnamese locale */
+// Format number Vietnamese locale
 export function formatNumber(value) {
   if (value == null || isNaN(value)) return '0';
   return new Intl.NumberFormat('vi-VN').format(value);
 }
 
-/** Format date Vietnamese */
+// Format date Vietnamese
 export function formatDate(date, opts = { dateStyle: 'medium', timeStyle: 'short' }) {
   if (!date) return '—';
   try {
@@ -28,31 +28,31 @@ export function formatDate(date, opts = { dateStyle: 'medium', timeStyle: 'short
   }
 }
 
-/** Truncate string */
+// Truncate string
 export function truncate(str, max = 80) {
   if (!str) return '';
   return str.length > max ? str.slice(0, max - 1) + '…' : str;
 }
 
-/** Sleep helper */
+// Sleep helper
 export function sleep(ms) {
   return new Promise((res) => setTimeout(res, ms));
 }
 
-/** Format card number 4-4-4-4 */
+// Format card number 4-4-4-4
 export function formatCardNumber(v) {
   const digits = String(v || '').replace(/\D/g, '').slice(0, 16);
   return digits.replace(/(.{4})/g, '$1 ').trim();
 }
 
-/** Format expiry MM/YY */
+// Format expiry MM/YY
 export function formatExpiry(v) {
   const digits = String(v || '').replace(/\D/g, '').slice(0, 4);
   if (digits.length >= 3) return digits.slice(0, 2) + '/' + digits.slice(2);
   return digits;
 }
 
-/** Copy to clipboard */
+// Copy to clipboard
 export async function copyToClipboard(text) {
   if (!navigator?.clipboard) return false;
   try {
@@ -63,12 +63,12 @@ export async function copyToClipboard(text) {
   }
 }
 
-/** Email validation */
+// Email validation
 export function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
 }
 
-/** Get error message from axios error */
+// Get error message from axios error
 export function getErrorMessage(err, fallback = 'Đã có lỗi xảy ra') {
   if (!err) return fallback;
   return (

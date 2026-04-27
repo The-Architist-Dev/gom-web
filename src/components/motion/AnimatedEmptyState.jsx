@@ -2,9 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../../lib/utils';
 
-/**
- * AnimatedEmptyState — icon bounce + text fade + optional CTA shimmer.
- */
+// AnimatedEmptyState — icon bounce + text fade + optional CTA shimmer
 export const AnimatedEmptyState = ({
   icon: Icon,
   title,

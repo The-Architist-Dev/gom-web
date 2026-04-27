@@ -62,7 +62,7 @@ export const CeramicsPage = ({ notify }) => {
 
   return (
     <PageContainer>
-      <PageHeader 
+      <PageHeader
         title={
           <ShinyText
             text={t('ceramics.title')}
@@ -77,7 +77,7 @@ export const CeramicsPage = ({ notify }) => {
             yoyo={false}
           />
         }
-        subtitle={t('ceramics.subtitle')} 
+        subtitle={t('ceramics.subtitle')}
       />
 
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center">

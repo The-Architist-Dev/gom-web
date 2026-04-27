@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 
 const THEME_KEY = 'theme';
 
-/**
- * Hook to manage theme (light/dark mode)
- */
+// Hook to manage theme (light/dark mode)
 export const useTheme = () => {
   const [theme, setTheme] = useState(() => {
     // Check localStorage first

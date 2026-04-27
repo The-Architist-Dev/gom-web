@@ -1,19 +1,7 @@
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { ToastContainer } from '../components/ui/Toast';
 
-/**
- * Global toast notification system.
- *
- * Architecture: a single React Context owns the toast queue. The provider
- * mounts <ToastContainer/> exactly once. Every component that calls
- * useNotify() gets the SAME notify/dismiss functions, so toasts triggered
- * deep inside a page actually render.
- *
- * Public API:
- *   - <NotifyProvider>...</NotifyProvider>     (mounted once at the app root)
- *   - const { notify, dismiss, toasts } = useNotify();
- *   - notify(message, type='info', duration=4500)
- */
+// Global toast notification system — single Context owns toast queue, NotifyProvider mounts ToastContainer once
 
 const NotifyContext = createContext(null);
 
@@ -68,13 +56,7 @@ export const NotifyProvider = ({ children }) => {
   );
 };
 
-/**
- * useNotify
- *
- * Returns the global { toasts, notify, dismiss }. Falls back to a no-op
- * notify() with a console warning if the provider is missing — this avoids
- * crashing the app during tests / Storybook, while making the misconfig loud.
- */
+// Returns global { toasts, notify, dismiss }. Falls back to no-op if provider is missing.
 export function useNotify() {
   const ctx = useContext(NotifyContext);
   if (!ctx) {

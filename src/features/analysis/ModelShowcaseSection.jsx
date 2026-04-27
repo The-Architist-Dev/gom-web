@@ -4,10 +4,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { Box } from 'lucide-react';
 import ModelViewer from '../../components/3d/ModelViewer';
 
-/**
- * ModelShowcaseSection - 3D ceramic sample showcase
- * Displays an illustrative 3D model for visual engagement
- */
+// ModelShowcaseSection — 3D ceramic sample showcase for visual engagement
 export const ModelShowcaseSection = () => {
   const { t } = useTranslation();
   const prefersReducedMotion = useReducedMotion();
@@ -30,7 +27,7 @@ export const ModelShowcaseSection = () => {
     <section className="relative overflow-hidden py-20">
       {/* Background decoration */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-gold/5 to-transparent" />
-      
+
       <div className="relative">
         {/* Section header */}
         <motion.div
@@ -47,12 +44,12 @@ export const ModelShowcaseSection = () => {
               {t('home.3d.eyebrow')}
             </span>
           </div>
-          
+
           {/* Title */}
           <h2 className="font-heading text-3xl font-extrabold leading-[1.35] text-navy dark:text-ivory md:text-4xl md:leading-[1.32]">
             {t('home.3d.title')}
           </h2>
-          
+
           {/* Description */}
           <p className="mx-auto mt-4 max-w-2xl text-base leading-paragraph text-muted dark:text-dark-text-muted">
             {t('home.3d.description')}
@@ -87,9 +84,9 @@ export const ModelShowcaseSection = () => {
                 prefersReducedMotion
                   ? undefined
                   : {
-                      y: -10,
-                      scale: 1.014,
-                    }
+                    y: -10,
+                    scale: 1.014,
+                  }
               }
               transition={{ type: 'spring', stiffness: 240, damping: 24 }}
               className="group relative overflow-hidden rounded-[30px] border border-ceramic-border/80 bg-[#FFFCF7] p-2 shadow-[0_28px_60px_-40px_rgba(16,42,86,0.7)] dark:border-ceramic/35 dark:bg-[#101A33]"
@@ -116,9 +113,9 @@ export const ModelShowcaseSection = () => {
                   prefersReducedMotion
                     ? undefined
                     : {
-                        rotateX: isViewerHovered ? 1.8 : 0,
-                        rotateY: isViewerHovered ? -1.8 : 0,
-                      }
+                      rotateX: isViewerHovered ? 1.8 : 0,
+                      rotateY: isViewerHovered ? -1.8 : 0,
+                    }
                 }
                 style={{ transformPerspective: 1200 }}
                 transition={{ duration: 0.45, ease: 'easeOut' }}

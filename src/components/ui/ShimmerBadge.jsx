@@ -2,10 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../../lib/utils';
 
-/**
- * ShimmerBadge - Badge with subtle shimmer animation
- * Used for discount badges like "Tiết kiệm 20%"
- */
+// ShimmerBadge — badge with subtle shimmer animation for discount labels
 export const ShimmerBadge = ({ children, variant = 'danger', className }) => {
   const variants = {
     danger: 'bg-danger/15 text-danger',
@@ -39,7 +36,7 @@ export const ShimmerBadge = ({ children, variant = 'danger', className }) => {
         className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
         style={{ width: '50%' }}
       />
-      
+
       <span className="relative z-[1]">{children}</span>
     </motion.span>
   );

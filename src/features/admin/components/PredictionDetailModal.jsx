@@ -147,10 +147,7 @@ export const PredictionDetailModal = ({ isOpen, onClose, prediction }) => {
   );
 };
 
-/**
- * Render the real AI multi-agent debate output stored in `prediction.result_json` /
- * `prediction.result` / `prediction.final_report`. Gracefully handles missing fields.
- */
+// Render AI multi-agent debate output from result_json/result/final_report (handles missing fields)
 const AIResultSections = ({ prediction }) => {
   const result = prediction.result || prediction.result_json || null;
   const finalReport =

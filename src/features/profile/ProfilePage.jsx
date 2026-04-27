@@ -51,7 +51,7 @@ export const ProfilePage = ({ user, fetchUser, notify }) => {
     }
 
     setAvatarFile(file);
-    
+
     // Create preview
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -130,10 +130,10 @@ export const ProfilePage = ({ user, fetchUser, notify }) => {
       <Card>
         <div className="mb-8 flex flex-col items-center gap-4 border-b border-stroke pb-8 text-center dark:border-dark-stroke md:flex-row md:items-start md:text-left">
           <div className="relative">
-            <Avatar 
-              src={avatarPreview || user?.avatar} 
-              name={user?.name} 
-              size="xl" 
+            <Avatar
+              src={avatarPreview || user?.avatar}
+              name={user?.name}
+              size="xl"
             />
             <label
               htmlFor="avatar-upload"

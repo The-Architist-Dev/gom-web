@@ -19,7 +19,6 @@ import { ContactPageWrapper } from '../features/contact/ContactPageWrapper';
 import { AboutPage } from '../features/about/AboutPage';
 import { TermsPage } from '../features/legal/TermsPage';
 import { PrivacyPage } from '../features/legal/PrivacyPage';
-import { AdminPageWrapper } from '../features/admin/AdminPageWrapper';
 import { AdminLayout } from '../features/admin/AdminLayout';
 import { DashboardPageWrapper } from '../features/admin/pages/DashboardPageWrapper';
 import { UsersPageWrapper } from '../features/admin/pages/UsersPageWrapper';
@@ -37,10 +36,7 @@ import { AdminRoute } from './AdminRoute';
 import { NotFoundPage } from '../features/errors/NotFoundPage';
 import { UnauthorizedPage } from '../features/errors/UnauthorizedPage';
 
-/**
- * Route configuration for the app.
- * Uses HashRouter for static hosting compatibility.
- */
+// Route configuration — HashRouter for static hosting compatibility
 export const routes = [
   // ── Auth Routes (guest-only) ──
   {

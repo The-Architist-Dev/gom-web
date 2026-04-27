@@ -1,11 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useTheme } from './ThemeProvider';
 
-/**
- * DarkModeBackground — animated aurora canvas in dark mode only.
- * Fixed full-screen, behind all content (z-0).
- * Respects prefers-reduced-motion.
- */
+// DarkModeBackground — animated aurora canvas, fixed full-screen behind all content (z-0)
 export const DarkModeBackground = () => {
   const { resolvedTheme } = useTheme();
   const canvasRef = useRef(null);

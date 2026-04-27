@@ -1,9 +1,6 @@
 import apiClient from '../../lib/apiClient';
 
-/**
- * Centralized admin API client. All admin pages should call these helpers
- * (no scattered fetches in components).
- */
+// Centralized admin API client — all admin pages use these helpers
 export const adminApi = {
   // Dashboard
   dashboard: () => apiClient.get('/admin/dashboard'),

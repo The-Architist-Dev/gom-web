@@ -1,9 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 
-/**
- * useView — hash-based router compatible with the legacy app.
- * Initial view from window.location.hash, fallback default.
- */
+// useView — hash-based router, initial view from window.location.hash with fallback
 export function useView(defaultView = 'debate') {
   const initialView =
     typeof window !== 'undefined' && window.location.hash

@@ -48,19 +48,19 @@ export const MainHeader = ({ user, quota, logout }) => {
   const noQuota = remainingFree <= 0 && tokenBalance <= 0;
 
   // PillNav colors based on theme - FIXED for proper contrast
-  const pillNavColors = resolvedTheme === 'dark' 
+  const pillNavColors = resolvedTheme === 'dark'
     ? {
-        baseColor: 'rgba(255, 255, 255, 0.06)',     // Subtle container background
-        pillColor: '#F7F2E8',                        // Ivory for active pill
-        hoveredPillTextColor: '#102A56',             // Navy text on hover (when pill is ivory)
-        pillTextColor: '#F7F2E8',                    // Ivory text for inactive pills
-      }
+      baseColor: 'rgba(255, 255, 255, 0.06)',     // Subtle container background
+      pillColor: '#F7F2E8',                        // Ivory for active pill
+      hoveredPillTextColor: '#102A56',             // Navy text on hover (when pill is ivory)
+      pillTextColor: '#F7F2E8',                    // Ivory text for inactive pills
+    }
     : {
-        baseColor: 'rgba(16, 42, 86, 0.04)',        // Subtle navy tint container
-        pillColor: '#102A56',                        // Navy for active pill
-        hoveredPillTextColor: '#FFFFFF',             // White text on hover (when pill is navy)
-        pillTextColor: '#102A56',                    // Navy text for inactive pills
-      };
+      baseColor: 'rgba(16, 42, 86, 0.04)',        // Subtle navy tint container
+      pillColor: '#102A56',                        // Navy for active pill
+      hoveredPillTextColor: '#FFFFFF',             // White text on hover (when pill is navy)
+      pillTextColor: '#102A56',                    // Navy text for inactive pills
+    };
 
   return (
     <header className="sticky top-0 z-40 border-b border-stroke/60 bg-ivory/85 backdrop-blur-md dark:border-dark-stroke dark:bg-dark-bg/85">

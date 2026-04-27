@@ -2,9 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import apiClient from '../lib/apiClient';
 import { STORAGE_KEYS } from '../lib/constants';
 
-/**
- * useAuth — token/user state + login/logout/refresh.
- */
+// useAuth — token/user state + login/logout/refresh
 export function useAuth() {
   const [token, setTokenState] = useState(() => localStorage.getItem(STORAGE_KEYS.TOKEN) || null);
   const [user, setUserState] = useState(() => {

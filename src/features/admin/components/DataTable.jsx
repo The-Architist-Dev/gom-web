@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  ChevronsLeft, 
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
   ChevronsRight,
   ArrowUpDown,
   ArrowUp,
@@ -11,9 +11,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 
-/**
- * DataTable component with search, sort, filter, and pagination
- */
+// DataTable — search, sort, filter, and pagination
 export const DataTable = ({
   data = [],
   columns = [],

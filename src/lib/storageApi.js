@@ -1,15 +1,8 @@
 import apiClient from './apiClient';
 
-/**
- * Azure Blob Storage API
- */
+// Azure Blob Storage API
 export const storageApi = {
-  /**
-   * Upload single file to Azure Blob Storage
-   * @param {File} file - File to upload
-   * @param {string} folderName - Folder name (e.g., 'avatars', 'images')
-   * @returns {Promise<{fileUrl: string, originalFileName: string}>}
-   */
+  // Upload single file to Azure Blob Storage
   uploadSingle: async (file, folderName = 'uploads') => {
     const formData = new FormData();
     formData.append('file', file);
@@ -19,12 +12,7 @@ export const storageApi = {
     return response.data?.data || response.data;
   },
 
-  /**
-   * Upload multiple files to Azure Blob Storage
-   * @param {File[]} files - Files to upload
-   * @param {string} folderName - Folder name
-   * @returns {Promise<{files: Array<{fileUrl: string, originalFileName: string}>}>}
-   */
+  // Upload multiple files to Azure Blob Storage
   uploadMultiple: async (files, folderName = 'uploads') => {
     const formData = new FormData();
     files.forEach((file) => {
@@ -36,10 +24,7 @@ export const storageApi = {
     return response.data?.data || response.data;
   },
 
-  /**
-   * Delete single file from Azure Blob Storage
-   * @param {string} filePath - File path to delete
-   */
+  // Delete single file from Azure Blob Storage
   deleteSingle: async (filePath) => {
     const response = await apiClient.delete('/v1/storage/azure-blob/delete/single', {
       data: { filePath },
@@ -47,10 +32,7 @@ export const storageApi = {
     return response.data;
   },
 
-  /**
-   * Delete multiple files from Azure Blob Storage
-   * @param {string[]} filePaths - File paths to delete
-   */
+  // Delete multiple files from Azure Blob Storage
   deleteMultiple: async (filePaths) => {
     const response = await apiClient.delete('/v1/storage/azure-blob/delete/multiple', {
       data: { filePaths },

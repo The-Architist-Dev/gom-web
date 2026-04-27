@@ -1,42 +1,44 @@
 # GOM Web - React Frontend
 
-Frontend cho hệ thống giám định gốm sứ. React 19 + Vite + Tailwind CSS.
+Frontend SPA cho hệ thống giám định gốm sứ GOM. React 19 + Vite + Tailwind CSS + Framer Motion.
 
 ## Tính năng
 
-- Authentication (Email/Password, Google OAuth One-Tap)
-- Upload ảnh gốm sứ và xem kết quả phân tích
-- Lịch sử phân tích
-- Chat với AI
-- Thanh toán và quản lý token
-- Xem dòng gốm (Ceramic Lines)
-- Admin dashboard
-- Dark mode
-- Đa ngôn ngữ (Tiếng Việt, English)
-- Animations (Framer Motion, GSAP)
-- 3D effects (Three.js)
+- **Authentication**: Email/Password, Google OAuth One-Tap, forgot/reset password
+- **AI Analysis**: Upload ảnh gốm sứ → xem kết quả multi-agent debate
+- **AI Chat**: Chat với chuyên gia AI về gốm sứ
+- **History**: Xem lại lịch sử phân tích với chi tiết đầy đủ
+- **Payment**: Mua token credits qua SePay QR
+- **Ceramic Catalog**: Duyệt catalog dòng gốm sứ với 3D model viewer
+- **Admin Dashboard**: Quản lý users, ceramics, payments, predictions, token history
+- **Dark Mode**: Chuyển đổi theme sáng/tối
+- **i18n**: Tiếng Việt và English
+- **Animations**: Framer Motion + GSAP transitions
+- **3D**: Three.js model viewer cho gốm sứ
 
-## Tech stack
+## Tech Stack
 
-- React 19.2.5
-- Vite 8.0.10
-- React Router 7.14.2 (hash-based)
-- Tailwind CSS 3.4.19
-- Framer Motion 12.38.0
-- GSAP 3.15.0
-- Three.js 0.184.0
-- i18next 23.16.8
-- Axios 1.15.2
+| Package | Version | Vai trò |
+|---|---|---|
+| React | 19.2.5 | UI framework |
+| Vite | 8.0.10 | Build tool |
+| React Router | 7.14.2 | Hash-based routing |
+| Tailwind CSS | 3.4.19 | Utility-first CSS |
+| Framer Motion | 12.38.0 | Animations |
+| GSAP | 3.15.0 | Advanced animations |
+| Three.js | 0.184.0 | 3D rendering |
+| i18next | 23.16.8 | Internationalization |
+| Axios | 1.15.2 | HTTP client |
+| Lucide React | 0.469.0 | Icons |
 
 ## Yêu cầu
 
 - Node.js 18+ (khuyến nghị 20+)
-- npm 9+ hoặc yarn 1.22+
+- npm 9+
 
 ## Cài đặt
 
 ```bash
-cd gom-web
 npm install
 ```
 
@@ -47,168 +49,135 @@ npm install --legacy-peer-deps
 
 ## Cấu hình
 
-Tạo `.env.development`:
-
+`.env.development`:
 ```env
 VITE_API_BASE=http://127.0.0.1:8000/api
 VITE_GOOGLE_CLIENT_ID=xxxxx.apps.googleusercontent.com
 ```
 
-Tạo `.env.production`:
-
+`.env.production`:
 ```env
-VITE_API_BASE=https://api.gom.vn/api
+VITE_API_BASE=https://your-api-domain.com/api
 VITE_GOOGLE_CLIENT_ID=xxxxx.apps.googleusercontent.com
 ```
 
-Lấy Google Client ID:
-1. Google Cloud Console
-2. APIs & Services → Credentials
-3. Create OAuth 2.0 Client ID
-4. Add Authorized JavaScript origins: http://localhost:3000
-
-## Chạy dev server
+## Chạy
 
 ```bash
-npm run dev
+npm run dev       # Dev server tại http://localhost:3000
+npm run build     # Build production → build/
+npm run preview   # Preview production build
 ```
 
-App chạy tại http://localhost:3000
-
-## Build production
-
-```bash
-npm run build
-```
-
-Output: `build/`
-
-Serve:
-```bash
-npm install -g serve
-serve -s build -p 3000
-```
-
-## Cấu trúc
+## Cấu trúc dự án
 
 ```
 src/
 ├── components/
-│   ├── ui/              # Button, Card, Input, Modal...
-│   ├── auth/            # Login, Register...
-│   ├── layout/          # Header, Footer, Nav...
-│   ├── motion/          # Animated components
-│   └── 3d/              # Three.js components
-├── pages/               # Home, Debate, History, Profile, Payment, Admin
-├── router/              # routes.jsx
-├── lib/                 # api.js, constants.js, utils.js
-├── hooks/               # Custom hooks
-├── contexts/            # React contexts
-├── i18n.js             # i18next config
-├── App.jsx
-├── main.jsx
-└── index.css
+│   ├── ui/                # Button, Card, Input, Modal, Toast, Badge, Avatar...
+│   ├── auth/              # NewAuthShell (login/register form)
+│   ├── layout/            # AppLayout, AuthLayout, MainHeader, Footer, PageContainer
+│   ├── motion/            # AnimatedEmptyState
+│   └── 3d/                # ModelViewer (Three.js)
+├── features/
+│   ├── about/             # AboutPage, AboutCards
+│   ├── admin/             # AdminLayout + pages (Dashboard, Users, Ceramics, Payments, Predictions, TokenHistory)
+│   ├── analysis/          # AnalysisPage, HeroSection, UploadSection, ChatBox
+│   ├── auth/              # Auth API client
+│   ├── ceramics/          # CeramicsPage, CeramicDetailModal
+│   ├── contact/           # ContactPage, ContactCards
+│   ├── errors/            # NotFoundPage, UnauthorizedPage
+│   ├── history/           # HistoryPage, HistoryDetailModal
+│   ├── legal/             # TermsPage, PrivacyPage
+│   ├── payment/           # PaymentPage, PackageCard, PaymentStepper
+│   ├── profile/           # ProfilePage
+│   └── transactions/      # TransactionsPage
+├── hooks/
+│   ├── useAuth.js         # Auth context (login, logout, user state)
+│   ├── useNotify.jsx      # Global toast notification context (NotifyProvider + useNotify)
+│   ├── useTheme.js        # Dark mode toggle
+│   └── useView.js         # Viewport detection
+├── i18n/
+│   ├── index.js           # i18next configuration
+│   └── locales/
+│       ├── en.json        # English translations
+│       └── vi.json        # Vietnamese translations
+├── lib/
+│   ├── apiClient.js       # Axios instance with auth interceptors
+│   ├── constants.js       # App-wide constants
+│   ├── storageApi.js      # Azure Blob Storage API client
+│   └── utils.js           # Helpers (formatDate, formatVND, getErrorMessage, cn)
+├── router/
+│   ├── routes.jsx         # Route configuration
+│   ├── ProtectedRoute.jsx # Auth guard
+│   ├── GuestOnlyRoute.jsx # Guest-only guard
+│   └── AdminRoute.jsx     # Admin role guard
+├── App.jsx                # Root component (NotifyProvider → RouterProvider)
+└── main.jsx               # Entry point
 
 public/
-├── images/
-├── models/              # 3D models
-└── locales/
-    ├── en/translation.json
-    └── vi/translation.json
+├── banners/               # Background images
+├── favicon/               # Favicon set
+├── models/                # 3D GLB models + textures
+├── placeholder-ceramic.svg
+└── logo.png
 ```
 
 ## Design System
 
-Colors:
+**Colors:**
 ```
-navy: #0F265C (primary)
-ceramic: #C9D8E6 (accent)
-ivory: #F7F2E8 (background)
-clay: #8B3A3A (secondary)
+navy:     #0F265C  (primary)
+ceramic:  #C9D8E6  (accent)
+ivory:    #F7F2E8  (background)
+clay:     #8B3A3A  (secondary)
 
 Dark mode:
-dark-bg: #0A0F1F
+dark-bg:      #0A0F1F
 dark-surface: #111827
-dark-text: #F3F4F6
+dark-text:    #F3F4F6
 ```
 
-Typography:
-- Heading: Playfair Display
-- Body: Be Vietnam Pro
+**Typography:** Playfair Display (headings), Be Vietnam Pro (body)
 
-Border radius: 12px, 20px, 24px, 32px
+## Toast Notification System
+
+Global singleton context pattern — `NotifyProvider` bọc toàn bộ app, mount `ToastContainer` một lần duy nhất:
+
+```jsx
+// Bất kỳ component nào cũng có thể gọi:
+const { notify } = useNotify();
+notify('Thành công!', 'success');
+notify('Có lỗi xảy ra', 'error');
+```
 
 ## i18n
 
-Thêm ngôn ngữ mới:
+Thêm ngôn ngữ: tạo `src/i18n/locales/{lang}.json`, copy từ `vi.json`, dịch, rồi update `src/i18n/index.js`.
 
-1. Tạo `public/locales/{lang}/translation.json`
-2. Copy từ `vi/translation.json`
-3. Dịch các keys
-4. Update `src/i18n.js`
-
-Sử dụng:
 ```jsx
-import { useTranslation } from 'react-i18next';
-
-function MyComponent() {
-  const { t } = useTranslation();
-  return <h1>{t('welcome')}</h1>;
-}
-```
-
-## Testing
-
-```bash
-npm run test:api
-npm run build
-npm run preview
+const { t } = useTranslation();
+return <h1>{t('welcome')}</h1>;
 ```
 
 ## Troubleshooting
 
-Module not found:
-```bash
-rm -rf node_modules package-lock.json
-npm install
-```
-
-Port 3000 in use:
-```javascript
-// vite.config.js
-export default defineConfig({
-  server: { port: 3001 }
-});
-```
-
-CORS error: Check VITE_API_BASE và backend CORS config
-
-Google OAuth not working:
-- Check VITE_GOOGLE_CLIENT_ID
-- Check Authorized origins
-- Enable cookies
-
-Build fails:
-```bash
-rm -rf node_modules/.vite
-npm run build
-```
+| Vấn đề | Giải pháp |
+|---|---|
+| Module not found | `rm -rf node_modules package-lock.json && npm install` |
+| Port 3000 in use | Đổi port trong `vite.config.js` |
+| CORS error | Kiểm tra `VITE_API_BASE` và backend CORS config |
+| Google OAuth lỗi | Kiểm tra `VITE_GOOGLE_CLIENT_ID` và Authorized origins |
+| Build fails | `rm -rf node_modules/.vite && npm run build` |
 
 ## Deployment
 
-Vercel:
-```bash
-npm i -g vercel
-vercel
-vercel --prod
-```
-
-Netlify:
+**Netlify:**
 - Build command: `npm run build`
 - Publish directory: `build`
-- Environment variables: VITE_API_BASE, VITE_GOOGLE_CLIENT_ID
+- Environment variables: `VITE_API_BASE`, `VITE_GOOGLE_CLIENT_ID`
 
-Docker:
+**Docker:**
 ```dockerfile
 FROM node:20-alpine
 WORKDIR /app
@@ -220,8 +189,3 @@ RUN npm install -g serve
 CMD ["serve", "-s", "build", "-p", "3000"]
 EXPOSE 3000
 ```
-
-## Tài liệu khác
-
-- src/components/README.md - Component guide
-- src/lib/README.md - API usage

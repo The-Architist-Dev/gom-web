@@ -2,9 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../../lib/utils';
 
-/**
- * ShimmerButton - Button with shimmer sweep effect on hover
- */
+// ShimmerButton — button with shimmer sweep effect on hover
 export const ShimmerButton = React.forwardRef(function ShimmerButton(
   {
     className,
@@ -78,7 +76,7 @@ export const ShimmerButton = React.forwardRef(function ShimmerButton(
             className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent"
             style={{ width: '50%' }}
           />
-          
+
           {/* Secondary subtle glow on hover */}
           <motion.div
             initial={{ opacity: 0 }}

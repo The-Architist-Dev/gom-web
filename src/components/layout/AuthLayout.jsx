@@ -3,10 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { Aurora } from '../ui/Aurora';
 import './AuthLayout.css';
 
-/**
- * AuthLayout - full-screen layout for auth pages only.
- * Includes Aurora animated background.
- */
+// AuthLayout — full-screen layout for auth pages with Aurora animated background
 export const AuthLayout = () => {
   return (
     <div className="auth-layout">

@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-/**
- * RotatingText - Animated rotating text component
- * From React Bits
- */
+// RotatingText — animated rotating text component
 const RotatingText = ({
   texts = [],
   mainClassName = '',

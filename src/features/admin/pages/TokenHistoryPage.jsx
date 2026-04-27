@@ -7,10 +7,7 @@ import { adminApi } from '../api';
 import { Badge } from '../../../components/ui/Badge';
 import { formatDate, getErrorMessage, formatNumber } from '../../../lib/utils';
 
-/**
- * Read-only Token History admin page (spec 3.6).
- * Filter by user_id (numeric), type (in/out), and date range.
- */
+// Token History admin page — read-only, filter by user_id, type (in/out), date range
 export const TokenHistoryPage = ({ notify }) => {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -182,11 +179,10 @@ export const TokenHistoryPage = ({ notify }) => {
           <button
             type="button"
             onClick={() => setShowFilters(true)}
-            className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
-              hasActiveFilters
+            className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${hasActiveFilters
                 ? 'border-blue-300 bg-blue-50 text-blue-700 dark:border-blue-600 dark:bg-blue-900/20 dark:text-blue-400'
                 : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
-            }`}
+              }`}
           >
             <Filter size={16} />
             Filter
