@@ -39,13 +39,17 @@ export const Button = React.forwardRef(function Button(
   ref
 ) {
   const isDisabled = disabled || loading;
+  const [isHovered, setIsHovered] = React.useState(false);
+
   return (
     <button
       ref={ref}
       type={type}
       disabled={isDisabled}
+      onMouseEnter={() => !isDisabled && setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className={cn(
-        'inline-flex items-center justify-center gap-2 font-semibold transition-all duration-300 select-none',
+        'relative inline-flex items-center justify-center gap-2 font-semibold transition-all duration-300 select-none overflow-hidden',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2',
         variants[variant],
@@ -54,13 +58,28 @@ export const Button = React.forwardRef(function Button(
       )}
       {...props}
     >
-      {loading ? (
-        <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-      ) : (
-        leftIcon
+      {/* Glare effect on hover */}
+      {!isDisabled && (
+        <span
+          className={cn(
+            'absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent',
+            'transition-transform duration-700 ease-out',
+            isHovered ? 'translate-x-full' : '-translate-x-full'
+          )}
+          style={{ width: '50%' }}
+        />
       )}
-      {children}
-      {!loading && rightIcon}
+
+      {/* Content */}
+      <span className="relative z-[1] flex items-center gap-2">
+        {loading ? (
+          <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+        ) : (
+          leftIcon
+        )}
+        {children}
+        {!loading && rightIcon}
+      </span>
     </button>
   );
 });

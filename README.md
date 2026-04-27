@@ -1,70 +1,227 @@
-# Getting Started with Create React App
+# GOM Web - React Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Frontend cho hệ thống giám định gốm sứ. React 19 + Vite + Tailwind CSS.
 
-## Available Scripts
+## Tính năng
 
-In the project directory, you can run:
+- Authentication (Email/Password, Google OAuth One-Tap)
+- Upload ảnh gốm sứ và xem kết quả phân tích
+- Lịch sử phân tích
+- Chat với AI
+- Thanh toán và quản lý token
+- Xem dòng gốm (Ceramic Lines)
+- Admin dashboard
+- Dark mode
+- Đa ngôn ngữ (Tiếng Việt, English)
+- Animations (Framer Motion, GSAP)
+- 3D effects (Three.js)
 
-### `npm start`
+## Tech stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- React 19.2.5
+- Vite 8.0.10
+- React Router 7.14.2 (hash-based)
+- Tailwind CSS 3.4.19
+- Framer Motion 12.38.0
+- GSAP 3.15.0
+- Three.js 0.184.0
+- i18next 23.16.8
+- Axios 1.15.2
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Yêu cầu
 
-### `npm test`
+- Node.js 18+ (khuyến nghị 20+)
+- npm 9+ hoặc yarn 1.22+
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Cài đặt
 
-### `npm run build`
+```bash
+cd gom-web
+npm install
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Nếu lỗi peer dependencies:
+```bash
+npm install --legacy-peer-deps
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Cấu hình
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Tạo `.env.development`:
 
-### `npm run eject`
+```env
+VITE_API_BASE=http://127.0.0.1:8000/api
+VITE_GOOGLE_CLIENT_ID=xxxxx.apps.googleusercontent.com
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Tạo `.env.production`:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```env
+VITE_API_BASE=https://api.gom.vn/api
+VITE_GOOGLE_CLIENT_ID=xxxxx.apps.googleusercontent.com
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Lấy Google Client ID:
+1. Google Cloud Console
+2. APIs & Services → Credentials
+3. Create OAuth 2.0 Client ID
+4. Add Authorized JavaScript origins: http://localhost:3000
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Chạy dev server
 
-## Learn More
+```bash
+npm run dev
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+App chạy tại http://localhost:3000
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Build production
 
-### Code Splitting
+```bash
+npm run build
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Output: `build/`
 
-### Analyzing the Bundle Size
+Serve:
+```bash
+npm install -g serve
+serve -s build -p 3000
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Cấu trúc
 
-### Making a Progressive Web App
+```
+src/
+├── components/
+│   ├── ui/              # Button, Card, Input, Modal...
+│   ├── auth/            # Login, Register...
+│   ├── layout/          # Header, Footer, Nav...
+│   ├── motion/          # Animated components
+│   └── 3d/              # Three.js components
+├── pages/               # Home, Debate, History, Profile, Payment, Admin
+├── router/              # routes.jsx
+├── lib/                 # api.js, constants.js, utils.js
+├── hooks/               # Custom hooks
+├── contexts/            # React contexts
+├── i18n.js             # i18next config
+├── App.jsx
+├── main.jsx
+└── index.css
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+public/
+├── images/
+├── models/              # 3D models
+└── locales/
+    ├── en/translation.json
+    └── vi/translation.json
+```
 
-### Advanced Configuration
+## Design System
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Colors:
+```
+navy: #0F265C (primary)
+ceramic: #C9D8E6 (accent)
+ivory: #F7F2E8 (background)
+clay: #8B3A3A (secondary)
 
-### Deployment
+Dark mode:
+dark-bg: #0A0F1F
+dark-surface: #111827
+dark-text: #F3F4F6
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Typography:
+- Heading: Playfair Display
+- Body: Be Vietnam Pro
 
-### `npm run build` fails to minify
+Border radius: 12px, 20px, 24px, 32px
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## i18n
+
+Thêm ngôn ngữ mới:
+
+1. Tạo `public/locales/{lang}/translation.json`
+2. Copy từ `vi/translation.json`
+3. Dịch các keys
+4. Update `src/i18n.js`
+
+Sử dụng:
+```jsx
+import { useTranslation } from 'react-i18next';
+
+function MyComponent() {
+  const { t } = useTranslation();
+  return <h1>{t('welcome')}</h1>;
+}
+```
+
+## Testing
+
+```bash
+npm run test:api
+npm run build
+npm run preview
+```
+
+## Troubleshooting
+
+Module not found:
+```bash
+rm -rf node_modules package-lock.json
+npm install
+```
+
+Port 3000 in use:
+```javascript
+// vite.config.js
+export default defineConfig({
+  server: { port: 3001 }
+});
+```
+
+CORS error: Check VITE_API_BASE và backend CORS config
+
+Google OAuth not working:
+- Check VITE_GOOGLE_CLIENT_ID
+- Check Authorized origins
+- Enable cookies
+
+Build fails:
+```bash
+rm -rf node_modules/.vite
+npm run build
+```
+
+## Deployment
+
+Vercel:
+```bash
+npm i -g vercel
+vercel
+vercel --prod
+```
+
+Netlify:
+- Build command: `npm run build`
+- Publish directory: `build`
+- Environment variables: VITE_API_BASE, VITE_GOOGLE_CLIENT_ID
+
+Docker:
+```dockerfile
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+RUN npm install -g serve
+CMD ["serve", "-s", "build", "-p", "3000"]
+EXPOSE 3000
+```
+
+## Tài liệu khác
+
+- src/components/README.md - Component guide
+- src/lib/README.md - API usage

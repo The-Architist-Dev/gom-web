@@ -45,11 +45,15 @@ export const ShimmerButton = React.forwardRef(function ShimmerButton(
     icon: 'h-10 w-10 rounded-full',
   };
 
+  const [isHovered, setIsHovered] = React.useState(false);
+
   return (
     <motion.button
       ref={ref}
       type={type}
       disabled={isDisabled}
+      onMouseEnter={() => !isDisabled && setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       whileHover={{ scale: isDisabled ? 1 : 1.02 }}
       whileTap={{ scale: isDisabled ? 1 : 0.98 }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
@@ -63,15 +67,26 @@ export const ShimmerButton = React.forwardRef(function ShimmerButton(
       )}
       {...props}
     >
-      {/* Shimmer effect */}
+      {/* Enhanced glare/shimmer effect */}
       {!isDisabled && (
-        <motion.div
-          initial={{ x: '-100%' }}
-          whileHover={{ x: '200%' }}
-          transition={{ duration: 0.6, ease: 'easeInOut' }}
-          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent"
-          style={{ width: '50%' }}
-        />
+        <>
+          {/* Main shimmer sweep */}
+          <motion.div
+            initial={{ x: '-100%' }}
+            animate={{ x: isHovered ? '200%' : '-100%' }}
+            transition={{ duration: 0.7, ease: 'easeOut' }}
+            className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent"
+            style={{ width: '50%' }}
+          />
+          
+          {/* Secondary subtle glow on hover */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isHovered ? 0.15 : 0 }}
+            transition={{ duration: 0.3 }}
+            className="pointer-events-none absolute inset-0 bg-white"
+          />
+        </>
       )}
 
       {/* Content */}
