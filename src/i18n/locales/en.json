@@ -91,6 +91,10 @@
   },
   "home": {
     "heroTitle": "Discover ceramic heritage",
+    "heroEyebrow": "AI Multi-Agent Debate",
+    "heroPrefix": "Discover",
+    "heroRotatingWords": ["heritage", "masterpieces", "treasures", "artifacts"],
+    "heroSuffix": "ceramics",
     "heroSubtitle": "Multi-agent AI system performs deep analysis on any ceramic artifact in seconds.",
     "ctaUpload": "Upload to analyze",
     "ctaExplore": "Explore lines",

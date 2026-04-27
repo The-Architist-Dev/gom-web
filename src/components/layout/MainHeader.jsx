@@ -71,9 +71,13 @@ export const MainHeader = ({ user, quota, logout }) => {
           className="hidden shrink-0 items-center gap-2 transition-opacity hover:opacity-80 lg:flex"
           aria-label="Home"
         >
-          <span className="font-heading text-lg font-bold text-navy dark:text-ivory">
-            The Archivist
-          </span>
+          <img
+            src="/logo.png"
+            alt={t('brand.name')}
+            className="h-10 w-auto object-contain"
+            loading="eager"
+          />
+          <span className="sr-only">{t('brand.name')}</span>
         </Link>
 
         {/* PillNav - NO logo, just nav items */}

@@ -3,10 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Sparkles, Upload, ArrowRight } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
+import { GlareHover } from '../../components/ui/GlareHover';
 import RotatingText from '../../components/ui/RotatingText';
 
 export const HeroSection = ({ onUpload, onExplore, featuredImage }) => {
   const { t } = useTranslation();
+  const rotatingWords = t('home.heroRotatingWords', { returnObjects: true });
+  const safeRotatingWords =
+    Array.isArray(rotatingWords) && rotatingWords.length > 0
+      ? rotatingWords
+      : ['di sản', 'tinh hoa', 'kho tàng', 'bảo vật'];
 
   return (
     <section className="relative overflow-hidden">
@@ -24,12 +30,12 @@ export const HeroSection = ({ onUpload, onExplore, featuredImage }) => {
         >
           <span className="inline-flex w-fit items-center gap-2 rounded-full bg-ceramic/15 px-4 py-1.5 text-xs font-extrabold uppercase tracking-wider text-ceramic-dark leading-eyebrow">
             <Sparkles size={12} />
-            AI Multi-Agent Debate
+            {t('home.heroEyebrow')}
           </span>
           <h1 className="mt-6 font-heading text-4xl font-extrabold leading-[1.35] text-balance text-navy dark:text-ivory md:text-5xl md:leading-[1.32] lg:text-6xl lg:leading-[1.3]">
-            Khám phá{' '}
+            {t('home.heroPrefix')}{' '}
             <RotatingText
-              texts={['di sản', 'tinh hoa', 'kho tàng', 'bảo vật']}
+              texts={safeRotatingWords}
               mainClassName="px-2 sm:px-3 bg-gradient-to-r from-ceramic via-ceramic-soft to-ceramic text-navy overflow-hidden py-1 sm:py-1.5 md:py-2 justify-center rounded-lg inline-flex"
               staggerFrom="last"
               initial={{ y: '100%' }}
@@ -42,28 +48,49 @@ export const HeroSection = ({ onUpload, onExplore, featuredImage }) => {
               splitBy="characters"
               autoloop
             />{' '}
-            gốm sứ
+            {t('home.heroSuffix')}
           </h1>
           <p className="mt-6 max-w-xl text-base leading-paragraph text-muted dark:text-dark-text-muted md:text-lg md:leading-paragraph-relaxed">
             {t('home.heroSubtitle')}
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
-            <Button
-              variant="primary"
-              size="lg"
-              leftIcon={<Upload size={18} />}
-              onClick={onUpload}
+            <GlareHover
+              glareColor="#ffffff"
+              glareOpacity={0.3}
+              glareAngle={-30}
+              glareSize={260}
+              transitionDuration={600}
+              playOnce={false}
+              className="rounded-2xl"
             >
-              {t('home.ctaUpload')}
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              rightIcon={<ArrowRight size={18} />}
-              onClick={onExplore}
+              <Button
+                variant="primary"
+                size="lg"
+                leftIcon={<Upload size={18} />}
+                onClick={onUpload}
+              >
+                {t('home.ctaUpload')}
+              </Button>
+            </GlareHover>
+
+            <GlareHover
+              glareColor="#ffffff"
+              glareOpacity={0.26}
+              glareAngle={-28}
+              glareSize={240}
+              transitionDuration={600}
+              playOnce={false}
+              className="rounded-2xl"
             >
-              {t('home.ctaExplore')}
-            </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                rightIcon={<ArrowRight size={18} />}
+                onClick={onExplore}
+              >
+                {t('home.ctaExplore')}
+              </Button>
+            </GlareHover>
           </div>
         </motion.div>
 

@@ -11,6 +11,7 @@ export const PaymentStepper = ({ steps = [], current = 0, className }) => {
   const prefersReducedMotion = useReducedMotion();
   const rootRef = useRef(null);
   const progress = steps.length > 1 ? (Math.min(Math.max(current, 0), steps.length - 1) / (steps.length - 1)) * 100 : 0;
+  const trackInset = steps.length > 0 ? `${50 / steps.length}%` : '0%';
 
   useGSAP(
     () => {
@@ -44,7 +45,10 @@ export const PaymentStepper = ({ steps = [], current = 0, className }) => {
 
   return (
     <div ref={rootRef} className={cn('relative mx-auto w-full max-w-3xl', className)}>
-      <div className="pointer-events-none absolute left-8 right-8 top-5 h-[2px] rounded-full bg-ceramic-soft/85 dark:bg-ceramic/20 md:left-16 md:right-16">
+      <div
+        className="pointer-events-none absolute top-5 h-[2px] rounded-full bg-ceramic-soft/85 dark:bg-ceramic/20"
+        style={{ left: trackInset, right: trackInset }}
+      >
         <div className="payment-stepper-progress h-full w-0 rounded-full bg-gradient-to-r from-ceramic-hover via-ceramic to-navy dark:from-ceramic dark:to-ceramic-soft" />
       </div>
 

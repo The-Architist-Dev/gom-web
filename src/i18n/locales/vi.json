@@ -91,6 +91,10 @@
   },
   "home": {
     "heroTitle": "Khám phá di sản gốm sứ",
+    "heroEyebrow": "Tranh biện AI đa đại lý",
+    "heroPrefix": "Khám phá",
+    "heroRotatingWords": ["di sản", "tinh hoa", "kho tàng", "bảo vật"],
+    "heroSuffix": "gốm sứ",
     "heroSubtitle": "Hệ thống AI đa đại lý phân tích chuyên sâu mọi cổ vật gốm sứ chỉ trong vài giây.",
     "ctaUpload": "Tải ảnh phân tích",
     "ctaExplore": "Khám phá dòng gốm",
