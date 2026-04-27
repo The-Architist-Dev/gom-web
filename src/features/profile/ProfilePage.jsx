@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { User, Mail, Phone, Lock, Save } from 'lucide-react';
+import { User, Mail, Phone, Lock, Save, Camera } from 'lucide-react';
 import { PageContainer } from '../../components/layout/PageContainer';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { Card } from '../../components/ui/Card';
@@ -9,6 +9,7 @@ import { Button } from '../../components/ui/Button';
 import { Avatar } from '../../components/ui/Avatar';
 import { Badge } from '../../components/ui/Badge';
 import { profileApi } from './api';
+import { storageApi } from '../../lib/storageApi';
 import { cn, getErrorMessage } from '../../lib/utils';
 
 const TABS = [
@@ -24,6 +25,8 @@ export const ProfilePage = ({ user, fetchUser, notify }) => {
     email: user?.email || '',
     phone: user?.phone || '',
   });
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
   const [pwd, setPwd] = useState({ current: '', next: '', confirm: '' });
   const [saving, setSaving] = useState(false);
   const [changing, setChanging] = useState(false);
@@ -31,12 +34,59 @@ export const ProfilePage = ({ user, fetchUser, notify }) => {
   const onChange = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
   const onPwdChange = (e) => setPwd((p) => ({ ...p, [e.target.name]: e.target.value }));
 
+  const handleAvatarChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      notify?.(t('errors.invalidFileType'), 'error');
+      return;
+    }
+
+    // Validate file size (max 5MB to match backend)
+    if (file.size > 5 * 1024 * 1024) {
+      notify?.('Dung lượng file không được vượt quá 5MB', 'error');
+      return;
+    }
+
+    setAvatarFile(file);
+    
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setAvatarPreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const submitInfo = async (e) => {
     e.preventDefault();
     setSaving(true);
     try {
-      await profileApi.update({ name: form.name, phone: form.phone });
+      let avatarUrl = null;
+
+      // Step 1: Upload avatar to Azure Blob Storage if file is selected
+      if (avatarFile) {
+        notify?.('Đang tải ảnh lên...', 'info');
+        const uploadResult = await storageApi.uploadSingle(avatarFile, 'avatars');
+        avatarUrl = uploadResult.fileUrl;
+      }
+
+      // Step 2: Update profile with avatar URL
+      const updateData = {
+        name: form.name,
+        phone: form.phone || '',
+      };
+
+      if (avatarUrl) {
+        updateData.avatar = avatarUrl;
+      }
+
+      await profileApi.update(updateData);
       await fetchUser?.();
+      setAvatarFile(null);
+      setAvatarPreview(null);
       notify?.(t('profile.saved'), 'success');
     } catch (err) {
       notify?.(getErrorMessage(err), 'error');
@@ -79,7 +129,26 @@ export const ProfilePage = ({ user, fetchUser, notify }) => {
 
       <Card>
         <div className="mb-8 flex flex-col items-center gap-4 border-b border-stroke pb-8 text-center dark:border-dark-stroke md:flex-row md:items-start md:text-left">
-          <Avatar src={user?.avatar} name={user?.name} size="xl" />
+          <div className="relative">
+            <Avatar 
+              src={avatarPreview || user?.avatar} 
+              name={user?.name} 
+              size="xl" 
+            />
+            <label
+              htmlFor="avatar-upload"
+              className="absolute bottom-0 right-0 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-navy text-white shadow-lg transition-all hover:bg-navy-light hover:scale-110 dark:bg-ceramic dark:text-navy-dark dark:hover:bg-ceramic-hover"
+            >
+              <Camera size={18} />
+              <input
+                id="avatar-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarChange}
+                className="hidden"
+              />
+            </label>
+          </div>
           <div className="flex-1">
             <h3 className="font-heading text-2xl font-bold text-navy dark:text-ivory">
               {user?.name}
@@ -118,6 +187,12 @@ export const ProfilePage = ({ user, fetchUser, notify }) => {
 
         {tab === 'info' && (
           <form onSubmit={submitInfo} className="space-y-4">
+            {avatarPreview && (
+              <div className="rounded-lg bg-ceramic/10 p-3 text-sm text-ceramic-dark dark:bg-ceramic/20">
+                <p className="font-semibold">Đã chọn ảnh đại diện mới</p>
+                <p className="text-xs">Nhấn Lưu để cập nhật ảnh đại diện của bạn</p>
+              </div>
+            )}
             <div>
               <Label>{t('profile.fields.name')}</Label>
               <Input name="name" value={form.name} onChange={onChange} leftIcon={<User size={16} />} required />

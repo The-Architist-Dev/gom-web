@@ -185,7 +185,7 @@ export const MainHeader = ({ user, quota, logout }) => {
                 <div className="my-2 h-px bg-stroke dark:bg-dark-stroke" />
                 <DropdownItem
                   icon={<Shield size={16} />}
-                  label={t('nav.admin')}
+                  label="Dashboard Admin"
                   variant="gold"
                   onClick={() => {
                     navigate('/admin');
@@ -216,7 +216,7 @@ export const MainHeader = ({ user, quota, logout }) => {
 const DropdownItem = ({ icon, label, onClick, variant = 'default' }) => {
   const cls = {
     default: 'text-navy hover:bg-surface-alt dark:text-dark-text dark:hover:bg-dark-surface-alt',
-    gold: 'text-ceramic-dark hover:bg-ceramic/10',
+    gold: 'text-yellow-600 hover:bg-yellow-50 dark:text-yellow-400 dark:hover:bg-yellow-900/20',
     danger: 'text-danger hover:bg-danger/10',
   }[variant];
 

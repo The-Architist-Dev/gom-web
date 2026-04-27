@@ -11,8 +11,8 @@ import { useNotify } from '../../hooks/useNotify';
  * NO animated background here - clean static background for all pages except auth.
  */
 export const AppLayout = () => {
-  const { token, user, quota, logout } = useAuth();
-  const { toasts, dismiss } = useNotify();
+  const { token, user, quota, logout, fetchUser } = useAuth();
+  const { toasts, notify, dismiss } = useNotify();
 
   return (
     <div className="relative flex min-h-screen flex-col bg-ivory dark:bg-dark-bg">
@@ -27,7 +27,7 @@ export const AppLayout = () => {
       )}
 
       <main className="flex-1">
-        <Outlet />
+        <Outlet context={{ notify, fetchUser }} />
       </main>
 
       <Footer />
