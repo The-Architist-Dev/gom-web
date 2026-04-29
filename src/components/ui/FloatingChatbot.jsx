@@ -140,7 +140,7 @@ export const FloatingChatbot = ({ user, quota, onQuotaChange }) => {
     }
   };
 
-  const tokenBalance = quota?.token_balance ?? 0;
+  const tokenBalance = Number(quota?.token_balance ?? 0);
 
   if (typeof document === 'undefined') return null;
 
