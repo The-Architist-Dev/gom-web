@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Upload, ImagePlus, Loader2, X, Search } from 'lucide-react';
+import { Upload, ImagePlus, Loader2, X } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { GlareHover } from '../../components/ui/GlareHover';
@@ -107,4 +107,3 @@ export const UploadSection = ({ file, preview, loading, error, onFileChange, onA
 };
 
 export default UploadSection;
-

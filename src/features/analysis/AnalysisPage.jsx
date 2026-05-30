@@ -127,6 +127,7 @@ export const AnalysisPage = ({ token, notify, quota, setQuota, setView, user }) 
     }
   };
 
+
   const reset = () => {
     setResult(null);
     setFile(null);
