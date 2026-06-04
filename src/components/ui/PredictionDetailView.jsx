@@ -144,6 +144,20 @@ export const PredictionDetailView = ({ prediction, imageUrl, showUserInfo = true
   const debate = result.debate || [];
   const visualFeatures = result.visual_features || null;
   const lensResults = prediction.lens_results || result.lens_results || [];
+  const rawLensStatus = prediction.lens_status || result.lens_status || null;
+  const hasDebatePipeline = !isLens && (
+    Array.isArray(agentPredictions) && agentPredictions.length > 0
+    || !!visualFeatures
+    || !!result.final_report
+  );
+  const lensStatus = rawLensStatus || (hasDebatePipeline ? {
+    attempted: true,
+    count: Array.isArray(lensResults) ? lensResults.length : 0,
+    ok: Array.isArray(lensResults) && lensResults.length > 0,
+    message: Array.isArray(lensResults) && lensResults.length > 0
+      ? 'Google Lens returned reference sources'
+      : 'Google Lens was used as reference context for this appraisal, but it did not return direct source links for this image.',
+  } : null);
 
   const imgSrc = imageUrl || prediction.image_url || prediction.image;
 
@@ -286,6 +300,7 @@ export const PredictionDetailView = ({ prediction, imageUrl, showUserInfo = true
         showDebugInfo={showDebugInfo}
         isLens={isLens}
         lensResults={lensResults}
+        lensStatus={lensStatus}
       />
     </div>
   );
@@ -295,7 +310,7 @@ export const PredictionDetailView = ({ prediction, imageUrl, showUserInfo = true
 const translationCache = new Map();
 
 // AI Result Sections Component
-const AIResultSections = ({ agentPredictions, debate, finalReport, visualFeatures, result, showDebugInfo, isLens, lensResults }) => {
+const AIResultSections = ({ agentPredictions, debate, finalReport, visualFeatures, result, showDebugInfo, isLens, lensResults, lensStatus }) => {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
   const [translatedText, setTranslatedText] = React.useState(null);
@@ -367,7 +382,13 @@ const originalText = finalReport?.reasoning || finalReport?.final_reasoning || f
     return () => controller.abort();
   }, [performTranslation]);
 
-  if (!agentPredictions?.length && !debate?.length && !finalReport?.reasoning && !finalReport?.verdict && !visualFeatures && !lensResults?.length) {
+  const lensMentioned = /google\s+lens/i.test(originalText || '');
+  const shouldShowLens = (Array.isArray(lensResults) && lensResults.length > 0)
+    || !!lensStatus?.attempted
+    || lensMentioned
+    || isLens;
+
+  if (!agentPredictions?.length && !debate?.length && !finalReport?.reasoning && !finalReport?.verdict && !visualFeatures && !lensResults?.length && !shouldShowLens) {
     return null;
   }
 
@@ -437,6 +458,35 @@ const originalText = finalReport?.reasoning || finalReport?.final_reasoning || f
                 </div>
               </a>
             ))}
+          </div>
+        </div>
+      )}
+
+      {shouldShowLens && (!Array.isArray(lensResults) || lensResults.length === 0) && (
+        <div className="rounded-xl border border-stroke bg-surface p-5 dark:border-dark-stroke dark:bg-dark-surface">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h4 className="flex items-center gap-2 text-sm font-bold text-navy dark:text-ivory">
+              <Search size={16} className="text-ceramic-dark dark:text-ceramic" />
+              Google Lens
+            </h4>
+            <Badge variant="gold" className="text-xs">
+              {t('analysis.lens.noDirectSources', 'No direct sources')}
+            </Badge>
+          </div>
+          <div className="rounded-lg border border-stroke bg-surface-alt p-4 text-sm leading-relaxed text-muted dark:border-dark-stroke dark:bg-dark-surface-alt dark:text-dark-text-muted">
+            {lensStatus?.message
+              || t(
+                'analysis.lens.noSourcesStatus',
+                'Google Lens was used as reference context for this appraisal, but it did not return direct source links for this image.'
+              )}
+            {lensMentioned && (
+              <p className="mt-2 text-navy dark:text-ivory">
+                {t(
+                  'analysis.lens.mentionedInVerdict',
+                  'The final verdict still includes the Lens signal in its reasoning.'
+                )}
+              </p>
+            )}
           </div>
         </div>
       )}
@@ -518,8 +568,9 @@ const originalText = finalReport?.reasoning || finalReport?.final_reasoning || f
 
 // Agent Card Component
 const AgentCard = ({ agent, index }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const lang = i18n.language;
 
   const conf = agent?.confidence != null ? Math.round(agent.confidence * 100) : null;
   const pred = agent?.prediction || {};
@@ -528,12 +579,16 @@ const AgentCard = ({ agent, index }) => {
   const country = pred.country || agent?.country;
   const era = pred.era || agent?.era;
   const evidence = agent?.evidence || agent?.reasoning;
+  const displayName = translateCeramicTerm(name, lang);
+  const displayLabel = translateCeramicTerm(label, lang);
+  const displayCountry = translateCeramicTerm(country, lang);
+  const displayEra = translateCeramicTerm(era, lang);
 
   return (
     <div className="group rounded-xl border-2 border-stroke bg-gradient-to-br from-surface to-surface-alt p-4 transition-all hover:border-navy/30 hover:shadow-md dark:border-dark-stroke dark:from-dark-surface dark:to-dark-surface-alt dark:hover:border-ceramic/30">
       <div className="mb-2 flex items-center justify-between">
         <p className="text-xs font-bold text-navy dark:text-ceramic">
-          {name}
+          {displayName}
         </p>
         {conf != null && (
           <Badge variant="gold" className="text-xs">
@@ -542,18 +597,18 @@ const AgentCard = ({ agent, index }) => {
         )}
       </div>
       <p className="mb-2 text-sm font-bold text-navy dark:text-ivory">
-        {label}
+        {displayLabel}
       </p>
       {(country || era) && (
         <div className="mb-2 flex flex-wrap gap-1 text-xs">
           {country && (
             <span className="rounded-full bg-ceramic/20 px-2 py-0.5 text-ceramic-dark dark:bg-ceramic/30 dark:text-ceramic">
-              {country}
+              {displayCountry}
             </span>
           )}
           {era && (
             <span className="rounded-full bg-navy/10 px-2 py-0.5 text-navy dark:bg-ivory/10 dark:text-ivory">
-              {era}
+              {displayEra}
             </span>
           )}
         </div>
