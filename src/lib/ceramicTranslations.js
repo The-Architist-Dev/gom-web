@@ -218,6 +218,13 @@ const VI_TO_EN = {
   'Đang xử lý': 'Processing...',
   'Lỗi kết nối Google Lens': 'Google Lens connection error',
   'Ảnh không phải gốm/sứ': 'Image is not ceramics/porcelain',
+  'Gốm men xanh lá cây thời Hán': 'Han Dynasty Green-Glazed Ceramics',
+  'Triều đại nhà Hán (206 TCN – 220 SCN)': 'Han Dynasty (206 BC – 220 AD)',
+  'Thế kỷ 15 - 16 (Thời Lê Sơ)': '15th - 16th Century (Early Le Dynasty)',
+  'Thời kỳ Minh Trị (1868-1912)': 'Meiji Period (1868-1912)',
+  'Thế kỷ 19, giai đoạn Victoria': '19th Century, Victorian Period',
+  'Cuối thế kỷ 20 đến đầu thế kỷ 21': 'Late 20th Century to Early 21st Century',
+  'Thời kỳ hiện đại': 'Modern Era',
 
   // === Common descriptors ===
   'Google Lens': 'Google Lens',
@@ -240,16 +247,67 @@ export function translateCeramicTerm(text, lang) {
   if (VI_TO_EN[trimmed]) return VI_TO_EN[trimmed];
   if (VI_TO_EN[text]) return VI_TO_EN[text];
 
-  // Try partial match for era patterns like "thế kỷ X"
-  let result = text;
-  // Replace "thế kỷ" patterns
-  result = result.replace(/thế kỷ (\d+)/gi, (_, num) => {
+  // --- Dynamic ceramic name pattern translation ---
+  // "Gốm X" → "X Ceramics", "Sứ X" → "X Porcelain", etc.
+  let result = trimmed;
+
+  // Ceramic name patterns (only apply when the text IS a ceramic name, not a long sentence)
+  if (result.length < 80) {
+    // "Gốm men xanh lá cây thời X" — complex descriptive names: keep as-is after word replacements
+    // "Gốm X (Y)" → "X (Y) Ceramics"
+    const ceramicNamePatterns = [
+      { regex: /^Gốm sứ\s+(.+)$/i, suffix: 'Ceramics' },
+      { regex: /^Đồ gốm\s+(.+)$/i, suffix: 'Pottery' },
+      { regex: /^Đồ sứ\s+(.+)$/i, suffix: 'Porcelain' },
+      { regex: /^Gốm\s+(.+)$/i, suffix: 'Ceramics' },
+      { regex: /^Sứ\s+(.+)$/i, suffix: 'Porcelain' },
+    ];
+
+    for (const { regex, suffix } of ceramicNamePatterns) {
+      const match = result.match(regex);
+      if (match) {
+        let name = match[1].trim();
+        // Translate known sub-parts of the name
+        name = name
+          .replace(/^men\s+/i, '')  // remove "men" (glaze) prefix
+          .replace(/trắng/gi, 'White')
+          .replace(/xanh/gi, 'Blue-Green')
+          .replace(/đỏ/gi, 'Red')
+          .replace(/nâu/gi, 'Brown')
+          .replace(/đen/gi, 'Black')
+          .replace(/vàng/gi, 'Yellow');
+        result = `${name} ${suffix}`;
+        break;
+      }
+    }
+  }
+
+  // Replace "thế kỷ" patterns (case-insensitive, handles various capitalizations)
+  result = result.replace(/(?:thế kỷ|Thế kỷ) (\d+)/gi, (_, num) => {
     const n = parseInt(num);
     const suffix = n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'rd' : 'th';
-    return `${n}${suffix} century`;
+    return `${n}${suffix} Century`;
   });
-  // Replace common Vietnamese words
+
+  // Replace common Vietnamese words (ordered: longer/more specific patterns first)
   result = result
+    .replace(/giai đoạn Victoria/gi, 'Victorian Period')
+    .replace(/giai đoạn/gi, 'Period')
+    .replace(/Triều đại nhà Hán/gi, 'Han Dynasty')
+    .replace(/nhà Hán/gi, 'Han Dynasty')
+    .replace(/Thời Lê Sơ/gi, 'Early Le Dynasty')
+    .replace(/Thời Lê/gi, 'Le Dynasty')
+    .replace(/Thời Nguyễn/gi, 'Nguyen Dynasty')
+    .replace(/Thời Trần/gi, 'Tran Dynasty')
+    .replace(/Thời Lý/gi, 'Ly Dynasty')
+    .replace(/Thời kỳ Nguyên/gi, 'Yuan Dynasty')
+    .replace(/Thời kỳ Minh/gi, 'Ming Dynasty')
+    .replace(/Thời kỳ Đông Hán/gi, 'Eastern Han Dynasty')
+    .replace(/TCN/g, 'BC')
+    .replace(/SCN/g, 'AD')
+    .replace(/đến/g, 'to')
+    .replace(/hoặc/g, 'or')
+    .replace(/khoảng/gi, 'circa')
     .replace(/Thời đại đương đại/gi, 'Contemporary era')
     .replace(/thời đại đương đại/gi, 'Contemporary era')
     .replace(/Đương đại/gi, 'Contemporary')
@@ -263,7 +321,17 @@ export function translateCeramicTerm(text, lang) {
     .replace(/trở lại đây/gi, 'onwards')
     .replace(/từ những năm/gi, 'from the')
     .replace(/Vui lòng thử lại/gi, 'Please try again')
-    .replace(/Lỗi hệ thống AI/gi, 'AI System Error');
+    .replace(/Lỗi hệ thống AI/gi, 'AI System Error')
+    // Country names that may appear in labels
+    .replace(/\bViệt Nam\b/g, 'Vietnam')
+    .replace(/\bTrung Quốc\b/g, 'China')
+    .replace(/\bNhật Bản\b/g, 'Japan')
+    .replace(/\bHàn Quốc\b/g, 'South Korea')
+    .replace(/\bThái Lan\b/g, 'Thailand')
+    .replace(/\bPháp\b/g, 'France')
+    .replace(/\bĐức\b/g, 'Germany')
+    .replace(/\bAnh\b/g, 'United Kingdom')
+    .replace(/\bHà Lan\b/g, 'Netherlands');
 
   return result;
 }
